@@ -11,9 +11,15 @@ class FoodeeInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Container(
+       
+      height: MediaQuery.of(context).size.height*0.6, 
+      child:Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center, // Centre verticalement
       children: [
-        SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+        // SizedBox(height: MediaQuery.of(context).size.height * 0.025),
         Align(
           alignment: Alignment.center,
           child: Image.asset(
@@ -58,7 +64,7 @@ class FoodeeInfo extends StatelessWidget {
         Align(
           alignment: Alignment.topCenter,
           child: Text(
-            'Avec Foodee, commandez vos plats préférés et faites-les livrer en toute simplicité, où que vous soyez.',
+            'Avec Foodee, commandez vos plats préférés et faites-les \nlivrer en toute simplicité, où que vous soyez.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Roboto',
@@ -70,6 +76,6 @@ class FoodeeInfo extends StatelessWidget {
           ),
         ),
       ], // color: MaterialTheme.lightScheme().surfaceContainerLow,
-    );
+    ));
   }
 }

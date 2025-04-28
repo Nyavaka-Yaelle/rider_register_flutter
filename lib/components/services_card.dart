@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 import './service_card.dart';
 import '../screens/page_info.dart';
+import 'package:rider_register/theme/theme_helper.dart';
 
 class ServicesCard extends StatelessWidget {
   final VoidCallback? onActionTap; // Callback pour l'action
@@ -13,42 +14,58 @@ class ServicesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    Padding(
+    return Padding(
       padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
       child: Container(
-      // color: MaterialTheme.lightScheme().surfaceContainerLow,
         width: MediaQuery.of(context).size.width, // Largeur du container
         height: 120,
         clipBehavior: Clip.none,
         decoration: BoxDecoration(
+        color:scheme.surface ,
           // color: Theme.of(context).colorScheme.surfaceVariant,
           border: Border.all(
             width: 0.5,
-            color: MaterialTheme.lightScheme().outlineVariant, // Définit la couleur de la bordure
+            color: MaterialTheme.lightScheme()
+                .outlineVariant, // Définit la couleur de la bordure
           ),
-          borderRadius: const BorderRadius.all(Radius.circular(12)), // Bordure arrondie
+          borderRadius:
+              const BorderRadius.all(Radius.circular(12)), // Bordure arrondie
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 16, 0, 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+            padding: const EdgeInsets.fromLTRB(12, 16, 0, 12),
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Expanded(
-                child: ServiceCard(label: "Ridee", image: "ridee_service", idService: 0 , type: "ridee"),
+                child: ServiceCard(
+                    label: "Ridee",
+                    image: "ridee_service",
+                    idService: 0,
+                    type: "ridee"),
               ),
               // const SizedBox(width: 8), // Espace de 8px
               Expanded(
-                child: ServiceCard(label: "Caree", image: "caree_service", idService: 1 , type: "caree"),
+                child: ServiceCard(
+                    label: "Caree",
+                    image: "caree_service",
+                    idService: 1,
+                    type: "caree"),
               ),
               // const SizedBox(width: 8), // Espace de 8px
               Expanded(
-                child: ServiceCard(label: "Foodee", image: "foodee_service", idService: 2 , type: "foodee"),
+                child: ServiceCard(
+                    label: "Foodee",
+                    image: "foodee_service",
+                    idService: 2,
+                    type: "foodee"),
               ),
               // const SizedBox(width: 8), // Espace de 8px
               Expanded(
-                child: ServiceCard(label: "Packee", image: "packee_service", idService: 3 , type: "packee"),
-              ),              // Texte "Vous n'êtes pas encore connecté"
+                child: ServiceCard(
+                    label: "Packee",
+                    image: "packee_service",
+                    idService: 3,
+                    type: "packee"),
+              ), // Texte "Vous n'êtes pas encore connecté"
               // Column(
               //   children: [
               //     Container(
@@ -87,9 +104,7 @@ class ServicesCard extends StatelessWidget {
               //     ),
               //   ],
               // ),
-            ]
-          )
-        ),
+            ])),
       ),
     );
   }

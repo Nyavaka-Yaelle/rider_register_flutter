@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rider_register/core/app_export.dart';
 import '../theme.dart';
 
 class CareeInfo extends StatelessWidget {
@@ -11,9 +12,15 @@ class CareeInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Container(
+      height: MediaQuery.of(context).size.height*0.6, 
+      child:Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center, // Centre verticalement
+       
       children: [
-        SizedBox(height: MediaQuery.of(context).size.height * 0.0025),
+        // SizedBox(height: MediaQuery.of(context).size.height * 0.0025),
         Align(
           alignment: Alignment.center,
           child: Image.asset(
@@ -70,6 +77,6 @@ class CareeInfo extends StatelessWidget {
           ),
         ),
       ], // color: MaterialTheme.lightScheme().surfaceContainerLow,
-    );
+    ));
   }
 }

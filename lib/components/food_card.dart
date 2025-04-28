@@ -34,7 +34,8 @@ class FoodCard extends StatelessWidget {
             12 -
             3,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: Colors.transparent,
+          // color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Column(
@@ -104,7 +105,7 @@ class FoodCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Row(
+                /*Row(
                   children: [
                     Icon(Icons.star_rate_rounded,
                         size: 20.0, color: Colors.red),
@@ -124,7 +125,7 @@ class FoodCard extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
+                ),*/
               ],
             ),
             Row(
@@ -151,6 +152,7 @@ class FoodCard extends StatelessWidget {
                   ),
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
+                    backgroundColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),

@@ -6,6 +6,7 @@ import '../screens/restaurants_screen.dart';
 import '../screens/destination2_screen.dart';
 import '../repository/user_repository.dart';
 import '../screens/foodee_home_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ServiceCard extends StatelessWidget {
   final VoidCallback? onActionTap; // Callback pour l'action
@@ -60,6 +61,8 @@ class ServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return GestureDetector(
       onTap: () {
         onTapRow(context, type); // Call the onTapRow function
@@ -79,14 +82,22 @@ class ServiceCard extends StatelessWidget {
                   ),
                   borderRadius: const BorderRadius.all(Radius.circular(16)), // Bordure arrondie
                 ),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    'assets/images/' + image + '.png',
-                    height: label == 'Ridee' ? 30.0 : 48.0,
-                    fit: BoxFit.contain,
-                  ),
-                ),
+                // child: Align(
+                //   alignment: Alignment.center,
+                //   child: Image.asset(
+                //     'assets/images/' + image + '.png',
+                //     height: label == 'Ridee' ? 30.0 : 48.0,
+                //     fit: BoxFit.contain,
+                //   ),
+                // ),
+                 child: Align(
+                    alignment: Alignment.center,
+                    child: SvgPicture.asset(
+                      'assets/images/' + image + '.svg', // Remplacez .png par .svg
+                      // height:  label == 'Caree' ? 26.0 : 30.0,
+                      fit: BoxFit.contain,
+
+                    )),
               ),
               SizedBox(height: 8),
               Align(
