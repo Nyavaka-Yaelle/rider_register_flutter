@@ -1,18 +1,18 @@
 // theme.dart
 import 'package:flutter/material.dart';
 
-class DagoTheme {
-  // Définir les couleurs globales de l'application
-  static const Color outline = Color(0xFF6F7976); // Couleur #6F7976
-  static const Color primary = Color(0xFF006B5F); // Couleur #6F7976
-  static const Color secondary = Color(4283065182); // Couleur #6F7976
-  static const Color onSurface = Color(0xFF171D1B); // Couleur #6F7976
-  static const Color error = Color(0xFFBA1A1A); // Couleur #6F7976
-}
+// class DagoTheme {
+//   // Définir les couleurs globales de l'application
+//   static const Color outline = Color(0xFF6F7976); // Couleur #6F7976
+//   static const Color primary = Color(0xFF006B5F); // Couleur #6F7976
+//   static const Color secondary = Color(4283065182); // Couleur #6F7976
+//   static const Color onSurface = Color(0xFF171D1B); // Couleur #6F7976
+//   static const Color error = Color(0xFFBA1A1A); // Couleur #6F7976
+// }
 class MaterialTheme {
-  final TextTheme textTheme;
-
-  const MaterialTheme(this.textTheme);
+  final TextTheme textTheme = TextTheme();
+ 
+  MaterialTheme(textTheme);
 
   static MaterialScheme lightScheme() {
     return const MaterialScheme(
@@ -69,7 +69,7 @@ class MaterialTheme {
     );
   }
 
-  ThemeData light() {
+  static ThemeData light() {
     return theme(lightScheme().toColorScheme());
   }
 
@@ -246,7 +246,7 @@ class MaterialTheme {
     );
   }
 
-  ThemeData dark() {
+  static ThemeData dark() {
     return theme(darkScheme().toColorScheme());
   }
 
@@ -369,11 +369,27 @@ class MaterialTheme {
   }
 
 
-  ThemeData theme(ColorScheme colorScheme) => ThemeData(
-     useMaterial3: true,
-     brightness: colorScheme.brightness,
-     colorScheme: colorScheme,
-     textTheme: textTheme.apply(
+  static ThemeData theme(ColorScheme colorScheme) => ThemeData(
+    useMaterial3: true,
+    brightness: colorScheme.brightness,
+    colorScheme: colorScheme,
+    textTheme: TextTheme(
+      displayLarge: TextStyle(fontSize: 57, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      displayMedium: TextStyle(fontSize: 45, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      displaySmall: TextStyle(fontSize: 36, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+      labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, fontFamily: 'Roboto', height: 1.33, decoration: TextDecoration.none),
+    ).apply(
        bodyColor: colorScheme.onSurface,
        displayColor: colorScheme.onSurface,
      ),
@@ -525,6 +541,8 @@ extension MaterialSchemeUtils on MaterialScheme {
       inverseSurface: inverseSurface,
       onInverseSurface: inverseOnSurface,
       inversePrimary: inversePrimary,
+
+      surfaceTint: surfaceTint, 
     );
   }
 }
@@ -562,4 +580,118 @@ class ColorFamily {
   final Color onColor;
   final Color colorContainer;
   final Color onColorContainer;
+}
+
+class CustomColors {
+  static const Map<String, Map<String, Color>> colors = {
+    'inverseOnSurface': {
+      'light': Color(0xFFECF2EF),
+      'dark': Color(0xFF2B3230),
+    },
+    'inversePrimary': {
+      'light': Color(0xFF83D5C6),
+      'dark': Color(0xFF006B5F),
+    },
+    'primaryFixed': {
+      'light': Color(0xFF9FF2E2),
+      'dark': Color(0xFF9FF2E2),
+    },
+    'onPrimaryFixed': {
+      'light': Color(0xFF00201C),
+      'dark': Color(0xFF00201C),
+    },
+    'primaryFixedDim': {
+      'light': Color(0xFF83D5C6),
+      'dark': Color(0xFF83D5C6),
+    },
+    'onPrimaryFixedVariant': {
+      'light': Color(0xFF005047),
+      'dark': Color(0xFF005047),
+    },
+    'secondaryFixed': {
+      'light': Color(0xFFCDE8E1),
+      'dark': Color(0xFFCDE8E1),
+    },
+    'onSecondaryFixed': {
+      'light': Color(0xFF06201C),
+      'dark': Color(0xFF06201C),
+    },
+    'secondaryFixedDim': {
+      'light': Color(0xFFB1CCC6),
+      'dark': Color(0xFFB1CCC6),
+    },
+    'onSecondaryFixedVariant': {
+      'light': Color(0xFF334B47),
+      'dark': Color(0xFF334B47),
+    },
+    'tertiaryFixed': {
+      'light': Color(0xFFCBE6FF),
+      'dark': Color(0xFFCBE6FF),
+    },
+    'onTertiaryFixed': {
+      'light': Color(0xFF001E30),
+      'dark': Color(0xFF001E30),
+    },
+    'tertiaryFixedDim': {
+      'light': Color(0xFFACCAE5),
+      'dark': Color(0xFFACCAE5),
+    },
+    'onTertiaryFixedVariant': {
+      'light': Color(4281092704),
+      'dark': Color(4281092704),
+    },
+    'surfaceDim': {
+      'light': Color(0xFF2C4A60),
+      'dark': Color(0xFF2C4A60),
+    },
+    'surfaceBright': {
+      'light': Color(0xFFF4FBF8),
+      'dark': Color(0xFF343B39),
+    },
+    'surfaceContainerLowest': {
+      'light': Color(0xFFFFFFFF),
+      'dark': Color(0xFF090F0E),
+    },
+    'surfaceContainerLow': {
+      'light': Color(0xFFEFF5F2),
+      'dark': Color(0xFF171D1B),
+    },
+    'surfaceContainer': {
+      'light': Color(0xFFE9EFEC),
+      'dark': Color(0xFF1A211F),
+    },
+    'surfaceContainerHigh': {
+      'light': Color(0xFFE3EAE7),
+      'dark': Color(0xFF252B2A),
+    },
+    'surfaceContainerHighest': {
+      'light': Color(0xFFDDE4E1),
+      'dark': Color(0xFF303634),
+    },
+    'white': {
+      'light': Color(0xFFFFFFFF),
+      'dark': Color(0xFFFFFFFF),
+    },
+    'black': {
+      'light': Color.fromARGB(255, 0, 0, 0),
+      'dark': Color.fromARGB(255, 0, 0, 0),
+    },
+  };
+}
+class ColorManager {
+  final BuildContext context;
+
+  ColorManager(this.context);
+
+  Color getColor(String colorName) {
+    // Vérifier si le mode actuel est sombre ou clair
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    // Retourner la couleur appropriée en fonction du mode
+    if (isDarkMode) {
+      return CustomColors.colors[colorName]?['dark'] ?? Colors.transparent;
+    } else {
+      return CustomColors.colors[colorName]?['light'] ?? Colors.transparent;
+    }
+  }
 }
