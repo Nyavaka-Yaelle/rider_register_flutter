@@ -143,7 +143,8 @@ class _HomePageState extends State<HomePage> {
         children: [
           SingleChildScrollView(
             child: Container(
-              color: appTheme.green5001,
+              // color: appTheme.green5001,
+              color: scheme.surfaceContainerLowest,
               child: Column(
                 children: [
                   // CustomSearchView(
@@ -152,9 +153,12 @@ class _HomePageState extends State<HomePage> {
                   // ),
                   Container(
                     decoration: AppDecoration.fillGray50.copyWith(
-                      borderRadius: BorderRadiusStyle.customBorderTL24,
+                      // borderRadius: BorderRadiusStyle.customBorderTL24,
+                      color: scheme.surfaceContainerLowest,
                     ),
+
                     child: Column(
+
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         ServicesCard(),
@@ -279,7 +283,8 @@ class _HomePageState extends State<HomePage> {
 
         return FoodCard(
           nomPlat: item.name,
-          nomResto: item.description,
+          nomResto: item.restaurantName ?? "Restaurant",
+          // nomResto: item.description,
           prix: item.price,
           imagePlat: item.image,
           star: 4.5,

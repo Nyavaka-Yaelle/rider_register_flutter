@@ -143,13 +143,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
           },
         ),
-        // backgroundColor: appBarColor, // Couleur dynamique
+        backgroundColor: scheme.surfaceContainerLowest,//appBarColor, // Couleur dynamique
       ),
-      body: Stack(
+      body: Container(
+        color: scheme.surfaceContainerLowest,
+        height: double.infinity,
+        child:Stack(
         children: [
           SingleChildScrollView(
             controller: _scrollController, // Ajout du ScrollController
-            child: Padding(
+            child: Container(
               padding: const EdgeInsets.fromLTRB(24.0, 0, 24, 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -157,7 +160,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Image.asset(
-                      'assets/images/login_image.png',
+                      'assets/images/logo_dago.png',
+                      // 'assets/images/login_image.png',
                       height: 56.0,
                       fit: BoxFit.contain,
                     ),
@@ -317,7 +321,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
         ],
-      ),
+      )),
     );
   }
 }

@@ -11,6 +11,7 @@ import '../../repository/appareiluser_repository.dart';
 import '../../repository/user_repository.dart';
 
 import '../../../core/app_export.dart';
+import '../../theme.dart';
 // ignore_for_file: must_be_immutable
 
 class Accueille extends StatefulWidget {
@@ -77,7 +78,8 @@ class _AccueilleState extends State<Accueille> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: scheme.surface,
+        // backgroundColor: scheme.primary,
+        backgroundColor: scheme.surfaceContainerLowest,
         elevation: 0,
         toolbarHeight: 0,
       ),
@@ -85,35 +87,46 @@ class _AccueilleState extends State<Accueille> {
       body: currentPage,
       bottomNavigationBar: isShowBotNavBar
           ? NavigationBarTheme(
-              data: NavigationBarThemeData(
+              data: NavigationBarThemeData(                
                 labelTextStyle: MaterialStateProperty.all(
                   TextStyle(fontSize: 12.fSize), // Set the font size here
                 ),
               ),
               child: NavigationBar(
-                backgroundColor: scheme.surfaceContainer,
+                backgroundColor: scheme.surface,
                 onDestinationSelected: _onItemTapped,
                 selectedIndex: _currentIndex,
                 destinations: <NavigationDestination>[
                   const NavigationDestination(
-                    selectedIcon: Icon(Icons.home),
+                    selectedIcon: Icon(Icons.home_rounded),
                     icon: Icon(Icons.home_outlined),
                     label: 'Accueil',
                   ),
+                  // NavigationDestination(
+                  //   icon: IconNotif(badge: livraisonbadge, icon: Icons.notifications_outlined),
+                  //   selectedIcon: IconNotif(
+                  //       badge: livraisonbadge, icon: Icons.notifications_rounded),
+                  //   label: 'Notifications',
+                  // ),
+                  // const NavigationDestination(
+                  //   selectedIcon: Icon(Icons.delivery_dining_rounded),
+                  //   icon: Icon(Icons.delivery_dining_outlined),
+                  //   label: 'Livraisons',
+                  // ), 
                   NavigationDestination(
-                    icon: IconNotif(badge: livraisonbadge),
+                    icon: IconNotif(badge: livraisonbadge, icon: Icons.delivery_dining_outlined),
                     selectedIcon: IconNotif(
-                        badge: livraisonbadge, icon: Icons.delivery_dining),
-                    label: 'Mes Livraisons',
+                        badge: livraisonbadge, icon: Icons.delivery_dining_rounded),
+                    label: 'Livraisons',
                   ),
                   const NavigationDestination(
-                    selectedIcon: Icon(Icons.notifications),
-                    icon: Icon(Icons.notifications),
+                    selectedIcon: Icon(Icons.notifications_rounded),
+                    icon: Icon(Icons.notifications_outlined),
                     label: 'Notifications',
-                  ),
+                  ), 
                   const NavigationDestination(
-                    selectedIcon: Icon(Icons.person),
-                    icon: Icon(Icons.person_outline),
+                    selectedIcon: Icon(Icons.account_circle_rounded),
+                    icon: Icon(Icons.account_circle_outlined),
                     label: 'Profile',
                   ),
                 ],
