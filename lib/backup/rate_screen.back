@@ -1,0 +1,1406 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:rider_register/models/livraison.dart';
+import 'package:rider_register/models/user.dart';
+import 'package:rider_register/repository/livraison_repository.dart';
+import 'package:rider_register/repository/note_repository.dart';
+import 'package:rider_register/repository/user_repository.dart';
+import 'package:rider_register/screens/destination3_screen.dart';
+import 'dart:typed_data';
+import 'dart:ui';
+import 'package:rider_register/screens/placeholder_screen.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rider_register/screens/home_finally_page/Accueille.dart';
+import 'package:rider_register/widgets/bottom_sheet/custom_bottom_sheet.dart';
+import 'package:rider_register/widgets/custom_elevated_button.dart';
+import 'package:rider_register/widgets/custom_icon_button.dart';
+import 'package:rider_register/widgets/ridee/coffee.dart';
+import 'package:rider_register/widgets/wallet/card_rider_contact.dart';
+import 'package:rider_register/core/app_export.dart';
+import '../main.dart';
+import '../models/note.dart';
+import 'mydelivery_screen.dart';
+import 'myprofile_screen.dart';
+
+// Define the first screen as a stateful widget
+class RateScreen extends StatefulWidget {
+  final String? idlivraison;
+
+  const RateScreen({required this.idlivraison});
+  @override
+  _RateScreenState createState() => _RateScreenState();
+}
+
+Future<Uint8List> getBytesFromAsset(String path, int width) async {
+  ByteData data = await rootBundle.load(path);
+  Codec codec = await instantiateImageCodec(data.buffer.asUint8List(),
+      targetWidth: width);
+  FrameInfo fi = await codec.getNextFrame();
+  return (await fi.image.toByteData(format: ImageByteFormat.png))!
+      .buffer
+      .asUint8List();
+}
+
+//functino that concatenante two string with two argument , the string to concatenate and the string to concatenate with
+String concatenate(String toconcatenate, String toconcatenatewith) {
+  if (toconcatenate == "") {
+    return toconcatenatewith;
+  } else {
+    return toconcatenate + "," + toconcatenatewith;
+  }
+}
+
+//Function that return a readable string of a timestamp using 24h
+String readableTime(Timestamp timestamp) {
+  var date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
+  var format = DateFormat.yMMMMEEEEd('fr_FR');
+  return format.format(date);
+}
+
+//function that search for a string in a string and remove it
+String remove(String toremove, String toremovewith) {
+  if (toremove.contains(toremovewith + ",")) {
+    return toremove.replaceAll(toremovewith + ",", '');
+  }
+  if (toremove.contains("," + toremovewith)) {
+    return toremove.replaceAll("," + toremovewith, '');
+  } else {
+    return toremove.replaceAll(toremovewith, '');
+  }
+}
+
+// Define the state of the first screen
+class _RateScreenState extends State<RateScreen> {
+    void handleAmountSelected(int selectedAmount) {
+      setState(() {
+        // Update the selected amount
+        pourboire = selectedAmount.toString();
+              print('Selected amount: $pourboire');
+
+      });
+      // You can also update the state or perform other actions here
+    }
+    //show loading screen function
+    
+//loading screen
+bool _isLoading = false;
+  //to add
+  String toconcatenate = '';
+  String pourboire = '';
+  String rating = '';
+  String ratingsheet = '3.0';
+  String commentaire = '';
+  //Textfield controller
+  TextEditingController _commentaireController = TextEditingController();
+  // Define a future that waits for x seconds and returns true
+  LatLng test1 = LatLng(-18.9102429923247, 47.53630939706369);
+  LatLng test2 = LatLng(-18.915612, 47.521741);
+  String googleApiKey = 'AIzaSyAeFMQ-GoJPC_Sz5np7Rd0rs0bETERtSc8';
+  String totalDistance = 'No route';
+  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController? _googleMapController;
+  Set<Marker> _markers = Set<Marker>();
+  BitmapDescriptor pinLocationIcon = BitmapDescriptor.defaultMarker;
+  Uint8List? markerIcon;
+  Livraison livraison = Livraison.empty();
+  Rider user = Rider.empty();
+  LivraisonRepository livraisonRepository = LivraisonRepository();
+  UserRepository userRepository = UserRepository();
+  NoteRepository noteRepository = NoteRepository();
+  Circle circle = Circle(circleId: CircleId('myCircle'));
+  BitmapDescriptor? bitmapDescriptor;
+  Color price500color = scheme.onPrimary;
+  Color border500color = Color.fromARGB(255, 31, 27, 27);
+  Color text500color = Color.fromARGB(255, 31, 27, 27);
+  static const Color green = Color(0xFF159b8b);
+  Color price1000color = scheme.onPrimary;
+  Color border1000color = Color.fromARGB(255, 31, 27, 27);
+  Color text1000color = Color.fromARGB(255, 31, 27, 27);
+
+  Color price1500color = scheme.onPrimary;
+  Color border1500color = Color.fromARGB(255, 31, 27, 27);
+  Color text1500color = Color.fromARGB(255, 31, 27, 27);
+
+  Color price2000color = scheme.onPrimary;
+  Color border2000color = Color.fromARGB(255, 31, 27, 27);
+  Color text2000color = Color.fromARGB(255, 31, 27, 27);
+
+  Color price3000color = scheme.onPrimary;
+  Color border3000color = Color.fromARGB(255, 31, 27, 27);
+  Color text3000color = Color.fromARGB(255, 31, 27, 27);
+
+  Color price5000color = scheme.onPrimary;
+  Color border5000color = Color.fromARGB(255, 31, 27, 27);
+  Color text5000color = Color.fromARGB(255, 31, 27, 27);
+
+  //ameliorer
+  Color text1color = scheme.onPrimary;
+  Color bordertext1color = Color.fromARGB(255, 31, 27, 27);
+  Color texttext1color = Color.fromARGB(255, 31, 27, 27);
+
+  Color text2color = scheme.onPrimary;
+  Color bordertext2color = Color.fromARGB(255, 31, 27, 27);
+  Color texttext2color = Color.fromARGB(255, 31, 27, 27);
+
+  Color text3color = scheme.onPrimary;
+  Color bordertext3color = Color.fromARGB(255, 31, 27, 27);
+  Color texttext3color = Color.fromARGB(255, 31, 27, 27);
+
+  Color text4color = scheme.onPrimary;
+  Color bordertext4color = Color.fromARGB(255, 31, 27, 27);
+  Color texttext4color = Color.fromARGB(255, 31, 27, 27);
+
+  Color text5color = scheme.onPrimary;
+  Color bordertext5color = Color.fromARGB(255, 31, 27, 27);
+  Color texttext5color = Color.fromARGB(255, 31, 27, 27);
+
+  Color text6color = scheme.onPrimary;
+  Color bordertext6color = Color.fromARGB(255, 31, 27, 27);
+  Color texttext6color = Color.fromARGB(255, 31, 27, 27);
+  int _currentIndex = 0;
+
+// bottom sheet 
+ void _showBottomSheet() {
+    showCustomBottomSheet<void>(
+      //height is size of the screen
+       
+            height: MediaQuery.of(context).size.height - 100,
+      context,
+      children: [
+        SizedBox(height: 12.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 24,
+              height: 24,
+              child: Icon(
+                Icons.check_circle_outline,
+                color: scheme.onPrimaryFixedVariant,
+                size: 24,
+              ),
+            ),
+            SizedBox(width: 8.v),
+            Text(
+              'Vous êtes arrivé !',
+              style: TextStyle(
+                color: scheme.shadow,
+                fontSize: 16.fSize,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.15,
+              ),
+            )
+          ],
+        ),
+        SizedBox(height: 5.h),
+        CardRiderContact(
+          motor: '423TBL',
+          rider: user.displayName ?? "",
+          riderImg: user.profilePicture ?? "",
+          star: 4,
+          locations: [            livraison.namePlaceDepart ?? 'Unknown', 
+            livraison.multipointsAddress?.first ?? 'Unknown'],
+          bill: livraison.prix!.toInt(),
+          date:  readableTime(
+                          livraison.dateenregistrement ?? Timestamp.now()),
+        ),
+        SizedBox(height: 8.h),
+        Container(
+          width: 344.v,
+          clipBehavior: Clip.antiAlias,
+          decoration: ShapeDecoration(
+            color: scheme.surfaceBright,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 1, color: scheme.outlineVariant),
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: Column(
+            children: [
+              SizedBox(height: 8.h),
+              Text(
+                'Comment s’est déroulé votre déplacement ? ',
+                style: TextStyle(
+                  color: scheme.onSecondaryContainer,
+                  fontSize: 14.fSize,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.10.v,
+                ),
+              ),
+              SizedBox(height: 4.h),
+              RatingBar(
+                rating: 3,
+                onRatingUpdate: (rating) {
+                  ratingsheet = rating.toString();
+                  print("rating sheet" + ratingsheet);
+                },
+              ),
+              SizedBox(height: 11.h),
+            ],
+          ),
+        ),
+        Coffee(isExtended: true, onTap: () {
+       
+        },           onAmountSelected: handleAmountSelected,
+),
+// print("dsds" + Coffee.selectedAmount);
+       Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+               
+                 Expanded(
+                  child: CustomElevatedButton(
+                    width: 328.v,
+                    height: 40.h,
+                    text: "Annuler",
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.red, // Set the background color to red
+                      ),
+                    onPressed: () {
+                      // Add your logic here for the "Annuler" button
+                         Future.delayed(const Duration(milliseconds: 500), () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Accueille()),
+                        );
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                SizedBox(width: 16.v), // Add some space between the buttons
+                Expanded(
+                  child: CustomElevatedButton(
+                    width: 328.v,
+                    height: 40.h,
+                    text: "Valider et quitter",
+                    
+                    onPressed: () {
+                      // Add your logic here
+                      if (pourboire == "") {
+                        // Code to handle the case where pourboire is an empty string
+                        pourboire = "0.0";
+                      }
+                      if (rating == "") {
+                        // Code to handle the case where rating is an empty string
+                        rating = "3.0";
+                      }
+
+                      print("To add " +
+                          toconcatenate +
+                          " " +
+                          ratingsheet +
+                          " " +
+                          _commentaireController.text +
+                          " " +
+                          pourboire +
+                          " " +
+                          livraison!.idrider! +
+                          " ");
+                      Note notetoadd = Note(
+                          idlivraison: widget.idlivraison,
+                          idrider: livraison!.idrider,
+                          commentaire: "",
+                          pourboire: double.parse(pourboire),
+                          note: double.parse(rating),
+                          ameliorer: "");
+                      noteRepository.addNote(notetoadd);
+                      // Future delayed to redirect to the home page milliseconds
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Accueille()),
+                        );
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+        SizedBox(height: 23.h),
+      ],
+    );
+  }
+  // Define a variable to store the index of the selected item
+  int selectedIndex = -1;
+  final rider = [
+    {
+      'image': 'assets/images/zelda.jpg',
+      'title': 'Melo',
+      'description': 'You are the one and only',
+      'number': '5',
+      'anothertext': '2-4 personnes',
+    },
+  ];
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+      if (_currentIndex == 0) {
+        //Delay for 500ms
+
+        Future.delayed(const Duration(milliseconds: 500), () {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => Accueille()),
+              (route) => false);
+        });
+      }
+      if (_currentIndex == 1) {
+        //Delay for 500ms
+        context.read<DeliveryData>().clear();
+
+        Future.delayed(const Duration(milliseconds: 500), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyDeliveryScreen()),
+          );
+        });
+      }
+      if (_currentIndex == 4) {
+        //Delay for 500ms
+        context.read<DeliveryData>().clear();
+
+        Future.delayed(const Duration(milliseconds: 500), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyProfileScreen()),
+          );
+        });
+      }
+      print('index: $_currentIndex');
+    });
+  }
+
+  @override
+  void initState() {
+    
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      markerIcon = await getBytesFromAsset('assets/images/anya.png', 64);
+      bitmapDescriptor = BitmapDescriptor.fromBytes(markerIcon!);
+      user.displayName = "";
+      //set marker for depart and arrivee
+      Marker markerDepart = Marker(
+        markerId: MarkerId('Vous'),
+        position: test1,
+        infoWindow: InfoWindow(title: 'Vous'),
+      );
+      Marker markerArrivee = Marker(
+        markerId: MarkerId('Rider'),
+        position: test2,
+        infoWindow: InfoWindow(title: 'Rider'),
+        icon: bitmapDescriptor!,
+      );
+      //add marker to map
+      Livraison? livraisonto =
+          await livraisonRepository.getLivraisonById(widget.idlivraison!);
+      Rider? userto = await userRepository.getRiderByUserById(livraisonto!.idrider!);
+      setState(() {
+        livraison = livraisonto;
+        user = userto!;
+        print( "user ${user.displayName}");
+        _markers.add(markerDepart);
+        _markers.add(markerArrivee);
+         Future.delayed(Duration(seconds: 0)).then((_) {
+      _showBottomSheet();
+    });
+      });
+    });
+    
+    circle = circle.copyWith(
+      centerParam: test1, // Set circle center as same as marker position
+      radiusParam: 2000, // Set circle radius as 1km (1000 meters)
+      fillColorParam: Color(0xFF00AD9C)!.withOpacity(
+          0.5), // Set circle fill color as purple with some transparency
+      strokeColorParam: Color(
+          0xFF00AD9C), // Set circle stroke color as purple with some transparency
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notez-moi'),
+      ),
+      resizeToAvoidBottomInset: false,
+      body: Column(children: [
+        Expanded(
+          flex: 1,
+          child: Row(
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(
+                image:
+                    AssetImage('assets/images/logo.png'), // Load an asset image
+                width: 64,
+                height: 64,
+              ), // le widget qui affiche le logo de flutter[^1^][4]
+              SizedBox(
+                width: 10.0,
+              ),
+              // Text(
+              //   'Rid-E',
+              //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              // ),
+              SizedBox(
+                width: 10.0,
+              ),
+              // Text('JOB DONE !!!',
+              Text('TÂCHE ACCOMPLIE',
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF00AD9C))),
+            ],
+          ),
+        ),
+        Expanded(
+          flex: 0,
+          child: Text("______________________________________________"),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+//         Expanded(
+//           flex: 1,
+//           child: Row(
+//             children: [
+//               Container(
+// //padding
+//                 margin: EdgeInsets.only(bottom: 40.0, left: 10.0),
+//                 // Use BoxDecoration to add a border around the image
+//                 decoration: BoxDecoration(
+//                   // Set border color as blue with some transparency
+//                   border: Border.all(
+//                       color: Color(0xFF00AD9C),
+//                       style: BorderStyle.solid,
+//                       width: 4),
+//                   // Set border width as 4 pixels
+//                   borderRadius: BorderRadius.circular(100),
+//                 ),
+//                 child: ClipRRect(
+//                   // Use ClipRRect to clip the image with a circular shape
+//                   borderRadius: BorderRadius.circular(
+//                       32), // Set circular radius as half of image size (64/2 = 32)
+//                   child: Image(
+//                     image: AssetImage(
+//                         'assets/images/zelda.jpg'), // Load an asset image
+//                     width: 64,
+//                     height: 64,
+//                   ),
+//                 ),
+//               ),
+//               SizedBox(
+//                 width: 10.0,
+//               ),
+//               Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(user.displayName ?? "",
+//                       style:
+//                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+//                 ],
+//               ),
+//               SizedBox(
+//                 width: 10.0,
+//                 height: 20.0,
+//               ),
+//               Column(
+//                 crossAxisAlignment: CrossAxisAlignment.center,
+//                 children: [
+//                   Text(
+//                       readableTime(
+//                           livraison.dateenregistrement ?? Timestamp.now()),
+//                       style: TextStyle(fontSize: 15)),
+//                   Text('Ticket ${widget.idlivraison}',
+//                       style: TextStyle(fontSize: 15)),
+//                 ],
+//               ),
+//               SizedBox(
+//                 width: 10.0,
+//               )
+//             ],
+//           ),
+//         ),
+//         Expanded(
+//           flex: 1,
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Column(
+//                 children: [
+//                   Text('Notez Moi',
+//                       style: TextStyle(fontSize: 20, color: Color(0xFF00AD9C))),
+//                   // RatingBar.builder(
+//                   //   initialRating: 3,
+//                   //   minRating: 1,
+//                   //   itemSize: 60,
+//                   //   direction: Axis.horizontal,
+//                   //   allowHalfRating: true,
+//                   //   itemCount: 5,
+//                   //   itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+//                   //   itemBuilder: (context, _) => Icon(
+//                   //     Icons.star,
+//                   //     color: Colors.amber,
+//                   //   ),
+//                   //   onRatingUpdate: (ratings) {
+//                   //     rating = ratings.toString();
+//                   //     print(ratings);
+//                   //   },
+//                   // ), // le widget qui affiche le système de notation par étoiles
+//                 ],
+//               ),
+//             ],
+//           ),
+//         ),
+//         const Padding(padding: EdgeInsets.all(4)),
+//         Expanded(
+//           flex: 1,
+//           child: Column(
+//             //space the height of each child
+
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             children: [
+//               Text('Pourboire',
+//                   style: TextStyle(fontSize: 20, color: Color(0xFF00AD9C))),
+//               Expanded(
+//                 flex: 1,
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                   children: [
+//                     //price :15000
+//                     GestureDetector(
+//                       onTap: () {
+//                         //change container color
+//                         setState(() {
+//                           if (price500color == green) {
+//                             price500color = scheme.onPrimary;
+//                             border500color = Color.fromARGB(255, 31, 27, 27);
+//                             text500color = Color.fromARGB(255, 31, 27, 27);
+//                             pourboire = "";
+//                           } else {
+//                             price500color = green;
+//                             border500color = green;
+//                             text500color = scheme.onPrimary;
+//                             pourboire = "500";
+//                             //change all price color to normal
+//                             price1000color = scheme.onPrimary;
+//                             border1000color = Color.fromARGB(255, 31, 27, 27);
+//                             text1000color = Color.fromARGB(255, 31, 27, 27);
+//                             price1500color = scheme.onPrimary;
+//                             border1500color = Color.fromARGB(255, 31, 27, 27);
+//                             text1500color = Color.fromARGB(255, 31, 27, 27);
+//                             price2000color = scheme.onPrimary;
+//                             border2000color = Color.fromARGB(255, 31, 27, 27);
+//                             text2000color = Color.fromARGB(255, 31, 27, 27);
+//                             price3000color = scheme.onPrimary;
+//                             border3000color = Color.fromARGB(255, 31, 27, 27);
+//                             text3000color = Color.fromARGB(255, 31, 27, 27);
+//                             price5000color = scheme.onPrimary;
+//                             border5000color = Color.fromARGB(255, 31, 27, 27);
+//                             text5000color = Color.fromARGB(255, 31, 27, 27);
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: border500color),
+//                               color: price500color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('500 ',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: text500color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                     GestureDetector(
+//                       onTap: () {
+//                         setState(() {
+//                           if (price1000color == green) {
+//                             price1000color = scheme.onPrimary;
+//                             border1000color = Color.fromARGB(255, 31, 27, 27);
+//                             text500color = Color.fromARGB(255, 31, 27, 27);
+//                             pourboire = "";
+//                           } else {
+//                             price1000color = green;
+//                             border1000color = green;
+//                             text1000color = scheme.onPrimary;
+//                             pourboire = "1000";
+
+//                             //change all price color to normal
+//                             price500color = scheme.onPrimary;
+//                             border500color = Color.fromARGB(255, 31, 27, 27);
+//                             text500color = Color.fromARGB(255, 31, 27, 27);
+//                             price1500color = scheme.onPrimary;
+//                             border1500color = Color.fromARGB(255, 31, 27, 27);
+//                             text1500color = Color.fromARGB(255, 31, 27, 27);
+//                             price2000color = scheme.onPrimary;
+//                             border2000color = Color.fromARGB(255, 31, 27, 27);
+//                             text2000color = Color.fromARGB(255, 31, 27, 27);
+//                             price3000color = scheme.onPrimary;
+//                             border3000color = Color.fromARGB(255, 31, 27, 27);
+//                             text3000color = Color.fromARGB(255, 31, 27, 27);
+//                             price5000color = scheme.onPrimary;
+//                             border5000color = Color.fromARGB(255, 31, 27, 27);
+//                             text5000color = Color.fromARGB(255, 31, 27, 27);
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: border1000color),
+//                               color: price1000color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('1000',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: text1000color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                     GestureDetector(
+//                       onTap: () {
+//                         setState(() {
+//                           if (price1500color == green) {
+//                             price1500color = scheme.onPrimary;
+//                             border1500color = Color.fromARGB(255, 31, 27, 27);
+//                             text1500color = Color.fromARGB(255, 31, 27, 27);
+//                             pourboire = "";
+//                           } else {
+//                             price1500color = green;
+//                             border1500color = green;
+//                             text1500color = scheme.onPrimary;
+//                             pourboire = "1500";
+
+//                             //change all price color to normal
+//                             price500color = scheme.onPrimary;
+//                             border500color = Color.fromARGB(255, 31, 27, 27);
+//                             text500color = Color.fromARGB(255, 31, 27, 27);
+//                             price1000color = scheme.onPrimary;
+//                             border1000color = Color.fromARGB(255, 31, 27, 27);
+//                             text1000color = Color.fromARGB(255, 31, 27, 27);
+//                             price2000color = scheme.onPrimary;
+//                             border2000color = Color.fromARGB(255, 31, 27, 27);
+//                             text2000color = Color.fromARGB(255, 31, 27, 27);
+//                             price3000color = scheme.onPrimary;
+//                             border3000color = Color.fromARGB(255, 31, 27, 27);
+//                             text3000color = Color.fromARGB(255, 31, 27, 27);
+//                             price5000color = scheme.onPrimary;
+//                             border5000color = Color.fromARGB(255, 31, 27, 27);
+//                             text5000color = Color.fromARGB(255, 31, 27, 27);
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: border1500color),
+//                               color: price1500color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('1500',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: text1500color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               const Padding(padding: EdgeInsets.all(4)),
+//               Expanded(
+//                 flex: 1,
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                   children: [
+//                     //price :15000
+//                     GestureDetector(
+//                       onTap: () {
+//                         //change container color
+//                         setState(() {
+//                           if (price2000color == green) {
+//                             price2000color = scheme.onPrimary;
+//                             border2000color = Color.fromARGB(255, 31, 27, 27);
+//                             text2000color = Color.fromARGB(255, 31, 27, 27);
+//                             pourboire = "";
+//                           } else {
+//                             price2000color = green;
+//                             border2000color = green;
+//                             text2000color = scheme.onPrimary;
+//                             pourboire = "2000";
+
+//                             //change all price color to normal
+//                             price1000color = scheme.onPrimary;
+//                             border1000color = Color.fromARGB(255, 31, 27, 27);
+//                             text1000color = Color.fromARGB(255, 31, 27, 27);
+//                             price1500color = scheme.onPrimary;
+//                             border1500color = Color.fromARGB(255, 31, 27, 27);
+//                             text1500color = Color.fromARGB(255, 31, 27, 27);
+//                             price500color = scheme.onPrimary;
+//                             border500color = Color.fromARGB(255, 31, 27, 27);
+//                             text500color = Color.fromARGB(255, 31, 27, 27);
+//                             price500color = scheme.onPrimary;
+//                             border3000color = Color.fromARGB(255, 31, 27, 27);
+//                             text3000color = Color.fromARGB(255, 31, 27, 27);
+//                             price3000color = scheme.onPrimary;
+//                             price5000color = scheme.onPrimary;
+//                             border5000color = Color.fromARGB(255, 31, 27, 27);
+//                             text5000color = Color.fromARGB(255, 31, 27, 27);
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: border2000color),
+//                               color: price2000color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('2000 ',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: text2000color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                     GestureDetector(
+//                       onTap: () {
+//                         setState(() {
+//                           if (price3000color == green) {
+//                             price3000color = scheme.onPrimary;
+//                             border3000color = Color.fromARGB(255, 31, 27, 27);
+//                             text3000color = Color.fromARGB(255, 31, 27, 27);
+//                             pourboire = "";
+//                           } else {
+//                             price3000color = green;
+//                             border3000color = green;
+//                             text3000color = scheme.onPrimary;
+//                             pourboire = "3000";
+
+//                             //change all price color to normal
+//                             price500color = scheme.onPrimary;
+//                             border500color = Color.fromARGB(255, 31, 27, 27);
+//                             text500color = Color.fromARGB(255, 31, 27, 27);
+//                             price1500color = scheme.onPrimary;
+//                             border1500color = Color.fromARGB(255, 31, 27, 27);
+//                             text1500color = Color.fromARGB(255, 31, 27, 27);
+//                             price2000color = scheme.onPrimary;
+//                             border2000color = Color.fromARGB(255, 31, 27, 27);
+//                             text2000color = Color.fromARGB(255, 31, 27, 27);
+//                             price1000color = scheme.onPrimary;
+//                             border1000color = Color.fromARGB(255, 31, 27, 27);
+//                             text1000color = Color.fromARGB(255, 31, 27, 27);
+//                             price5000color = scheme.onPrimary;
+//                             border5000color = Color.fromARGB(255, 31, 27, 27);
+//                             text5000color = Color.fromARGB(255, 31, 27, 27);
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: border3000color),
+//                               color: price3000color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('3000',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: text3000color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                     GestureDetector(
+//                       onTap: () {
+//                         setState(() {
+//                           if (price5000color == green) {
+//                             price5000color = scheme.onPrimary;
+//                             border5000color = Color.fromARGB(255, 31, 27, 27);
+//                             text5000color = Color.fromARGB(255, 31, 27, 27);
+//                             pourboire = "";
+//                           } else {
+//                             price5000color = green;
+//                             border5000color = green;
+//                             text5000color = scheme.onPrimary;
+//                             pourboire = "5000";
+
+//                             //change all price color to normal
+//                             price500color = scheme.onPrimary;
+//                             border500color = Color.fromARGB(255, 31, 27, 27);
+//                             text500color = Color.fromARGB(255, 31, 27, 27);
+//                             price1500color = scheme.onPrimary;
+//                             border1500color = Color.fromARGB(255, 31, 27, 27);
+//                             text1500color = Color.fromARGB(255, 31, 27, 27);
+//                             price2000color = scheme.onPrimary;
+//                             border2000color = Color.fromARGB(255, 31, 27, 27);
+//                             text2000color = Color.fromARGB(255, 31, 27, 27);
+//                             price3000color = scheme.onPrimary;
+//                             border3000color = Color.fromARGB(255, 31, 27, 27);
+//                             text3000color = Color.fromARGB(255, 31, 27, 27);
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: border5000color),
+//                               color: price5000color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('5000',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: text5000color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//         const Padding(padding: EdgeInsets.all(4)),
+//         Expanded(
+//           flex: 1,
+//           child: Column(
+//             //space the height of each child
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             children: [
+//               Text('Améliorer',
+//                   style: TextStyle(fontSize: 20, color: Color(0xFF00AD9C))),
+//               Expanded(
+//                 flex: 1,
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                   children: [
+//                     //price :15000
+//                     GestureDetector(
+//                       onTap: () {
+//                         //change container color
+//                         setState(() {
+//                           if (text1color == green) {
+//                             text1color = scheme.onPrimary;
+//                             bordertext1color = Color.fromARGB(255, 31, 27, 27);
+//                             texttext1color = Color.fromARGB(255, 31, 27, 27);
+//                             toconcatenate =
+//                                 remove(toconcatenate, "Ponctualité");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           } else {
+//                             toconcatenate =
+//                                 concatenate(toconcatenate, "Ponctualité");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                             text1color = green;
+//                             bordertext1color = green;
+//                             texttext1color = scheme.onPrimary;
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: bordertext1color),
+//                               color: text1color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('Ponctualité',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: texttext1color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                     GestureDetector(
+//                       onTap: () {
+//                         setState(() {
+//                           if (text2color == green) {
+//                             text2color = scheme.onPrimary;
+//                             bordertext2color = Color.fromARGB(255, 31, 27, 27);
+//                             texttext2color = Color.fromARGB(255, 31, 27, 27);
+//                             toconcatenate = remove(toconcatenate, "Fiabilité");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           } else {
+//                             text2color = green;
+//                             bordertext2color = green;
+//                             texttext2color = scheme.onPrimary;
+//                             toconcatenate =
+//                                 concatenate(toconcatenate, "Fiabilité");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: bordertext2color),
+//                               color: text2color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('Fiabilité',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: texttext2color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                     GestureDetector(
+//                       onTap: () {
+//                         setState(() {
+//                           if (text3color == green) {
+//                             text3color = scheme.onPrimary;
+//                             bordertext3color = Color.fromARGB(255, 31, 27, 27);
+//                             texttext3color = Color.fromARGB(255, 31, 27, 27);
+//                             toconcatenate = remove(toconcatenate, "Courtoisie");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           } else {
+//                             text3color = green;
+//                             bordertext3color = green;
+//                             texttext3color = scheme.onPrimary;
+//                             toconcatenate =
+//                                 concatenate(toconcatenate, "Courtoisie");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: bordertext3color),
+//                               color: text3color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('Courtoisie',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: texttext3color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               const Padding(padding: EdgeInsets.all(4)),
+//               Expanded(
+//                 flex: 1,
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                   children: [
+//                     //price :15000
+//                     GestureDetector(
+//                       onTap: () {
+//                         //change container color
+//                         setState(() {
+//                           if (text4color == green) {
+//                             text4color = scheme.onPrimary;
+//                             bordertext4color = Color.fromARGB(255, 31, 27, 27);
+//                             texttext4color = Color.fromARGB(255, 31, 27, 27);
+//                             toconcatenate = remove(toconcatenate, "Intégrité");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           } else {
+//                             text4color = green;
+//                             bordertext4color = green;
+//                             texttext4color = scheme.onPrimary;
+//                             toconcatenate =
+//                                 concatenate(toconcatenate, "Intégrité");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: bordertext4color),
+//                               color: text4color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('Intégrité',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: texttext4color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                     GestureDetector(
+//                       onTap: () {
+//                         setState(() {
+//                           if (text5color == green) {
+//                             text5color = scheme.onPrimary;
+//                             bordertext5color = Color.fromARGB(255, 31, 27, 27);
+//                             texttext5color = Color.fromARGB(255, 31, 27, 27);
+//                             toconcatenate = remove(toconcatenate, "Initiative");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           } else {
+//                             text5color = green;
+//                             bordertext5color = green;
+//                             texttext5color = scheme.onPrimary;
+//                             toconcatenate =
+//                                 concatenate(toconcatenate, "Initiative");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: bordertext5color),
+//                               color: text5color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('Initiative',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: texttext5color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                     GestureDetector(
+//                       onTap: () {
+//                         setState(() {
+//                           if (text6color == green) {
+//                             text6color = scheme.onPrimary;
+//                             bordertext6color = Color.fromARGB(255, 31, 27, 27);
+//                             texttext6color = Color.fromARGB(255, 31, 27, 27);
+//                             toconcatenate =
+//                                 remove(toconcatenate, "Adaptabilité");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           } else {
+//                             text6color = green;
+//                             bordertext6color = green;
+//                             texttext6color = scheme.onPrimary;
+//                             toconcatenate =
+//                                 concatenate(toconcatenate, "Adaptabilité");
+//                             print(toconcatenate +
+//                                 " To You " +
+//                                 toconcatenate.toString());
+//                           }
+//                         });
+//                       },
+//                       child: Container(
+//                           width: 120,
+//                           height: 60,
+//                           decoration: BoxDecoration(
+//                               border: Border.all(color: bordertext6color),
+//                               color: text6color,
+//                               borderRadius: BorderRadius.circular(30.0)),
+//                           child: Align(
+//                             alignment: Alignment.center,
+//                             child: Wrap(
+//                               direction: Axis.horizontal,
+//                               children: [
+//                                 Text('Adaptabilité',
+//                                     style: TextStyle(
+//                                         fontSize: 20.0,
+//                                         color: texttext6color,
+//                                         fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           )),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//         const Padding(padding: EdgeInsets.all(4)),
+//         Expanded(
+//           flex: 1,
+//           child: SizedBox(
+//             width: 350.0,
+//             // Wrap the TextField with a Container to set its height and background color
+//             child: Container(
+//               height: 50.0,
+//               color: Colors.grey.shade200,
+//               //borderstyle
+
+//               child: TextField(
+//                 maxLines: null,
+//                 expands: true,
+//                 controller: _commentaireController,
+//                 decoration: InputDecoration(
+//                   border: OutlineInputBorder(
+//                       borderSide: BorderSide(
+//                     color: Colors.blue,
+//                     width: 2.0,
+//                   )),
+//                   //boder
+
+//                   hintText: 'Entrez votre commentaire',
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//         const Padding(padding: EdgeInsets.all(4)),
+//         Expanded(
+//           flex: 0,
+//           child: Row(
+//             children: [
+//               //Button that redirect to another screen with the informations
+//               Expanded(
+//                 child: ElevatedButton(
+//                   onPressed: () {
+//                     //Add your logic here
+//                     if (pourboire == "") {
+//                       // Code to handle the case where pourboire is an empty string
+//                       pourboire = "0.0";
+//                     }
+//                     if (rating == "") {
+//                       // Code to handle the case where pourboire is an empty string
+//                       rating = "3.0";
+//                     }
+
+//                     print("To add " +
+//                         toconcatenate +
+//                         " " +
+//                         rating +
+//                         " " +
+//                         _commentaireController.text +
+//                         " " +
+//                         pourboire +
+//                         " " +
+//                         livraison!.idrider! +
+//                         " ");
+//                     Note notetoadd = Note(
+//                         idlivraison: widget.idlivraison,
+//                         idrider: livraison!.idrider,
+//                         commentaire: _commentaireController.text,
+//                         pourboire: double.parse(pourboire),
+//                         note: double.parse(rating),
+//                         ameliorer: toconcatenate);
+//                     noteRepository.addNote(notetoadd);
+//                     //Future delayed to redirect to the home page milliseconds
+//                     Future.delayed(const Duration(milliseconds: 500), () {
+//                       Navigator.push(
+//                         context,
+//                         MaterialPageRoute(builder: (context) => Accueille()),
+//                       );
+//                     });
+//                   },
+//                   //Future delayed to
+//                   style: ButtonStyle(
+//                     minimumSize: MaterialStateProperty.all(
+//                       Size(double.infinity, 50),
+//                     ),
+//                   ),
+//                   child: Text('Notez'),
+//                 ),
+//               ),
+//               Expanded(
+//                 child: ElevatedButton(
+//                   onPressed: () {
+//                     //Add your logic here
+//                     //Future delayed to redirect to the home page milliseconds
+//                     Future.delayed(const Duration(milliseconds: 500), () {
+//                       Navigator.push(
+//                         context,
+//                         MaterialPageRoute(builder: (context) => Accueille()),
+//                       );
+//                     });
+//                   },
+//                   //Future delayed to
+//                   style: ButtonStyle(
+//                     minimumSize: MaterialStateProperty.all(
+//                       Size(double.infinity, 50),
+//                     ),
+//                     backgroundColor: MaterialStateProperty.all(Colors.red),
+//                   ),
+//                   child: Text('Passez'),
+//                 ),
+//               )
+//             ],
+//           ),
+//         ),
+       ]),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        onTap: onTabTapped, // new
+        currentIndex: _currentIndex, // new
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Acceuil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.delivery_dining),
+            label: 'Livraisons',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.newspaper),
+            label: 'News',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inbox),
+            label: 'Inbox',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profil',
+          ),
+        ],
+      ),
+    );
+  }
+}
+class RatingBar extends StatefulWidget {
+  final double rating;
+  final Function(double) onRatingUpdate;
+
+  const RatingBar(
+      {Key? key, required this.rating, required this.onRatingUpdate})
+      : super(key: key);
+
+  @override
+  State<RatingBar> createState() => _RatingBarState();
+}
+
+class _RatingBarState extends State<RatingBar> {
+  double _currentRating = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentRating = widget.rating;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(5, (index) => _buildStar(index)),
+    );
+  }
+
+  Widget _buildStar(int index) {
+    return IconButton(
+      icon: Icon(
+        index < _currentRating ? Icons.star : Icons.star_border,
+        color: scheme.onPrimaryFixedVariant,
+        size: 48.adaptSize,
+      ),
+      onPressed: () {
+        setState(() {
+          _currentRating = index + 1.0;
+        });
+        widget.onRatingUpdate(_currentRating);
+      },
+    );
+  }
+}

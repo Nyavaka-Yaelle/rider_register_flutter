@@ -1,0 +1,446 @@
+import 'dart:ui';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutterfire_ui/auth.dart';
+import 'package:provider/provider.dart';
+import 'package:rider_register/main.dart';
+import 'package:rider_register/screens/accueil_screen.dart';
+import 'package:rider_register/screens/placeholder_screen.dart';
+import 'package:rider_register/models/user.dart' as UserFire;
+import 'package:rider_register/screens/register_screen.dart' as register;
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_pickers.dart';
+
+import 'package:rider_register/widgets/custom_password.dart';
+import 'package:rider_register/repository/user_repository.dart';
+import 'package:rider_register/core/app_export.dart';
+import 'package:rider_register/theme/custom_button_style.dart';
+import 'package:rider_register/widgets/app_bar/appbar_leading_iconbutton.dart';
+import 'package:rider_register/widgets/app_bar/appbar_title.dart';
+import 'package:rider_register/widgets/app_bar/custom_app_bar.dart';
+import 'package:rider_register/widgets/custom_elevated_button.dart';
+import 'package:rider_register/widgets/custom_phone_number.dart';
+
+//proto new design
+
+class LoginScreen extends StatelessWidget {
+  LoginScreen({Key? key})
+      : super(
+          key: key,
+        );
+  String _phonenumber = "", _password = "";
+  final UserRepository userRepository = UserRepository();
+
+  TextEditingController passwordcompoController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  bool _isLoggingIn = false; // Step 1: Add this state variable
+
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    final deliveryData = Provider.of<DeliveryData>(context, listen: true);
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Stack(
+          // Use Stack to overlay the CircularProgressIndicator
+          children: [
+            SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Form(
+                key: _formKey,
+                child: SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    children: [
+                      _buildIntroSection(context),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.h,
+                          vertical: 56.v,
+                        ),
+                        child: Column(
+                          children: [
+                            _buildPhoneNumberColumn(context),
+                            SizedBox(height: 34.v),
+                            _buildPasswordSection(context),
+                            SizedBox(height: 40.v),
+                            CustomElevatedButton(
+                                text: "Connexion",
+                                buttonStyle: CustomButtonStyles.fillTeal,
+                                onPressed: () {
+                                  //show password controller on console
+                                  //                             setState(() {
+                                  //   _isLoggingIn = true; // Step 3: Set to true when login starts
+                                  // });
+                                  _phonenumber =
+                                      "+261" + phoneNumberController.text;
+                                  _password = passwordcompoController.text;
+                                  deliveryData.setIsError(false);
+                                  if (_formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
+                                    //retrieve user data
+                                    deliveryData.setLoginIsFetching(true);
+                                    print(_password);
+                                    print(_phonenumber);
+                                    userRepository
+                                        .getUserWitPhoneNumber(
+                                            _phonenumber, _password)
+                                        .then((UserFire.User? result) {
+                                      print(result?.phoneNumber);
+                                      // Perform login
+                                      deliveryData.setLoginIsFetching(false);
+                                      FirebaseAuth.instance
+                                          .signInWithEmailAndPassword(
+                                              email:
+                                                  "${result?.phoneNumber}@gmail.com",
+                                              password: _password)
+                                          .then((value) {
+                                        Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                AccueilScreen(),
+                                          ),
+                                          (Route<dynamic> route) => false,
+                                        );
+                                      }).catchError((error) {
+                                        deliveryData.setIsError(true);
+                                        deliveryData.setErrorMessage(
+                                            "Numéro de téléphone ou mot de passe incorrect.");
+                                        if (error is FirebaseAuthException) {
+                                          print(
+                                              "Firebase Authentication Error: ${error.message}");
+                                        } else {
+                                          print("Error: $error");
+                                        }
+                                      });
+                                    });
+                                  }
+                                }),
+                            SizedBox(height: 40.h),
+                            Divider(),
+                            SizedBox(height: 20.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    "Vous n'avez pas un compte?",
+                                    style: theme.textTheme.bodyMedium,
+                                    textAlign: TextAlign.right,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 10.0,
+                                    top: 8.0,
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                register.RegisterScreen()),
+                                      );
+                                    },
+                                    child: Text(
+                                      "S'inscrire",
+                                      style: CustomTextStyles.bodyMediumTeal500,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 5.v)
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (deliveryData.loginIsFetching)
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                child: Opacity(
+                  opacity: 0.1,
+                  child: ModalBarrier(dismissible: false, color: scheme.shadow),
+                ),
+              ),
+            if (deliveryData.loginIsFetching)
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildIntroSection(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 12.v),
+      decoration: AppDecoration.outlineBlack.copyWith(
+        borderRadius: BorderRadiusStyle.roundedBorder16,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(height: 3.v),
+          CustomAppBar(
+            leadingWidth: 56.h,
+            leading: AppbarLeadingIconbutton(
+              imagePath: ImageConstant.imgArrowLeft,
+              margin: EdgeInsets.only(
+                left: 16.h,
+                bottom: 4.v,
+              ),
+              onTap: () {
+                onTapArrowleftone(context);
+              },
+            ),
+            centerTitle: true,
+            title: AppbarTitle(
+              text: "Connexion",
+            ),
+          ),
+          SizedBox(height: 7.v),
+          Container(
+            width: 283.h,
+            margin: EdgeInsets.only(
+              left: 36.h,
+              right: 40.h,
+            ),
+            child: Text(
+              "Accéder aux services faites  sur mesure pour vous selon vos besoins",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: CustomTextStyles.bodyLargeOnPrimary.copyWith(
+                height: 1.25,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildPhoneNumberColumn(BuildContext context) {
+    Country selectedCountry = CountryPickerUtils.getCountryByPhoneCode('261');
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Numéro de téléphone",
+          style: theme.textTheme.titleSmall,
+        ),
+        SizedBox(height: 6.v),
+        CustomPhoneNumber(
+          country: selectedCountry,
+          controller: phoneNumberController,
+          onTap: (Country value) {
+            selectedCountry = value;
+          },
+        ),
+      ],
+    );
+  }
+
+  /// Section Widget
+  Widget _buildPasswordSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Mot de passe",
+          style: theme.textTheme.titleSmall,
+        ),
+        SizedBox(height: 6.v),
+        CustomPassword(
+          controller: passwordcompoController,
+          // textInputAction: TextInputAction.done,
+          // suffix: Container(
+          //   margin: EdgeInsets.fromLTRB(30.h, 8.v, 8.h, 8.v),
+          //   child: CustomImageView(
+          //     imagePath: ImageConstant.imgEye,
+          //     height: 24.adaptSize,
+          //     width: 24.adaptSize,
+          //   ),
+          // ),
+          // suffixConstraints: BoxConstraints(
+          //   maxHeight: 40.v,
+          // ),
+          // obscureText: true,
+        ),
+      ],
+    );
+  }
+
+  /// Navigates back to the previous screen.
+  onTapArrowleftone(BuildContext context) {
+    Navigator.pop(context);
+  }
+}
+
+// class LoginScreen extends StatelessWidget {
+
+//     LoginScreen({Key? key})
+//       : super(
+//           key: key,
+//         );
+
+//   final _formKey = GlobalKey<FormState>();
+
+//   String __displayName = "", _password = "";
+
+//   final UserRepository userRepository = UserRepository();
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final deliveryData = Provider.of<DeliveryData>(context, listen: true);
+//     return Stack(
+//       children: [
+//         Scaffold(
+//           appBar: AppBar(
+//             title: Text('Dagô'),
+//             leading: IconButton(
+//               icon: Icon(Icons.arrow_back),
+//               onPressed: () {
+//                 Navigator.pop(
+//                     context); // Navigate back when the button is pressed
+//               },
+//             ),
+//           ),
+//           body: SafeArea(
+//             child: Form(
+//               key: _formKey,
+//               child: Padding(
+//                 padding: EdgeInsets.all(16.0),
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     TextFormField(
+//                       decoration:
+//                           InputDecoration(labelText: 'Numéro de téléphone'),
+//                       // decoration: InputDecoration(labelText: 'Name'),
+//                       validator: (value) {
+//                         if (value!.isEmpty) {
+//                           return 'Veuillez entrer votre numéro de téléphone';
+//                           // return 'Please enter your Name';
+//                         }
+//                         return null;
+//                       },
+//                       onSaved: (value) => __displayName = value.toString(),
+//                     ),
+//                     SizedBox(height: 16.0),
+//                     TextFormField(
+//                       // decoration: InputDecoration(labelText: 'Password'),
+//                       decoration: InputDecoration(labelText: 'Mot de passe'),
+//                       validator: (value) {
+//                         if (value!.isEmpty) {
+//                           // return 'Please enter password';
+//                           return 'Veuillez entrer votre mot de passe';
+//                         }
+//                         return null;
+//                       },
+//                       onSaved: (value) => _password = value.toString(),
+//                       obscureText: true,
+//                     ),
+//                     SizedBox(height: 16.0),
+//                     if (deliveryData.isError)
+//                       Text(
+//                         deliveryData.errorMessage,
+//                         style: TextStyle(color: Colors.red),
+//                       ),
+//                     if (deliveryData.isError) SizedBox(height: 16.0),
+
+//                     ElevatedButton(
+//                       onPressed: () {
+//                         deliveryData.setIsError(false);
+//                         if (_formKey.currentState!.validate()) {
+//                           _formKey.currentState!.save();
+//                           //retrieve user data
+//                           deliveryData.setLoginIsFetching(true);
+//                           userRepository
+//                               .getUserWitPhoneNumber(__displayName, _password)
+//                               .then((UserFire.User? result) {
+//                             // Perform login
+//                             deliveryData.setLoginIsFetching(false);
+//                             FirebaseAuth.instance
+//                                 .signInWithEmailAndPassword(
+//                                     email: "${result?.phoneNumber}@gmail.com",
+//                                     password: _password)
+//                                 .then((value) {
+//                               Navigator.pushAndRemoveUntil(
+//                                 context,
+//                                 MaterialPageRoute(
+//                                   builder: (context) => AccueilScreen(),
+//                                 ),
+//                                 (Route<dynamic> route) => false,
+//                               );
+//                             }).catchError((error) {
+//                               deliveryData.setIsError(true);
+//                               deliveryData.setErrorMessage(
+//                                   "Numéro de téléphone ou mot de passe incorrect.");
+//                               if (error is FirebaseAuthException) {
+//                                 print(
+//                                     "Firebase Authentication Error: ${error.message}");
+//                               } else {
+//                                 print("Error: $error");
+//                               }
+//                             });
+//                           });
+//                         }
+//                       },
+//                       // child: Text('Login'),
+//                       child: Text('Se connecter'),
+//                     ),
+//                     SizedBox(height: 16.0),
+//                     // Text that send the user to the register screen
+//                     TextButton(
+//                       onPressed: () {
+//                         Navigator.pushReplacement(
+//                           context,
+//                           MaterialPageRoute(
+//                             builder: (context) => register.RegisterScreen(),
+//                           ),
+//                         );
+//                       },
+//                       // child: Text('Register'),
+//                       child: Text("S'inscrire"),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//         if (deliveryData.loginIsFetching)
+//           BackdropFilter(
+//             filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+//             child: const Opacity(
+//               opacity: 0.1,
+//               child: ModalBarrier(dismissible: false, color: scheme.shadow),
+//             ),
+//           ),
+//         if (deliveryData.loginIsFetching)
+//           const Center(
+//             child: CircularProgressIndicator(),
+//           ),
+//       ],
+//     );
+//   }
+// }

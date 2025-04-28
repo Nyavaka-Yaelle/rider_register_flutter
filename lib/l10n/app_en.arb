@@ -1,0 +1,18 @@
+{
+    "helloWorld": "HelloWorldEn!",
+    "beginRegister": "Start registration",
+    "step": "step",
+    "motorbike": "Motorbike",
+    "bicycle": "Bicycle",
+    "penddingApprovalAppBar": "Pendding approval",
+    "penddingApprovalTitle": "We're evaluating your profile",
+    "penddingApprovalMessage": "Thank you for registering with our platform. Your registration is currently being reviewed and validated. We will contact you within 24 hours with confirmation of your account status. Thank you for your patience.",
+    "fullName": "Full name",
+    "phoneNumber": "Phone number",
+    "setProfilePicture": "Change profile picture",
+    "next": "Next",
+    "idCard": "ID card",
+    "setIdCard": "Set ID card",
+    "driverLicense": "Driver license",
+    "setDriverLicense": "Change driver license"
+}

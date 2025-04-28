@@ -1,0 +1,18 @@
+{
+    "helloWorld": "HelloWorldFr!",
+    "beginRegister": "Commencer l'inscription",
+    "step": "étape",
+    "motorbike": "Moto",
+    "bicycle": "Vélo",
+    "penddingApprovalAppBar": "En attente de validation",
+    "penddingApprovalTitle": "Nous évaluons votre profil",
+    "penddingApprovalMessage": "Merci de vous être enregistré sur notre plateforme. Votre inscription est actuellement en cours de revue et de validation. Nous vous contacterons dans les 24 heures pour confirmation de votre statut de compte. Merci pour votre patience.",
+    "fullName": "Nom complet",
+    "phoneNumber": "Numéro de téléphone",
+    "setProfilePicture": "Changer la photo de profile",
+    "next": "Suivant",
+    "idCard": "Carte d'identitée",
+    "setIdCard": "Changer carte d'identitée",
+    "driverLicense": "Permis de conduire",
+    "setDriverLicense": "Changer permis de conduire"
+}

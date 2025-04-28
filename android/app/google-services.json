@@ -1,0 +1,178 @@
+{
+  "project_info": {
+    "project_number": "547016938628",
+    "project_id": "ridee-app-f0895",
+    "storage_bucket": "ridee-app-f0895.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547016938628:android:2b0895dabc69e748379ed1",
+        "android_client_info": {
+          "package_name": "com.example.fooder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547016938628-ffirrd7i14m1vup9s1kolu52fdqejl7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB86vY0ZsimOJP-Bo9zW8hFhZ4l1xmXNVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547016938628-d9g600el82ggvlv57sbpnu6fbrhpkd6c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "547016938628-018j2e5d1o39b5gers5uc7grf0gbc0m9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.rideeapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547016938628:android:a43db4e1f532b8ac379ed1",
+        "android_client_info": {
+          "package_name": "com.ezakinnytanora.dago"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547016938628-8vkmhrq8nvinn6lcio4ho3a58f69fnu4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ezakinnytanora.dago",
+            "certificate_hash": "7d8aa883a25f3c751c993c6d8b9e1e369252ac7e"
+          }
+        },
+        {
+          "client_id": "547016938628-dgbcb3i0fm2ifn2u5074pnv88uohpk2e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ezakinnytanora.dago",
+            "certificate_hash": "36fa82a6cf55aa35e2c2db59a2fac60f7b55ebfd"
+          }
+        },
+        {
+          "client_id": "547016938628-ffirrd7i14m1vup9s1kolu52fdqejl7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB86vY0ZsimOJP-Bo9zW8hFhZ4l1xmXNVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547016938628-d9g600el82ggvlv57sbpnu6fbrhpkd6c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "547016938628-018j2e5d1o39b5gers5uc7grf0gbc0m9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.rideeapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547016938628:android:ed8ac9518e41cf23379ed1",
+        "android_client_info": {
+          "package_name": "com.ezakinnytanora.dago.fooder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547016938628-ffirrd7i14m1vup9s1kolu52fdqejl7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB86vY0ZsimOJP-Bo9zW8hFhZ4l1xmXNVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547016938628-d9g600el82ggvlv57sbpnu6fbrhpkd6c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "547016938628-018j2e5d1o39b5gers5uc7grf0gbc0m9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.rideeapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547016938628:android:d23837b4b003abc1379ed1",
+        "android_client_info": {
+          "package_name": "com.mycompany.rideeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547016938628-3frrbqq3t30bcfe97hh9hgg64rhmv6hh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.rideeapp",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "547016938628-ffirrd7i14m1vup9s1kolu52fdqejl7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB86vY0ZsimOJP-Bo9zW8hFhZ4l1xmXNVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547016938628-d9g600el82ggvlv57sbpnu6fbrhpkd6c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "547016938628-018j2e5d1o39b5gers5uc7grf0gbc0m9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.rideeapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

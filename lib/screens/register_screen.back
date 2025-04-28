@@ -1,0 +1,418 @@
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_pickers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:rider_register/repository/user_repository.dart';
+import 'package:rider_register/screens/verify_otp_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rider_register/widgets/custom_password.dart';
+import 'package:rider_register/widgets/custom_text_field.dart';
+import 'package:rider_register/core/app_export.dart';
+import 'package:rider_register/theme/custom_button_style.dart';
+import 'package:rider_register/widgets/app_bar/appbar_leading_iconbutton.dart';
+import 'package:rider_register/widgets/app_bar/appbar_title.dart';
+import 'package:rider_register/widgets/app_bar/custom_app_bar.dart';
+import 'package:rider_register/widgets/custom_elevated_button.dart';
+import 'package:rider_register/widgets/custom_phone_number.dart';
+import 'package:rider_register/screens/login_screen.dart' as login;
+import 'package:rider_register/widgets/custom_text_form_field.dart'; // ignore_for_file: must_be_immutable
+
+class RegisterScreen extends StatefulWidget {
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+// ignore_for_file: must_be_immutable
+class _RegisterScreenState extends State<RegisterScreen> {
+  String _displayname = "",
+      _lastname = "",
+      _password = "",
+      _phoneNumber = "",
+      _email = "";
+  String dropdownValue = '+261'; // Add this line
+
+  final UserRepository userRepository = UserRepository();
+  bool _isFetching = false;
+
+  TextEditingController edittextController = TextEditingController();
+  TextEditingController edittextoneController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController passwordcompoController = TextEditingController();
+  TextEditingController passwordcompo1Controller = TextEditingController();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Form(
+            key: _formKey,
+            child: SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                children: [
+                  _buildColumnarrowleft(context),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.h,
+                      vertical: 18.v,
+                    ),
+                    child: Column(
+                      children: [
+                        _buildColumnnom(context),
+                        SizedBox(height: 17.v),
+                        _buildColumnprnom(context),
+                        SizedBox(height: 18.v),
+                        _buildColumnnumrodetl(context),
+                        SizedBox(height: 18.v),
+                        _buildColumncrerunmot(context),
+                        SizedBox(height: 18.v),
+                        _buildColumnconfirmer(context),
+                        SizedBox(height: 42.v),
+                        CustomElevatedButton(
+                          height: 52.v,
+                          text: _isFetching ? "Chargement" : "S’inscrire",
+                          buttonStyle: CustomButtonStyles.fillTealTL241,
+                          onPressed: _isFetching
+                              ? null
+                              : () {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      _isFetching = true;
+                                    });
+                                    _formKey.currentState!.save();
+                                    _phoneNumber =
+                                        "+261" + phoneNumberController.text;
+                                    _displayname = edittextController.text +
+                                        " " +
+                                        edittextoneController.text;
+                                    _email = _phoneNumber + "@gmail.com";
+                                    _password = passwordcompoController.text;
+                                    print(" phone inside " + _phoneNumber);
+
+                                    FirebaseAuth.instance
+                                        .fetchSignInMethodsForEmail(
+                                            _phoneNumber + "@gmail.com")
+                                        .then((methods) {
+                                      if (methods.isNotEmpty) {
+                                        print(
+                                            'User with this phone number already exists');
+                                        setState(() {
+                                          _isFetching = false;
+                                        });
+                                        Fluttertoast.showToast(
+                                          msg:
+                                              "Un utilisateur ayant ce numéro de téléphone existe déjà",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          backgroundColor: Colors.red,
+                                          textColor: scheme.onPrimary,
+                                        );
+                                      } else {
+                                        FirebaseAuth.instance.verifyPhoneNumber(
+                                          phoneNumber: _phoneNumber,
+                                          verificationCompleted:
+                                              (PhoneAuthCredential
+                                                  credential) async {
+                                            // await FirebaseAuth.instance
+                                            //     .signInWithCredential(credential);
+                                          },
+                                          verificationFailed:
+                                              (FirebaseAuthException e) {
+                                            setState(() {
+                                              _isFetching = false;
+                                            });
+                                            if (e.code ==
+                                                'invalid-phone-number') {
+                                              print(
+                                                  'The provided phone number is not valid.');
+                                            }
+                                          },
+                                          codeSent: (String verificationId,
+                                              int? resendToken) {
+                                            Future.delayed(
+                                                const Duration(
+                                                    milliseconds: 500), () {
+                                              setState(() {
+                                                _isFetching = false;
+                                              });
+                                              // Navigator.of(context).push(
+                                              //   MaterialPageRoute(
+                                              //     builder: (context) =>
+                                              //         VerifyScreen(
+                                              //       phoneNumber: _phoneNumber,
+                                              //       displayname: _displayname,
+                                              //       email: _email,
+                                              //       role: "false",
+                                              //       password: _password,
+                                              //       verificationId:
+                                              //           verificationId,
+                                              //     ),
+                                              //   ),
+                                              // );
+                                            });
+                                          },
+                                          codeAutoRetrievalTimeout:
+                                              (String verificationId) {},
+                                        );
+                                      }
+                                    });
+                                  }
+                                },
+                          // child: Text(_isFetching ? "Chargement ..." : "S'inscrire"),
+                        ),
+                        SizedBox(height: 41.h),
+                        Divider(
+                          color: appTheme.gray500,
+                        ),
+                        SizedBox(height: 20.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Vous avez déjà un compte ?",
+                              style: CustomTextStyles.bodyMediumGray700,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 12.v),
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            login.LoginScreen()),
+                                  );
+                                },
+                                child: Text(
+                                  "Se connecter",
+                                  style: CustomTextStyles.bodyMediumTeal500,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 5.v)
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildColumnarrowleft(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 12.v),
+      decoration: AppDecoration.outlineBlack.copyWith(
+        borderRadius: BorderRadiusStyle.roundedBorder16,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(height: 3.v),
+          CustomAppBar(
+            leadingWidth: 56.h,
+            leading: AppbarLeadingIconbutton(
+              imagePath: ImageConstant.imgArrowLeft,
+              margin: EdgeInsets.only(
+                left: 16.h,
+                bottom: 4.v,
+              ),
+              onTap: () {
+                onTapArrowleftone(context);
+              },
+            ),
+            centerTitle: true,
+            title: AppbarTitle(
+              text: "Inscription",
+            ),
+          ),
+          SizedBox(height: 7.v),
+          Container(
+            width: 283.h,
+            margin: EdgeInsets.only(
+              left: 36.h,
+              right: 40.h,
+            ),
+            child: Text(
+              "Créer votre compte, profitez des services faites sur mesure pour vous selon vos besoins",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: CustomTextStyles.bodyLargeOnPrimary.copyWith(
+                height: 1.25,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildColumnnom(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Nom",
+          style: CustomTextStyles.titleSmallGray700,
+        ),
+        SizedBox(height: 7.v),
+        CustomTextField(
+          controller: edittextController,
+          hintText: "Entrez votre nom",
+          validator: (value) {
+            if (value!.isEmpty) {
+              return "Veuillez entrer votre nom complet";
+            } else {
+              _displayname = value.toString().toUpperCase();
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  /// Section Widget
+  Widget _buildColumnprnom(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Prénom",
+          style: CustomTextStyles.titleSmallGray700,
+        ),
+        SizedBox(height: 7.v),
+        CustomTextField(
+          controller: edittextoneController,
+          hintText: "Entrez votre prénom",
+          validator: (value) {
+            if (value!.isEmpty) {
+              return "Veuillez entrer votre prénom complet";
+            } else {
+              _lastname = value.toString().toUpperCase();
+            }
+            return null;
+          },
+        )
+      ],
+    );
+  }
+
+  /// Section Widget
+  Widget _buildColumnnumrodetl(BuildContext context) {
+    Country selectedCountry = CountryPickerUtils.getCountryByPhoneCode('261');
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Numéro de téléphone",
+          style: theme.textTheme.titleSmall,
+        ),
+        SizedBox(height: 6.v),
+        CustomPhoneNumber(
+          country: selectedCountry,
+          controller: phoneNumberController,
+          validator: (value) {
+            if (value == null || value.isEmpty || value.length != 9) {
+              if (value == null || value.isEmpty) {
+                return 'Veuillez entrer votre numéro de téléphone';
+              } else if (value.length != 9) {
+                return 'Veuillez entrer un numéro valide (9 caractères)';
+              }
+            } else {
+              setState(() {
+                _phoneNumber = value;
+                print(" phone " + _phoneNumber);
+              });
+            }
+            return null;
+          },
+          onTap: (Country value) {
+            selectedCountry = value;
+          },
+        ),
+      ],
+    );
+  }
+
+  /// Section Widget
+  Widget _buildColumncrerunmot(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Créer un mot de passe",
+          style: CustomTextStyles.titleSmallGray700,
+        ),
+        SizedBox(height: 6.v),
+        CustomPassword(
+          controller: passwordcompoController,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return "Le mot de passe ne peut pas être vide";
+            } else {
+              _password = value.toString();
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  /// Section Widget
+  Widget _buildColumnconfirmer(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Confirmer votre mot de passe",
+          style: CustomTextStyles.titleSmallGray70002,
+        ),
+        SizedBox(height: 6.v),
+        CustomPassword(
+          controller: passwordcompo1Controller,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Veuillez entrer votre mot de passe';
+            } else if (value.length < 6) {
+              return 'Le mot de passe doit contenir au moins 6 caractères.';
+            } else {
+              if (value != _password) {
+                print(value + " " + _password);
+                return 'Le mot de passe ne correspond pas.';
+              } else {
+                _password = value.toString();
+              }
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  /// Navigates back to the previous screen.
+  onTapArrowleftone(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  /// Navigates to the otpScreen when the action is triggered.
+  onTapSinscrire(BuildContext context) {
+    // Navigator.pushNamed(context, AppRoutes.otpScreen);
+  }
+}

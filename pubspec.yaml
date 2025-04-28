@@ -1,0 +1,103 @@
+name: rider_register
+description: Dagô project by Tarondro
+
+publish_to: "none"
+
+version: 1.0.44+44
+
+environment:
+  sdk: ">=2.18.6 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
+
+  adobe_xd: ^2.0.1
+  badges: ^3.1.1
+  build_runner: ^2.3.3
+  cached_network_image: ^3.2.3
+  collection: ^1.14.13
+  country_pickers: ^2.0.0
+  cupertino_icons: ^1.0.5
+  delete_un_used_assets: ^1.0.1
+  dio: ^4.0.6
+
+  firebase_app_check: ^0.2.1+8
+  firebase_core: ^2.14.0
+  firebase_auth: ^4.6.3
+  firebase_messaging: ^14.2.5
+  firebase_storage: ^11.6.0
+
+  flutter_google_places_hoc081098: ^1.2.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.2.10
+  flutter_rating_bar: ^4.0.1
+  flutter_session_manager: ^1.0.3
+  flutterfire_ui: ^0.4.3+20
+  fluttertoast: ^8.2.2
+  flutter_svg: ^1.0.0
+  animations: ^2.0.1
+  geodesy:
+  google_directions_api: ^0.9.1
+  google_maps_flutter: ^2.2.3
+  google_maps_routes: ^1.1.2
+  google_mobile_ads: ^2.3.0
+  google_sign_in: ^5.4.4
+  image_picker: ^0.8.6
+  json_serializable: ^6.6.0
+  location: ^4.4.0
+  pin_code_fields: ^8.0.1
+  provider: ^6.0.5
+  http: ^0.13.4
+  get_phone_number: ^3.0.10
+  shared_preferences: ^2.0.15
+  skeletons: ^0.0.3
+  smooth_page_indicator: ^1.1.0
+  url_launcher: ^6.1.11
+  flutter_device_type: ^0.4.0
+  webview_flutter: ^4.0.7
+  flutter_sms: ^2.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.1
+
+flutter:
+  generate: true
+
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/fonts/
+    - assets/logo/
+    - assets/images/
+    - assets/ios/
+
+  fonts:
+    - family: NeoSansStd
+      fonts:
+        - asset: assets/fonts/NeoSansStdRegular.otf
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  icon_size: 128
+  image_path: "assets/logo/dagologoios.png"
+  min_sdk_android: 16
+
+flutter_native_splash:
+  color: "#6b6e72"
+  image: assets/logo/dagologoios.png
+  android: true
+  android_12:
+    image: assets/logo/dagologoios.png
+    icon_background_color: "#6b6e72"
+    image_dark: assets/logo/dagologoios.png
+    icon_background_color_dark: "#6b6e72"
+  web: false

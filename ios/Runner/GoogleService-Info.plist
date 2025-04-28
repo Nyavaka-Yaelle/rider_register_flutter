@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>547016938628-6qi98tgsi98pm3lqobhr3k1fam5anp0h.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.547016938628-6qi98tgsi98pm3lqobhr3k1fam5anp0h</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>547016938628-3frrbqq3t30bcfe97hh9hgg64rhmv6hh.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAtg3w_Z2b2WniAcmdFjdIHGq8YLeotYLk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>547016938628</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.riderRegister</string>
+	<key>PROJECT_ID</key>
+	<string>ridee-app-f0895</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ridee-app-f0895.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:547016938628:ios:e8347fc838985cbd379ed1</string>
+</dict>
+</plist>

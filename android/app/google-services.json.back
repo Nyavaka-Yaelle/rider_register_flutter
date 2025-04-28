@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "547016938628",
+    "project_id": "ridee-app-f0895",
+    "storage_bucket": "ridee-app-f0895.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547016938628:android:0d651eb5bcd4341d379ed1",
+        "android_client_info": {
+          "package_name": "com.ezakinnytanora.flutter_dago"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547016938628-d9g600el82ggvlv57sbpnu6fbrhpkd6c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB86vY0ZsimOJP-Bo9zW8hFhZ4l1xmXNVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547016938628-d9g600el82ggvlv57sbpnu6fbrhpkd6c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

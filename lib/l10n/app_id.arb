@@ -1,0 +1,18 @@
+{
+    "helloWorld": "HelloWorldMg!",
+    "beginRegister": "Manomboka fisoratana anarana",
+    "step": "dingana",
+    "motorbike": "Môtô",
+    "bicycle": "Bisikileta",
+    "penddingApprovalAppBar": "Miandry ny fankatoavana",
+    "penddingApprovalTitle": "Manombana ny mombamomba anao izahay",
+    "penddingApprovalMessage": "Misaotra anao nisoratra anarana tao amin'ny sehatray. Eo am-pandinihana sy voamarina ny fisoratana anaranao. Hifandray aminao izahay ao anatin'ny 24 ora hanamarina ny satan'ny kaontinao. Misaotra noho ny faharetanao.",
+    "fullName": "Anrana feno",
+    "phoneNumber": "Finday",
+    "setProfilePicture": "Ovaina ny sary",
+    "next": "Manaraka",
+    "idCard": "Karapanondro",
+    "setIdCard": "Ovaina karapanondro",
+    "driverLicense": "Permy",
+    "setDriverLicense": "Ovaina permy"
+}

@@ -1,0 +1,106 @@
+{
+  "project_info": {
+    "project_number": "547016938628",
+    "project_id": "ridee-app-f0895",
+    "storage_bucket": "ridee-app-f0895.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547016938628:android:0d651eb5bcd4341d379ed1",
+        "android_client_info": {
+          "package_name": "com.ezakinnytanora.flutter_dago"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547016938628-d1ni33f9mehp7u9d92qk6dupk4phqngb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ezakinnytanora.flutter_dago",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "547016938628-ubs0co8dlrtfjtba3rq3omnab7hl6ona.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ezakinnytanora.flutter_dago",
+            "certificate_hash": "543c08dbf87b754774a2c9804a0527f8faf4f6bb"
+          }
+        },
+        {
+          "client_id": "547016938628-ffirrd7i14m1vup9s1kolu52fdqejl7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB86vY0ZsimOJP-Bo9zW8hFhZ4l1xmXNVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547016938628-d9g600el82ggvlv57sbpnu6fbrhpkd6c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "547016938628-018j2e5d1o39b5gers5uc7grf0gbc0m9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.rideeapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547016938628:android:d23837b4b003abc1379ed1",
+        "android_client_info": {
+          "package_name": "com.mycompany.rideeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547016938628-3frrbqq3t30bcfe97hh9hgg64rhmv6hh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.rideeapp",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "547016938628-ffirrd7i14m1vup9s1kolu52fdqejl7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB86vY0ZsimOJP-Bo9zW8hFhZ4l1xmXNVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547016938628-d9g600el82ggvlv57sbpnu6fbrhpkd6c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "547016938628-018j2e5d1o39b5gers5uc7grf0gbc0m9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.rideeapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
