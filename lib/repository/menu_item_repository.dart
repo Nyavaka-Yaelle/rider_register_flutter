@@ -21,15 +21,27 @@ Future<List<FoodeeItem>> getAllItems() async {
 Future<List<FoodeeItem>> getXRandomItems(int number) async {
   final QuerySnapshot snapshot = await _db.collection('menu_items').get();
   final List<FoodeeItem> items = [];
-  snapshot.docs.forEach((doc) {
-    final FoodeeItem item =
-        FoodeeItem.fromMap(doc.data() as Map<String, dynamic>);
-    item.id = doc.id;
-    if (item.stock > 0) {
-      items.add(item);
-    }
-  });
+  // snapshot.docs.forEach((doc) {
+  //   final FoodeeItem item =
+  //       FoodeeItem.fromMap(doc.data() as Map<String, dynamic>);
+  //   item.id = doc.id;
+  //   if (item.stock > 0) {
+  //     items.add(item);
+  //   }
+  // });
+  for (var doc in snapshot.docs) {
+    try {
+      // Utiliser la méthode fromMapWithRestaurantName pour inclure le nom du restaurant
+      final FoodeeItem item =
+          await FoodeeItem.fromMapWithRestaurantName(doc.data() as Map<String, dynamic>);
 
+      if (item.stock > 0) {
+        items.add(item);
+      }
+    } catch (e) {
+      print("Erreur lors de la création de l'élément FoodeeItem : $e");
+    }
+  }
   // Shuffle the list to get random items
   items.shuffle(Random());
 
