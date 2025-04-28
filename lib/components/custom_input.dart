@@ -48,7 +48,11 @@ class _CustomInputState extends State<CustomInput> {
     _focusNode.dispose();
     super.dispose();
   }
-
+void _addError(bool value) {
+    setState(() {
+      _hasError = value;
+    });
+  }
   void _onFocusChange() {
     if (!_focusNode.hasFocus) {
       // Validate the field when focus is lost
@@ -61,7 +65,7 @@ class _CustomInputState extends State<CustomInput> {
   // Validation function
   String? _validateInput(String value) {
     if (value.isEmpty && !widget.isFacultatif) {
-      _hasError = true;
+      // _hasError = true;
       return 'Ce champ ne peut pas être vide';
     } else if (value.isEmpty && widget.isFacultatif) {
       _hasError = false;
@@ -69,13 +73,13 @@ class _CustomInputState extends State<CustomInput> {
     } else if (widget.isNumero) {
       final regex = RegExp(r'^\d{3} \d{2} \d{3} \d{2}$');
       if (!regex.hasMatch(value)) {
-        _hasError = true;
+        // _hasError = true;
         return 'Le numéro doit contenir 10 chiffres';
       }
     } else if (widget.isPassword) {
       final regex = RegExp(r'^.{6,}$');
       if (!regex.hasMatch(value)) {
-        _hasError = true;
+        // _hasError = true;
         return 'Le mot de passe doit contenir au moins 6 caractères';
       }
     } else if (widget.isEmail) {
