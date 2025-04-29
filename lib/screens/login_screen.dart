@@ -1,4 +1,8 @@
 import 'dart:ui';
+import 'package:flutter_svg/flutter_svg.dart';
+
+// Remplacez l'image PNG par une SVG
+import 'package:rider_register/theme/theme_helper.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutterfire_ui/auth.dart';
@@ -159,9 +163,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Image.asset(
-                      'assets/images/logo_dago.png',
-                      // 'assets/images/login_image.png',
+                    // child: Image.asset(
+                    //   // 'assets/images/login_image.png',
+                    //   height: 56.0,
+                    //   fit: BoxFit.contain,
+                    // ),
+                    child: SvgPicture.asset(
+                      'assets/images/logo_dago.svg', // Chemin vers votre fichier SVG
                       height: 56.0,
                       fit: BoxFit.contain,
                     ),
@@ -303,6 +311,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       actionTextColor: MaterialTheme.lightScheme().primary,
                       onActionTap: () {
                         print("Naviguer vers l'inscription");
+                         Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => register.RegisterScreen()),
+                        );
                       },
                     ),
                   ),

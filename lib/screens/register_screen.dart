@@ -114,7 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: SvgPicture.asset(
-                  'assets/images/login_image.svg',
+                  'assets/images/logo_dago.svg',
                   height: 48.0,
                   fit: BoxFit.contain,
                 ),

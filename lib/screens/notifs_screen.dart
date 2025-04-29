@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rider_register/screens/newmaplive.dart';
 //firebase auth
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rider_register/theme/theme_helper.dart';
 
 import '../models/notif.dart';
 
@@ -60,7 +61,9 @@ class _NotifsScreenState extends State<NotifsScreen> {
         return false; // Prevent default back navigation
       },
       child: Scaffold(
+        // backgroundColor: scheme.surfaceContainerLowest,
         body: SafeArea(
+
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -71,7 +74,11 @@ class _NotifsScreenState extends State<NotifsScreen> {
                         child:
                             CircularProgressIndicator()) // Show a loading indicator while fetching data
                     : notifs.length == 0
-                        ? Center(child: Text("Aucune notification"))
+                        ? Container(
+                          height: MediaQuery.of(context).size.height*0.8,
+                          child:
+                          Center(child: Text("Aucune notification"))
+                          )
                         : ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
@@ -135,7 +142,7 @@ class WidgetNotif extends StatelessWidget {
                    Newmaplive(idLivraison: idlivraison)),
         );
       },
-      child: Padding(
+      child: Container(
         padding: EdgeInsets.symmetric(
           vertical: MediaQuery.of(context).size.width * 0.015,
           horizontal: MediaQuery.of(context).size.width * 0.02,

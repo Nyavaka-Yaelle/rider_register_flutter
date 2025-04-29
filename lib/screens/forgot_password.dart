@@ -9,6 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import '../services/TwilioService.dart';
+import 'package:rider_register/theme/theme_helper.dart';
 
 class ForgotPassword extends StatefulWidget {
    
@@ -68,7 +69,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       ),
       body: SingleChildScrollView(
         controller: _scrollController, // Ajout du ScrollController
-        child: Padding(
+        child: Container(
+          color: scheme.surfaceContainerLowest,
           // padding: const EdgeInsets.all(24.0),
           padding: const EdgeInsets.fromLTRB(24.0, 0, 24, 24),
           child: Column(
