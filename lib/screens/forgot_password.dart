@@ -56,6 +56,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: scheme.surfaceContainerLowest,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: IconButton(
@@ -70,7 +71,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       body: SingleChildScrollView(
         controller: _scrollController, // Ajout du ScrollController
         child: Container(
-          color: scheme.surfaceContainerLowest,
           // padding: const EdgeInsets.all(24.0),
           padding: const EdgeInsets.fromLTRB(24.0, 0, 24, 24),
           child: Column(

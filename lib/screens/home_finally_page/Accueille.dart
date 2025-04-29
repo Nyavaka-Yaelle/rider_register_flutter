@@ -88,8 +88,23 @@ class _AccueilleState extends State<Accueille> {
       bottomNavigationBar: isShowBotNavBar
           ? NavigationBarTheme(
               data: NavigationBarThemeData(                
-                labelTextStyle: MaterialStateProperty.all(
-                  TextStyle(fontSize: 12.fSize), // Set the font size here
+                // labelTextStyle: MaterialStateProperty.all(
+                //   TextStyle(fontSize: 12.fSize), // Set the font size here
+                // ),
+                labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.selected)) {
+                      return TextStyle(
+                        color: Colors.black, // Texte noir
+                        fontWeight: FontWeight.bold, // Texte en gras
+                        fontSize: 12.fSize
+                      );
+                    }
+                    return TextStyle(
+                      color: scheme.onSurfaceVariant, // Texte gris pour les non-sélectionnés
+                      fontSize: 12.fSize
+                    );
+                  },
                 ),
               ),
               child: NavigationBar(
