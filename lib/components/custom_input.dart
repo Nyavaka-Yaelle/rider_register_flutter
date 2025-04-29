@@ -13,6 +13,7 @@ class CustomInput extends StatefulWidget {
   final bool isPassword;
   final bool isEmail;
   final bool isFacultatif;
+  final String errorMessage;
 
   CustomInput({
     required this.hintText,
@@ -24,6 +25,7 @@ class CustomInput extends StatefulWidget {
     this.isPassword = false,
     this.isEmail = false,
     this.isFacultatif = false,
+    this.errorMessage = "",
   });
 
   @override
@@ -67,7 +69,12 @@ void _addError(bool value) {
     if (value.isEmpty && !widget.isFacultatif) {
       // _hasError = true;
       return 'Ce champ ne peut pas être vide';
-    } else if (value.isEmpty && widget.isFacultatif) {
+    } 
+    else if (widget.errorMessage!="") {
+      _hasError = true;
+      return 'Numéro ou mot de passe erroné';
+    }
+    else if (value.isEmpty && widget.isFacultatif) {
       _hasError = false;
       return null;
     } else if (widget.isNumero) {
@@ -98,14 +105,19 @@ void _addError(bool value) {
   Widget build(BuildContext context) {
     Color mainColor;
     double borderWidth = 1.0;
-    if (_hasError) {
+    if (_hasError || widget.errorMessage!="") {
       mainColor = MaterialTheme.lightScheme().error;
-    } else if (_focusNode.hasFocus) {
+     _hasError = true;
+      widget.errorText= widget.errorMessage;
+    } 
+    else if (_focusNode.hasFocus) {
       mainColor = MaterialTheme.lightScheme().primary;
       borderWidth = 3.0;
     } else if (widget.controller.text.isNotEmpty) {
       mainColor = MaterialTheme.lightScheme().onSurface;
-    } else {
+    } 
+   
+    else {
       mainColor = MaterialTheme.lightScheme().outline;
     }
 

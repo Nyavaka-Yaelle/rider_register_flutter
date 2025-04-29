@@ -51,6 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
       MaterialTheme.lightScheme().surfaceContainerLowest; // Couleur par défaut
   bool isButtonEnabled = false;
   String loginError = '';
+  String telError = '';
+  String pwdError = '';
   bool isLogging = false;
 
   @override
@@ -119,6 +121,9 @@ class _LoginScreenState extends State<LoginScreen> {
           isLogging = false;
         });
         if (error is FirebaseAuthException) {
+          telError="Vérifier votre numéro de téléphone";
+          pwdError="Vérifier votre mot de passe erroné";
+          
           ToastUtil.showToast('Numéro ou mot de passe erroné');
           print("Firebase Authentication Error: ${error.message}");
         } else {
@@ -136,6 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -226,6 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               hintText: "Téléphone",
                               labelText: "Téléphone",
                               controller: telController,
+                              errorMessage: telError,
                               isNumero: true,
                             ),
                           ),
@@ -258,6 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               labelText: "Mot de passe",
                               suffixIcon: Icons.visibility_off_outlined,
                               controller: passwordController,
+                              errorMessage: pwdError,
                               isPassword: true,
                             ),
                           ),
@@ -326,7 +334,7 @@ class _LoginScreenState extends State<LoginScreen> {
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
               child: Container(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.white.withOpacity(0.5),
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
