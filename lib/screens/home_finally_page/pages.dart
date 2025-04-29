@@ -12,7 +12,7 @@ List<Widget> pages(
     <Widget>[
       HomePage(),
       MyDeliveryScreen(
-               setIsShowBotNavBar: setIsShowBotNavBar,
+        setIsShowBotNavBar: setIsShowBotNavBar,
         changeTabIndex: changeTabIndex, // Pass to MyProfileScreen
       ),
       NotifsScreen(    setIsShowBotNavBar: setIsShowBotNavBar,

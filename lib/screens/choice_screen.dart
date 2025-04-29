@@ -107,6 +107,7 @@ class _ChoiceScreenState extends State<ChoiceScreen>
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyLarge!.copyWith(
+                fontSize: 16,
                 height: 1.50,
               ),
             ))
@@ -116,6 +117,7 @@ class _ChoiceScreenState extends State<ChoiceScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       resizeToAvoidBottomInset: false, // Permet d'éviter les débordements
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -123,7 +125,11 @@ class _ChoiceScreenState extends State<ChoiceScreen>
             Navigator.pop(context);
           },
         ),
+        backgroundColor: scheme.surfaceContainerLowest,
+
       ),
+      backgroundColor: scheme.surfaceContainerLowest,
+
       body: SafeArea(
         child: Container(
           width: double.maxFinite,
@@ -187,12 +193,14 @@ class _ChoiceScreenState extends State<ChoiceScreen>
               SizedBox(height: 25.v),
               CustomElevatedButton(
                 text: "S’inscrire",
+                height: 48,
                 margin: EdgeInsets.symmetric(horizontal: 6.h),
                 onPressed: () => onTapRegisterButton(context),
               ),
               SizedBox(height: 16.v),
               CustomOutlinedButton(
                 text: "Se connecter",
+                height: 48,
                 margin: EdgeInsets.symmetric(horizontal: 6.h),
                 onPressed: () => onTapLoginButton(context),
               ),
