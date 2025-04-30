@@ -61,7 +61,7 @@ class _NotifsScreenState extends State<NotifsScreen> {
         return false; // Prevent default back navigation
       },
       child: Scaffold(
-        // backgroundColor: scheme.surfaceContainerLowest,
+        backgroundColor: scheme.surfaceContainerLowest,
         body: SafeArea(
 
           child: SingleChildScrollView(
@@ -70,9 +70,12 @@ class _NotifsScreenState extends State<NotifsScreen> {
                 // height: MediaQuery.of(context).size.height * 0.8,
                 SizedBox(height: MediaQuery.of(context).size.width * 0.02),
                 isLoading
-                    ? const Center(
-                        child:
-                            CircularProgressIndicator()) // Show a loading indicator while fetching data
+                    ? Container(
+                        height: MediaQuery.of(context).size.height*0.8,
+                        child: Center(
+                          child: CircularProgressIndicator()
+                        )
+                      ) // Show a loading indicator while fetching data
                     : notifs.length == 0
                         ? Container(
                           height: MediaQuery.of(context).size.height*0.8,

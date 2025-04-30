@@ -27,7 +27,7 @@ class ProfilePicScreen extends StatelessWidget {
         : 'Votre photo de profile aide vos livreurs et\nvos chauffeurs à vous identifier facilement et \nà vous offrir une service encore plus adapté.';
 
     return Scaffold(
-        backgroundColor: scheme.surface,
+        backgroundColor: scheme.surfaceContainerLowest,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -89,10 +89,37 @@ class ProfilePicScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     isEmpty
-                        ? Icon(
-                            Icons.account_circle_outlined,
-                            size: 200.adaptSize,
-                          )
+                        ? 
+                        Container(
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              width: 10,
+                              color: scheme.onSecondaryContainer,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 82,//56 , // Rayon de l'avatar
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  top: 0, // Positionnement de l'icône
+                                  left: -17,//-12,
+                                  child: Icon(
+                                    Icons.person_rounded,
+                                    color: scheme.onSecondaryContainer,
+                                    size: 200,//136
+                                  ),
+                                )
+                              ])
+                          ),
+                        )
+                        // Icon(
+                        //     Icons.account_circle_outlined,
+                        //     size: 200.adaptSize,
+                        //   )
                         : CustomImageView(
                             imagePath: deliveryData.userFire!.profilePicture,
                             height: 150.v,

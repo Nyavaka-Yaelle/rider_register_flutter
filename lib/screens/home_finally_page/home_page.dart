@@ -60,11 +60,11 @@ class _HomePageState extends State<HomePage> {
       p = await pubRepository.getPub();
       imageUrls.add(p!.pub1!);
       imageUrls.add(p!.pub2!);
-      imageUrls.add(p!.pub3!);
+      // imageUrls.add(p!.pub3!);
 
       linkUrls.add(p!.link1!);
       linkUrls.add(p!.link2!);
-      linkUrls.add(p!.link3!);
+      // linkUrls.add(p!.link3!);
 
       _getCurrentPosition();
     });

@@ -9,6 +9,7 @@ import 'package:rider_register/screens/rechooserider_screen.dart';
 import 'package:rider_register/screens/map_live.dart';
 import 'package:rider_register/screens/maplive_redirector_screen.dart';
 import 'package:rider_register/repository/livraison_repository.dart';
+import 'package:intl/intl.dart';
 
 class MyDeliveryScreen extends StatefulWidget {
   const MyDeliveryScreen({
@@ -26,6 +27,10 @@ class MyDeliveryScreen extends StatefulWidget {
 
 class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
   LivraisonRepository livraisonRepository = LivraisonRepository();
+  String formatNumber(double n) {
+    return NumberFormat("#,##0", "fr_FR").format(n);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -40,22 +45,23 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
         length: 3, // Number of tabs
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: scheme.surfaceContainer,
+            backgroundColor: scheme.surface,
             foregroundColor: scheme.shadow,
             bottom: TabBar(
               tabs: [
-                Tab(text: 'En Cours'), // Replace with your tab names
                 Tab(text: 'En Attente'), // Replace with your tab names
+                Tab(text: 'En Cours'), // Replace with your tab names
                 Tab(text: 'Terminé'),
               ],
             ),
             title: const Text('Mes livraisons'),
           ),
+          backgroundColor: scheme.surfaceContainerLowest,
           body: TabBarView(
             children: [
               // First tab content
-              buildDeliveryStreamBuilder(),
               buildDeliveryStreamBuilderCanceled(),
+              buildDeliveryStreamBuilder(),
               buildDeliveryStreamBuilderArrived()
             ],
           ),
@@ -70,8 +76,8 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
       stream: FirebaseFirestore.instance
           .collection('livraisons')
           .where('iduser', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-          .where('statut', whereNotIn: ["Created", "canceled", "Arrived"])
-          .snapshots(),
+          .where('statut',
+              whereNotIn: ["Created", "canceled", "Arrived"]).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
@@ -101,8 +107,8 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
             String nameplacearrivee = doc['nameplacearrivee'] as String;
             String nameplacedepart = doc['nameplacedepart'] as String;
             double prix = doc['prix'] as double;
-                  String type = "";
-                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            String type = "";
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
             if (data.containsKey('idcommande')) {
               type = "foodee";
@@ -111,7 +117,7 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
             }
 
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.0,vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -119,7 +125,8 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
                   Text(
                     formattedDateTimeString,
                     style: TextStyle(
-                      fontSize: 10.0, // Adjust the font size to make the text smaller
+                      fontSize:
+                          10.0, // Adjust the font size to make the text smaller
                     ),
                   ),
                   SizedBox(height: 10),
@@ -134,11 +141,15 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
                           width: MediaQuery.of(context).size.width * 0.1,
                           height: MediaQuery.of(context).size.width * 0.1,
                           child: Image.asset(
-                  type! == 'ridee' ? 'assets/logo/Ridee-1.png' : 'assets/images/foodee.png',
-                ),
+                            type! == 'ridee'
+                                ? 'assets/logo/Ridee-1.png'
+                                : 'assets/images/foodee.png',
+                          ),
                         ),
+                       SizedBox(width: 16),
                         Expanded(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 nameplacedepart,
@@ -153,8 +164,8 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
                         ),
                         Column(
                           children: [
-                            Text('Ar $prix'),
-                            ElevatedButton(
+                            Text(formatNumber(prix)+' Ar'),
+                           (doc["statut"] != "canceled") ?ElevatedButton(
                               onPressed: () {
                                 // navigate to map live
                                 if (doc["statut"] != "canceled")
@@ -173,10 +184,12 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
                                     ),
                                   );
                               },
-                              child: doc["statut"] == "canceled"
-                                  ? Text('action')
-                                  : Text('Suivre'),
-                            ),
+                              child: 
+                              //doc["statut"] == "canceled"
+                              //     ? Text('action')
+                              //     : 
+                                  Text('Suivre'),
+                            ): SizedBox.shrink(),
                           ],
                         ),
                       ],
@@ -209,7 +222,7 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
         if (snapshot.data?.docs.length == 0) {
           return Center(
             child: Text(
-              "Aucune livraison annulée",
+              "Aucune livraison en attente", //annulée",
             ),
           );
         }
@@ -229,8 +242,8 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
             String nameplacearrivee = doc['nameplacearrivee'] as String;
             String nameplacedepart = doc['nameplacedepart'] as String;
             double prix = doc['prix'] as double;
-      String type = "";
-                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            String type = "";
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
             if (data.containsKey('idcommande')) {
               type = "foodee";
@@ -238,7 +251,7 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
               type = "ridee";
             }
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.0,vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -246,26 +259,29 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
                   Text(
                     formattedDateTimeString,
                     style: TextStyle(
-                      fontSize: 10.0, // Adjust the font size to make the text smaller
+                      fontSize:
+                          10.0, // Adjust the font size to make the text smaller
                     ),
                   ),
                   SizedBox(height: 10),
                   Container(
-                    color: doc["statut"] == "canceled"
-                        ? Colors.yellow
-                        : Colors.transparent, // Set the color based on status
+                    // color: doc["statut"] == "canceled"  ? Colors.yellow   : Colors.transparent, // Set the color based on status
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.1,
                           height: MediaQuery.of(context).size.width * 0.1,
-                          child:Image.asset(
-                  type! == 'ridee' ? 'assets/logo/Ridee-1.png' : 'assets/images/foodee.png',
-                ),
+                          child: Image.asset(
+                            type! == 'ridee'
+                                ? 'assets/logo/Ridee-1.png'
+                                : 'assets/images/foodee.png',
+                          ),
                         ),
+                        SizedBox(width: 16),
                         Expanded(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 nameplacedepart,
@@ -280,8 +296,8 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
                         ),
                         Column(
                           children: [
-                            Text('Ar $prix'),
-                            ElevatedButton(
+                            Text(formatNumber(prix)+' Ar'),
+                            /*ElevatedButton(
                               onPressed: () {
                                 // navigate to map live
                                 if (doc["statut"] != "canceled")
@@ -303,7 +319,7 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
                               child: doc["statut"] == "canceled"
                                   ? Text('action')
                                   : Text('Suivre'),
-                            ),
+                            ),*/
                           ],
                         ),
                       ],
@@ -336,7 +352,7 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
         if (snapshot.data?.docs.length == 0) {
           return Center(
             child: Text(
-              "Aucune livraison effectué",
+              "Aucune livraison effectuée",
             ),
           );
         }
@@ -356,17 +372,17 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
             String nameplacearrivee = doc['nameplacearrivee'] as String;
             String nameplacedepart = doc['nameplacedepart'] as String;
             double prix = doc['prix'] as double;
-              String type = "";
-                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            String type = "";
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
             if (data.containsKey('idcommande')) {
               type = "foodee";
             } else {
               type = "ridee";
             }
-           print("type $type");
+            print("type $type");
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.0,vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -374,26 +390,31 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
                   Text(
                     formattedDateTimeString,
                     style: TextStyle(
-                      fontSize: 10.0, // Adjust the font size to make the text smaller
+                      fontSize:
+                          10.0, // Adjust the font size to make the text smaller
                     ),
                   ),
                   SizedBox(height: 10),
                   Container(
-                    color: doc["statut"] == "canceled"
-                        ? Colors.yellow
-                        : Colors.transparent, // Set the color based on status
+                    // color: doc["statut"] == "canceled"
+                    //     ? Colors.yellow
+                    //     : Colors.transparent, // Set the color based on status
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.1,
                           height: MediaQuery.of(context).size.width * 0.1,
-                          child:Image.asset(
-                  type! == 'ridee' ? 'assets/logo/Ridee-1.png' : 'assets/images/foodee.png',
-                ),
+                          child: Image.asset(
+                            type! == 'ridee'
+                                ? 'assets/logo/Ridee-1.png'
+                                : 'assets/images/foodee.png',
+                          ),
                         ),
+                         SizedBox(width: 16),
                         Expanded(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 nameplacedepart,
@@ -408,7 +429,7 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
                         ),
                         Column(
                           children: [
-                            Text('Ar $prix'),
+                            Text(formatNumber(prix)+' Ar'),
                           ],
                         ),
                       ],

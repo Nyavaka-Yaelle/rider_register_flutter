@@ -18,10 +18,38 @@ class CircImgCam extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       children: [
         isEmpty
-            ? Icon(
-                Icons.account_circle_outlined,
-                size: 200.adaptSize,
-              )
+            ? 
+            Container(
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 10,
+                  color: scheme.onSecondaryContainer,
+                ),
+              ),
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 82,//56 , // Rayon de l'avatar
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 0, // Positionnement de l'icône
+                      left: -17,//-12,
+                      child: Icon(
+                        Icons.person_rounded,
+                        color: scheme.onSecondaryContainer,
+                        size: 200,//136
+                      ),
+                    )
+                  ])
+              ),
+            )
+           
+              // Icon(
+              //   Icons.account_circle_outlined,
+              //   size: 200.adaptSize,
+              // )
             : CustomImageView(
                 imagePath: url,
                 height: 150.v,
@@ -30,37 +58,20 @@ class CircImgCam extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
         Positioned(
-          bottom: isEmpty ? 30.adaptSize : 5,
-          right: isEmpty ? 30.adaptSize : null,
+          bottom: 5,
+          // right: isEmpty ? 30.adaptSize : null,
           child: GestureDetector(
             onTap: () => navigateTo(),
-            child: isEmpty
-                ? Container(
+            child: Container(
                     decoration: ShapeDecoration(
-                      color: scheme.secondaryContainer,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24)),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(2.adaptSize),
-                          child: Icon(
-                            Icons.camera_alt,
-                            size: 24.adaptSize,
-                            color: scheme.shadow,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : Icon(
+                    child:Icon(
                     Icons.camera_alt,
                     size: 24.adaptSize,
                     color: scheme.surfaceContainerLowest, // BOO
-                  ),
+                  )),
           ),
         )
       ],
