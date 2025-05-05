@@ -7,6 +7,7 @@ import '../theme.dart';
 import '../components/food_cards.dart';
 import '../components/resto_cards.dart';
 import '../components/head_foodee.dart';
+import '../components/address_on_your_card.dart';
 
 class FoodeeHomeScreen extends StatefulWidget {
   final int idService;
@@ -43,7 +44,7 @@ class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
   void _onScroll() {
     setState(() {
       appBarColor = _scrollController.offset > 50
-          ? MaterialTheme.lightScheme().primary // Change to desired color when scrolled
+          ? MaterialTheme.lightScheme().surface // Change to desired color when scrolled
           : MaterialTheme.lightScheme().surface; // Default AppBar color
     });
   }
@@ -86,7 +87,7 @@ class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
           },
         ),
         title: Text(
-          'Foodee Home',
+          'Foodee',
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface,
             fontFamily: 'Roboto',
@@ -97,10 +98,11 @@ class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
       body: SingleChildScrollView(
         controller: _scrollController,
         child: Container(
-          padding: EdgeInsets.only(top: 16), // Reduced top padding due to AppBar
+          // padding: EdgeInsets.only(top: 16), // Reduced top padding due to AppBar
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              AddressOnYourCard(adresse: "3GMQ 8H6, Antananarivo"),
               SearchBar(onSearch: _onSearch), // Pass the callback method
               TabItems(
                 onTabChanged: _handleTabChange, // Pass the callback method

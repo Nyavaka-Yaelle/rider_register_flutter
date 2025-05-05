@@ -63,12 +63,12 @@ class _HeadFoodeeState extends State<HeadFoodee> {
               transform: _isButtonPressed
                   ? Matrix4.translationValues(0, -5, 0)
                   : Matrix4.translationValues(0, 0, 0),
-              child: CustomIconButton(
+              /*child: CustomIconButton(
                 label: "Voir tout",
                 onPressed: onPressed,
                 icon: Icons.arrow_right_alt_rounded,
                 color: MaterialTheme.lightScheme().primaryContainer,
-              ),
+              ),*/
             ),
           ],
         ),

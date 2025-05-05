@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
 
-class SearchBar extends StatelessWidget {
-  final Function(String) onSearch;
+class SearchBar extends StatefulWidget {
+  final Function(String) onSearch; // Callback pour réagir aux changements de texte
 
-  const SearchBar({required this.onSearch});
+  const SearchBar({Key? key, required this.onSearch}) : super(key: key);
+
+  @override
+  _SearchBarState createState() => _SearchBarState();
+}
+class _SearchBarState extends State<SearchBar> {
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +35,39 @@ class SearchBar extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 3),
                   child: TextField(
+                    controller: _controller,
+                  
                     cursorColor: MaterialTheme.lightScheme().onSurfaceVariant, // Couleur de l'icône
                     decoration: InputDecoration(
                       hintText: 'Un plat en tête ?',
                       border: InputBorder.none, // Aucun bord autour du champ de texte
                     ),
-                    onChanged: onSearch, // Call the callback when the query changes
+                    onChanged: widget.onSearch, // Call the callback when the query changes
                   ),
                 ),
-              )
+              ),
+               // Utilisation d'un ValueListenableBuilder pour réagir au changement du texte
+              ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _controller,
+                builder: (context, value, child) {
+                  return value.text.isNotEmpty
+                      ? GestureDetector(
+                          onTap: () {
+                            _controller.clear(); // Efface le texte
+                          },
+                          child: Container(
+                            alignment: Alignment.centerRight,
+                            width: 48,
+                            height: 48,
+                            child: Icon(
+                            Icons.close_rounded, // Icône de fermeture
+                            size: 18,
+                            color: MaterialTheme.lightScheme().onSurfaceVariant, // Couleur de l'icône
+                          )),
+                        )
+                      : SizedBox.shrink(); // Si le champ est vide, ne rien afficher
+                },
+              ),
             ],
           ),
         ),

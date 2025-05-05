@@ -119,8 +119,25 @@ class _RestoCardsState extends State<RestoCards> {
 
   @override
   Widget build(BuildContext context) {
+     if (_restaurants.isEmpty) {
+      return isLoading
+          ? _buildSkeletonCards()
+          : Container(
+        height: MediaQuery.of(context).size.height / 2,
+        child:Center(
+        child: Text(
+          'Aucun élément trouvé',
+          style: TextStyle(
+            fontSize: 14,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ));
+    }
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.symmetric(horizontal:12),
       width: MediaQuery.of(context).size.width,
       child: isLoading
           ? _buildSkeletonCards()

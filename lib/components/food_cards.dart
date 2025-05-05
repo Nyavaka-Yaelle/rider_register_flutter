@@ -18,8 +18,13 @@ import 'package:skeletons/skeletons.dart';
 
 class FoodCards extends StatefulWidget {
   final String? searchQuery; // Make searchQuery optional
+  final Function(bool)? onItemsFetched; // Callback pour notifier si aucun élément
 
-  const FoodCards({this.searchQuery});
+ const FoodCards({
+    Key? key,
+    required this.searchQuery,
+     this.onItemsFetched, // Ajout du callback
+  }) : super(key: key);
 
   @override
   _FoodCardsState createState() => _FoodCardsState();
@@ -64,6 +69,10 @@ class _FoodCardsState extends State<FoodCards> {
     setState(() {
       _randomItems = items;
     });
+     // Notifier FoodeeHomeScreen si aucun élément n'est trouvé
+    if (widget.onItemsFetched != null) {
+      widget.onItemsFetched!(_randomItems.isEmpty);
+    }
   }
 
   @override
@@ -76,8 +85,25 @@ class _FoodCardsState extends State<FoodCards> {
 
   @override
   Widget build(BuildContext context) {
+     if (_randomItems.isEmpty) {
+      return isLoading
+          ? _buildSkeletonCards()
+          : Container(
+        height: MediaQuery.of(context).size.height / 2,
+        child:Center(
+        child: Text(
+          'Aucun élément trouvé',
+          style: TextStyle(
+            fontSize: 14,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ));
+    }
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.symmetric(horizontal:12),
       width: MediaQuery.of(context).size.width,
       child: isLoading
           ? _buildSkeletonCards()
@@ -89,7 +115,8 @@ class _FoodCardsState extends State<FoodCards> {
                 children: _randomItems.map((item) {
                   return FoodCard(
                     nomPlat: item.name,
-                    nomResto: item.description, // Assuming you have restaurantName in FoodeeItem
+                    nomResto: item.restaurantName ?? "Restaurant",
+                    // nomResto: item.description, // Assuming you have restaurantName in FoodeeItem
                     prix: item.price,
                     imagePlat: item.image,
                     star: 4.5, // Assuming you have rating in FoodeeItem
