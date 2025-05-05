@@ -8,6 +8,7 @@ import '../components/food_cards.dart';
 import '../components/resto_cards.dart';
 import '../components/head_foodee.dart';
 import '../components/address_on_your_card.dart';
+import '../theme/theme_helper.dart';
 
 class FoodeeHomeScreen extends StatefulWidget {
   final int idService;
@@ -23,12 +24,11 @@ class FoodeeHomeScreen extends StatefulWidget {
 
 class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
   final ScrollController _scrollController = ScrollController();
-  Color appBarColor = MaterialTheme.lightScheme().surface; // Updated
-  Color bodyColor = MaterialTheme.lightScheme().background; // Updated
+  Color appBarColor = scheme.surface; // Updated
+  Color bodyColor = scheme.background; // Updated
   int _selectedIndex = 0;
   bool noItems = false;
   String searchQuery = ''; // Add search query state
-
   @override
   void initState() {
     super.initState();
@@ -44,8 +44,8 @@ class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
   void _onScroll() {
     setState(() {
       appBarColor = _scrollController.offset > 50
-          ? MaterialTheme.lightScheme().surface // Change to desired color when scrolled
-          : MaterialTheme.lightScheme().surface; // Default AppBar color
+          ? scheme.surface // Change to desired color when scrolled
+          : scheme.surface; // Default AppBar color
     });
   }
 
@@ -110,8 +110,10 @@ class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
               HeadFoodee(
                 index: _selectedIndex, // Pass the callback
               ),
-              if (_selectedIndex == 0) FoodCards(searchQuery: searchQuery) // Pass the search query
-              else if (_selectedIndex == 1) RestoCards(searchQuery: searchQuery),
+              if (_selectedIndex == 0)
+                FoodCards(searchQuery: searchQuery) // Pass the search query
+              else if (_selectedIndex == 1)
+                RestoCards(searchQuery: searchQuery),
               if (noItems)
                 Container(
                   height: MediaQuery.of(context).size.height / 2 - 56,
@@ -123,7 +125,7 @@ class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
                         fontSize: 14,
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.w500,
-                        color: MaterialTheme.lightScheme().onSurfaceVariant,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ),
