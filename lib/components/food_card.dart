@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rider_register/models/menu_item.dart';
+import 'package:rider_register/screens/restaurant_screen.dart';
 import 'package:skeletons/skeletons.dart';
 import '../theme.dart';
 
@@ -13,6 +15,7 @@ class FoodCard extends StatelessWidget {
   final double? star;
   final double prix;
   final VoidCallback? onPressed;
+  final FoodeeItem foodeeItem;
 
   const FoodCard({
     required this.nomPlat,
@@ -22,12 +25,13 @@ class FoodCard extends StatelessWidget {
     this.star = 0,
     required this.prix,
     this.onPressed,
+    required this.foodeeItem,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      // onTap: onPressed,
       child: Container(
         width: (MediaQuery.of(context).size.width /
                 (Device.get().isTablet ? 3 : 2)) -
@@ -43,25 +47,29 @@ class FoodCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
-              child: CachedNetworkImage(
-                imageUrl: imagePlat,
-                height: 100.0,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => SkeletonAvatar(
-                  style: SkeletonAvatarStyle(
-                    width: double.infinity,
-                    height: 100.0,
+            GestureDetector(
+              onTap: onPressed,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: CachedNetworkImage(
+                  imageUrl: imagePlat,
+                  height: 100.0,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => SkeletonAvatar(
+                    style: SkeletonAvatarStyle(
+                      width: double.infinity,
+                      height: 100.0,
+                    ),
                   ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-              ),
-            ),
+            )),
             const SizedBox(height: 8.0),
             // Nom du plat
-            Text(
+            GestureDetector(
+              onTap: onPressed,
+              child:Text(
               nomPlat,
               style: TextStyle(
                 color: MaterialTheme.lightScheme().onSurface,
@@ -71,12 +79,29 @@ class FoodCard extends StatelessWidget {
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-            ),
+            )),
             const SizedBox(height: 4.0),
             // Nom du restaurant + étoiles
             Row(
               children: [
                 Expanded(
+                  child: 
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: Duration(milliseconds: 600), // Adjust the duration here
+                          pageBuilder: (context, animation, secondaryAnimation) => RestaurantScreen(f: foodeeItem),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
                   child: Row(
                     children: [
                       ClipRRect(
@@ -103,7 +128,7 @@ class FoodCard extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
+                  )),
                 ),
                 /*Row(
                   children: [

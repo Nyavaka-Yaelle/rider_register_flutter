@@ -120,7 +120,10 @@ class _RestoCardsState extends State<RestoCards> {
   @override
   Widget build(BuildContext context) {
      if (_restaurants.isEmpty) {
-      return isLoading
+      return Container(
+              padding: EdgeInsets.symmetric(horizontal:12),
+              width: MediaQuery.of(context).size.width,
+              child: isLoading
           ? _buildSkeletonCards()
           : Container(
         height: MediaQuery.of(context).size.height / 2,
@@ -134,7 +137,7 @@ class _RestoCardsState extends State<RestoCards> {
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
-      ));
+      )));
     }
     return Container(
       padding: EdgeInsets.symmetric(horizontal:12),

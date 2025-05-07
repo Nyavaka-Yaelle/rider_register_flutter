@@ -86,7 +86,10 @@ class _FoodCardsState extends State<FoodCards> {
   @override
   Widget build(BuildContext context) {
      if (_randomItems.isEmpty) {
-      return isLoading
+      return Container(
+              // padding: EdgeInsets.symmetric(horizontal:12),
+              width: MediaQuery.of(context).size.width,
+              child:isLoading
           ? _buildSkeletonCards()
           : Container(
         height: MediaQuery.of(context).size.height / 2,
@@ -100,7 +103,7 @@ class _FoodCardsState extends State<FoodCards> {
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
-      ));
+      )));
     }
     return Container(
       padding: EdgeInsets.symmetric(horizontal:12),
@@ -114,6 +117,7 @@ class _FoodCardsState extends State<FoodCards> {
                 runSpacing: 16.0, // Espace vertical entre les lignes d'éléments
                 children: _randomItems.map((item) {
                   return FoodCard(
+                    foodeeItem: item,
                     nomPlat: item.name,
                     nomResto: item.restaurantName ?? "Restaurant",
                     // nomResto: item.description, // Assuming you have restaurantName in FoodeeItem
@@ -142,6 +146,7 @@ class _FoodCardsState extends State<FoodCards> {
                               descriptionResto: value.name,
                               imagePlat: item.image,
                               imageResto: value.profilePicture,
+                              prix: item.price,
                             ),
                             transitionsBuilder: (context, animation, secondaryAnimation, child) {
                               return FadeTransition(
@@ -160,7 +165,7 @@ class _FoodCardsState extends State<FoodCards> {
     );
   }
 
-  Widget _buildSkeletonCards() {
+  /*Widget _buildSkeletonCards() {
     return Wrap(
       spacing: 6.0,
       runSpacing: 16.0,
@@ -209,4 +214,117 @@ class _FoodCardsState extends State<FoodCards> {
       }),
     );
   }
+*/
+  Widget _buildSkeletonCards() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisExtent: 189,
+          crossAxisCount: 2,
+          mainAxisSpacing: 18,
+          crossAxisSpacing: 18,
+        ),
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: 4, // Number of skeleton items to show
+        itemBuilder: (context, index) {
+          return SkeletonItem(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: SkeletonAvatar(
+                    style: SkeletonAvatarStyle(
+                      width: double.infinity,
+                      height: 100.0,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                // Nom du plat
+                SkeletonLine(
+                  style: SkeletonLineStyle(
+                    height: 16,
+                    width: 100,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                const SizedBox(height: 4.0),
+                // Nom du restaurant + étoiles
+                Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: SkeletonAvatar(
+                        style: SkeletonAvatarStyle(
+                          width: 20.0,
+                          height: 20.0,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: SkeletonLine(
+                        style: SkeletonLineStyle(
+                          height: 14,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        SkeletonAvatar(
+                          style: SkeletonAvatarStyle(
+                            width: 20.0,
+                            height: 20.0,
+                          ),
+                        ),
+                        SizedBox(width: 1.0),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: SkeletonLine(
+                            style: SkeletonLineStyle(
+                              height: 12,
+                              width: 20,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                // Prix + Bouton Commander
+                Row(
+                  children: [
+                    Expanded(
+                      child: SkeletonLine(
+                        style: SkeletonLineStyle(
+                          height: 16,
+                          width: 50,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    SkeletonAvatar(
+                      style: SkeletonAvatarStyle(
+                        width: 26.0,
+                        height: 26.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
 }

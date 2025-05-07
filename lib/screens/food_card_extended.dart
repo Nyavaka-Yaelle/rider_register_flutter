@@ -15,6 +15,8 @@ class FoodCardExtended extends StatelessWidget {
   final String descriptionResto;
   final String descriptionPlat;
   final FoodeeItem foodeeItem;
+  final double prix;
+
   const FoodCardExtended({
     Key? key,
     required this.nomPlat,
@@ -24,6 +26,7 @@ class FoodCardExtended extends StatelessWidget {
     required this.foodeeItem,
     this.imagePlat = 'assets/images/menu_card.png',
     this.imageResto = 'assets/images/pakopako_image.png',
+    required this.prix,
   }) : super(key: key);
 
   @override
@@ -84,7 +87,7 @@ class FoodCardExtended extends StatelessWidget {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Colors.white.withOpacity(0.95),
                           borderRadius: BorderRadius.circular(100), // Rond
                           boxShadow: [
                             BoxShadow(
@@ -219,6 +222,34 @@ class FoodCardExtended extends StatelessWidget {
                       overflow: TextOverflow.ellipsis, // Eviter le débordement du texte
                       maxLines: 3, // Limiter à 3 lignes si nécessaire
                     ),
+                    Row(
+                      children: [
+                        Text(
+                          'Prix ',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
+                            color: MaterialTheme.lightScheme().onSurface,
+                            decoration: TextDecoration.none,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "${prix.toInt().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (match) => "${match[1]} ")} Ar",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
+                            color: MaterialTheme.lightScheme().onSurfaceVariant,
+                            letterSpacing: 0.5,
+                            height: 1.33, 
+                            decoration: TextDecoration.none,
+                          ),
+                          overflow: TextOverflow.ellipsis, // Eviter le débordement du texte
+                          maxLines: 3, // Limiter à 3 lignes si nécessaire
+                    ) ] ),
                   ],
                 ),
               ),
@@ -231,35 +262,35 @@ class FoodCardExtended extends StatelessWidget {
           left: 0,
           right: 0,
           child: Container(
-            height: 160,
-            decoration: BoxDecoration(
-              color: MaterialTheme.lightScheme().surfaceContainerLow,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Color.fromARGB(36, 0, 0, 0),
-                  blurRadius: 4,
-                  offset: Offset(0, -1),
-                ),
-              ],
-            ),
+            height: 132,
+            // decoration: BoxDecoration(
+            //   color: MaterialTheme.lightScheme().surfaceContainerLow,
+            //   borderRadius: BorderRadius.only(
+            //     topLeft: Radius.circular(12),
+            //     topRight: Radius.circular(12),
+            //   ),
+            //   boxShadow: [
+            //     BoxShadow(
+            //       color: Color.fromARGB(36, 0, 0, 0),
+            //       blurRadius: 4,
+            //       offset: Offset(0, -1),
+            //     ),
+            //   ],
+            // ),
             child: Column(
               children: [
                 // Drag Handle en haut
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Container(
-                    width: 32,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: MaterialTheme.lightScheme().outlineVariant,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 8.0),
+                //   child: Container(
+                //     width: 32,
+                //     height: 4,
+                //     decoration: BoxDecoration(
+                //       color: MaterialTheme.lightScheme().outlineVariant,
+                //       borderRadius: BorderRadius.circular(3),
+                //     ),
+                //   ),
+                // ),
                 Spacer(),
                 // Bouton personnalisé en bas
                 Expanded(

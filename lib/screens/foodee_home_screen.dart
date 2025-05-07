@@ -24,8 +24,8 @@ class FoodeeHomeScreen extends StatefulWidget {
 
 class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
   final ScrollController _scrollController = ScrollController();
-  Color appBarColor = scheme.surface; // Updated
-  Color bodyColor = scheme.background; // Updated
+  Color appBarColor = scheme.surfaceContainerLowest; // Updated
+  Color bodyColor = scheme.surfaceContainerLowest; // Updated
   int _selectedIndex = 0;
   bool noItems = false;
   String searchQuery = ''; // Add search query state
@@ -43,9 +43,9 @@ class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
 
   void _onScroll() {
     setState(() {
-      appBarColor = _scrollController.offset > 50
-          ? scheme.surface // Change to desired color when scrolled
-          : scheme.surface; // Default AppBar color
+      // appBarColor = _scrollController.offset > 50
+      //     ? scheme.surface // Change to desired color when scrolled
+      //     : scheme.surface; // Default AppBar color
     });
   }
 

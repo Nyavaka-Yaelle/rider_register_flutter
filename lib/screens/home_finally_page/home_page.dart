@@ -282,6 +282,7 @@ class _HomePageState extends State<HomePage> {
         final item = _randomItems[index];
 
         return FoodCard(
+          foodeeItem: item,
           nomPlat: item.name,
           nomResto: item.restaurantName ?? "Restaurant",
           // nomResto: item.description,
@@ -310,6 +311,7 @@ class _HomePageState extends State<HomePage> {
           final item = _randomItems[index];
 
           return FoodCard(
+            foodeeItem: item,
             nomPlat: item.name,
             nomResto: item
                 .description, // Assuming you have restaurantName in FoodeeItem
@@ -555,6 +557,7 @@ class _HomePageState extends State<HomePage> {
               descriptionResto: value.name,
               imagePlat: item.image,
               imageResto: value.profilePicture,
+              prix: item.price,
             ),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
