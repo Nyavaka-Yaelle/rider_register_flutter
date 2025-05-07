@@ -7,6 +7,10 @@ import 'package:rider_register/utility/printanah.dart';
 import 'package:rider_register/widgets/profile/circ_img_cam.dart';
 
 class ProfileHomeScreen extends StatelessWidget {
+   final VoidCallback onPressed; // Ajout du paramètre onPressed
+
+  const ProfileHomeScreen({Key? key, required this.onPressed}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     DeliveryData deliveryData =
@@ -14,12 +18,16 @@ class ProfileHomeScreen extends StatelessWidget {
     deliveryData.setUserFire(deliveryData.userFire);
     printredinios(deliveryData.userFire?.profilePicture ?? "null");
     return Scaffold(
-      backgroundColor: scheme.surface,
+      backgroundColor: scheme.surfaceContainerLowest,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         foregroundColor: scheme.shadow,
-        title: Text(' Profile'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: 24.0, color: scheme.onSurfaceVariant,), // Flèche "Retour"
+          onPressed: onPressed
+        ),
+        title: Text(' Profil'),
         centerTitle: true,
       ),
       body: deliveryData.userFire == null

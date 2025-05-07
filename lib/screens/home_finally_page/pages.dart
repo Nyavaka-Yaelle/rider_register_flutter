@@ -8,17 +8,22 @@ List<Widget> pages(
   int currentIndex,
   Function(bool) setIsShowBotNavBar,
   Function(int) changeTabIndex, // Added parameter
+  int lastTabIndex, // Added parameter
 ) =>
     <Widget>[
       HomePage(),
       MyDeliveryScreen(
         setIsShowBotNavBar: setIsShowBotNavBar,
         changeTabIndex: changeTabIndex, // Pass to MyProfileScreen
+        lastTabIndex: lastTabIndex, // Pass to MyProfileScreen
       ),
       NotifsScreen(    setIsShowBotNavBar: setIsShowBotNavBar,
-        changeTabIndex: changeTabIndex,),
+        changeTabIndex: changeTabIndex,
+        lastTabIndex: lastTabIndex
+        ),
       MyProfileScreen(
         setIsShowBotNavBar: setIsShowBotNavBar,
-        changeTabIndex: changeTabIndex, // Pass to MyProfileScreen
+        changeTabIndex: changeTabIndex,
+        lastTabIndex: lastTabIndex, // Pass to MyProfileScreen
       ),
     ];

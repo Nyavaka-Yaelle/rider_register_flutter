@@ -16,10 +16,12 @@ class MyDeliveryScreen extends StatefulWidget {
     Key? key,
     required this.setIsShowBotNavBar,
     required this.changeTabIndex,
+    required this.lastTabIndex,
   }) : super(key: key);
 
   final Function(bool) setIsShowBotNavBar;
   final Function(int) changeTabIndex;
+  final int lastTabIndex; // Ajout du paramètre pour le dernier onglet
 
   @override
   _MyDeliveryScreenState createState() => _MyDeliveryScreenState();
@@ -44,18 +46,45 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
       child: DefaultTabController(
         length: 3, // Number of tabs
         child: Scaffold(
-          appBar: AppBar(
+          appBar: PreferredSize(preferredSize: Size.fromHeight(132), // Ajustez la hauteur de l'AppBar
+            child:AppBar(
             backgroundColor: scheme.surface,
             foregroundColor: scheme.shadow,
+            elevation: 0,
+              flexibleSpace: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back), // Icône de flèche gauche
+                  onPressed: () {
+                    widget.changeTabIndex(widget.lastTabIndex); // Change l'onglet actif (par exemple, 0 pour "Accueil")
+                    // Navigator.pop(context); // Action pour revenir en arrière
+                  },
+                ),
+                // SizedBox(height: 4), // Espacement entre le titre et le sous-titre
+                Container(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Text(
+                  'Mes livraisons', // Sous-titre ou description
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    color: scheme.onSurface,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w400,
+                    height: 1.33,
+                    decoration: TextDecoration.none,
+                  ),
+                )),
+              ],
+            ),
             bottom: TabBar(
               tabs: [
-                Tab(text: 'En Attente'), // Replace with your tab names
-                Tab(text: 'En Cours'), // Replace with your tab names
+                Tab(text: 'En attente'), // Remplacez par vos noms d'onglets
+                Tab(text: 'En cours'),
                 Tab(text: 'Terminé'),
               ],
             ),
-            title: const Text('Mes livraisons'),
-          ),
+          )),
           backgroundColor: scheme.surfaceContainerLowest,
           body: TabBarView(
             children: [

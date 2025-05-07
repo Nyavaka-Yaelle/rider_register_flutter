@@ -23,6 +23,7 @@ class Accueille extends StatefulWidget {
 
 class _AccueilleState extends State<Accueille> {
   int _currentIndex = 0;
+  int _lastIndex = 0;
   bool isShowBotNavBar = true;
   AppareilUserRepository appareilUserRepository = AppareilUserRepository();
   String? currentid;
@@ -58,6 +59,7 @@ class _AccueilleState extends State<Accueille> {
     } else {
       // User is authenticated or screen doesn't require authentication
       setState(() {
+        _lastIndex = _currentIndex; // Stocke l'onglet actuel comme dernier onglet
         _currentIndex = index;
       });
     }
@@ -73,7 +75,7 @@ class _AccueilleState extends State<Accueille> {
   Widget build(BuildContext context) {
     // Retrieve the list of pages based on the current index and authentication status
     List<Widget> currentPages =
-        pages(_currentIndex, setIsShowBotNavBar, _onItemTapped);
+        pages(_currentIndex, setIsShowBotNavBar, _onItemTapped, _lastIndex);
     Widget currentPage = currentPages[_currentIndex];
 
     return Scaffold(

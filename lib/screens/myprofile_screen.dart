@@ -20,16 +20,23 @@ class MyProfileScreen extends StatefulWidget {
     Key? key,
     required this.setIsShowBotNavBar,
     required this.changeTabIndex,
+    required this.lastTabIndex,
+
   }) : super(key: key);
 
   final Function(bool) setIsShowBotNavBar;
   final Function(int) changeTabIndex;
+  final int lastTabIndex; // Ajout du paramètre pour le dernier onglet
+
 
   @override
   _MyProfileScreenState createState() => _MyProfileScreenState();
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
+  void onPressed(){
+    widget.changeTabIndex(widget.lastTabIndex); 
+  }
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -45,7 +52,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           WidgetBuilder builder;
 
           if (settings.name == MPR.MAIN) {
-            builder = (BuildContext context) => ProfileHomeScreen();
+            builder = (BuildContext context) => ProfileHomeScreen(onPressed: onPressed);
           } else if (settings.name == MPR.ACCOUNT) {
             widget.setIsShowBotNavBar(false);
             builder = (BuildContext context) =>

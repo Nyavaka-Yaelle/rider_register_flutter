@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rider_register/core/app_export.dart';
 import 'package:rider_register/main.dart';
@@ -41,23 +42,40 @@ class ProfileAccountScreen extends StatelessWidget {
           description: '..............',
           route: MPR.PWD),
     ];
+ final scaffoldKey =  GlobalKey<ScaffoldState>();
 
-    return Scaffold(
-      backgroundColor: scheme.surface,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        foregroundColor: scheme.shadow,
-        title: const Text('Compte'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            setIsShowBotNavBar(true);
-            Navigator.pop(context);
-          },
+     return 
+    //  AnnotatedRegion<SystemUiOverlayStyle>(
+    //   value: SystemUiOverlayStyle.dark.copyWith(
+    //       statusBarColor: scheme.surfaceContainerLowest,// Barre de statut transparente
+    //     statusBarIconBrightness: Brightness.dark, // Icônes sombres pour la barre de statut
+    //     systemNavigationBarColor: scheme.surfaceContainerLowest, // Couleur de la barre de navigation
+    //     systemNavigationBarIconBrightness: Brightness.dark, // Icônes sombres pour la barre de navigation
+    //   ),
+    //   child: 
+      Scaffold(
+         key: scaffoldKey,
+        backgroundColor: scheme.surfaceContainerLowest,
+        appBar: AppBar(
+          // shadowColor: Colors.transparent,
+
+          // scrolledUnderElevation: 0, // ← empêche l’elevation au scroll
+          automaticallyImplyLeading: false,
+
+          backgroundColor: scheme.surfaceContainerLowest,
+          foregroundColor: scheme.shadow,
+           elevation: 0, // Désactive l'ombre
+          title: const Text('Compte'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              
+              setIsShowBotNavBar(true);
+              Navigator.pop(context);
+            },
+          ),
         ),
-      ),
-      body: SafeArea(
+        body: SafeArea(
         child: WillPopScope(
             onWillPop: () async {
               Navigator.pop(context);
@@ -181,7 +199,7 @@ class ProfileAccountScreen extends StatelessWidget {
               ),
             )),
       ),
-    );
+    );//);
   }
 }
 

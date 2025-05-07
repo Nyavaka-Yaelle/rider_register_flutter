@@ -11,11 +11,13 @@ import '../models/notif.dart';
 class NotifsScreen extends StatefulWidget {
   final Function(bool) setIsShowBotNavBar;
   final Function(int) changeTabIndex;
+  final int lastTabIndex; // Ajout du paramètre pour le dernier onglet
 
   const NotifsScreen({
     Key? key,
     required this.setIsShowBotNavBar,
     required this.changeTabIndex,
+    required this.lastTabIndex,
   }) : super(key: key);
 
   @override
@@ -61,6 +63,38 @@ class _NotifsScreenState extends State<NotifsScreen> {
         return false; // Prevent default back navigation
       },
       child: Scaffold(
+        appBar: PreferredSize(preferredSize: Size.fromHeight(116), // Ajustez la hauteur de l'AppBar
+          child: AppBar(
+          backgroundColor: scheme.surface,
+          foregroundColor: scheme.shadow,
+          elevation: 0,
+            flexibleSpace: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back), // Icône de flèche gauche
+                onPressed: () {
+                  widget.changeTabIndex(widget.lastTabIndex); // Change l'onglet actif (par exemple, 0 pour "Accueil")
+                  // Navigator.pop(context); // Action pour revenir en arrière
+                },
+              ),
+              // SizedBox(height: 4), // Espacement entre le titre et le sous-titre
+              Container(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Text(
+                'Notification', // Sous-titre ou description
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  color: scheme.onSurface,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                  height: 1.33,
+                  decoration: TextDecoration.none,
+                ),
+              )),
+            ],
+          ),
+        )),
         backgroundColor: scheme.surfaceContainerLowest,
         body: SafeArea(
 
@@ -78,7 +112,7 @@ class _NotifsScreenState extends State<NotifsScreen> {
                       ) // Show a loading indicator while fetching data
                     : notifs.length == 0
                         ? Container(
-                          height: MediaQuery.of(context).size.height*0.8,
+                          height: MediaQuery.of(context).size.height*0.5,
                           child:
                           Center(child: Text("Aucune notification"))
                           )
