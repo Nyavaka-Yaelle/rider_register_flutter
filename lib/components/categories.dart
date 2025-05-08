@@ -5,8 +5,12 @@ import '../theme.dart'; // Importez le fichier TabItem si nécessaire
 
 class Categories extends StatefulWidget {
   final Function(String) onCategorySelected; // Callback function
-
-  const Categories({required this.onCategorySelected});
+  final bool isTitle;
+  const Categories({
+    Key? key,
+    required this.onCategorySelected,
+    this.isTitle = true,
+  }):super(key:key);
 
   @override
   _CategoriesState createState() => _CategoriesState();
@@ -30,9 +34,9 @@ class _CategoriesState extends State<Categories> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.all((widget.isTitle)?12:0),
       child: Column(children: [
-        Row(
+        if(widget.isTitle) Row(
           children: [
             Text(
               'Catégories',

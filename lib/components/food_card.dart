@@ -6,6 +6,9 @@ import 'package:rider_register/models/menu_item.dart';
 import 'package:rider_register/screens/restaurant_screen.dart';
 import 'package:skeletons/skeletons.dart';
 import '../theme.dart';
+import 'package:rider_register/repository/restaurant_repository.dart';
+import 'package:provider/provider.dart';
+import 'package:rider_register/main.dart';
 
 class FoodCard extends StatelessWidget {
   final String nomPlat;
@@ -88,6 +91,11 @@ class FoodCard extends StatelessWidget {
                   child: 
                   GestureDetector(
                     onTap: () {
+
+                       getRestaurantByReference(foodeeItem.restaurantId).then(
+                    (value) {
+                      print(value!.name);
+                      context.read<DeliveryData>().setOrderingRestaurant(value!);
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -101,7 +109,9 @@ class FoodCard extends StatelessWidget {
                           },
                         ),
                       );
-                    },
+                    }
+                  );
+                  },
                   child: Row(
                     children: [
                       ClipRRect(

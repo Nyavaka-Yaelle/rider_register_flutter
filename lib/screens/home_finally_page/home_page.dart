@@ -286,6 +286,7 @@ class _HomePageState extends State<HomePage> {
           nomPlat: item.name,
           nomResto: item.restaurantName ?? "Restaurant",
           // nomResto: item.description,
+          imageResto: item.imageResto ?? "assets/images/foodee_service.png",
           prix: item.price,
           imagePlat: item.image,
           star: 4.5,

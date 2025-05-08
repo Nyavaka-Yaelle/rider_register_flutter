@@ -9,6 +9,7 @@ class FoodeeItem {
   double price;
   DocumentReference restaurantId;
   String? restaurantName;
+  String? imageResto;
   int stock;
 
   FoodeeItem({
@@ -20,6 +21,7 @@ class FoodeeItem {
     required this.price,
     required this.restaurantId,
      this.restaurantName,
+     this.imageResto,
     required this.stock,
   });
 
@@ -40,11 +42,13 @@ class FoodeeItem {
       Map<String, dynamic> map) async {
     final restaurantRef = map['restaurant_id'] as DocumentReference;
     String? restaurantName;
+    String? imageResto;
 
     try {
       final restaurantSnapshot = await restaurantRef.get();
       if (restaurantSnapshot.exists) {
         restaurantName = restaurantSnapshot['name'];
+        imageResto = restaurantSnapshot['profile_picture'];
       }
     } catch (e) {
       print("Erreur lors de la récupération du restaurant : $e");
@@ -59,6 +63,7 @@ class FoodeeItem {
       price: map['price'],
       restaurantId: restaurantRef,
       restaurantName: restaurantName, // Assigner le nom récupéré
+      imageResto: imageResto, // Assigner le nom récupéré
       stock: map['stock'],
     );
   }
