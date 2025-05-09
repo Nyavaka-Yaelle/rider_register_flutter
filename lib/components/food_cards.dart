@@ -121,7 +121,7 @@ class _FoodCardsState extends State<FoodCards> {
                     nomPlat: item.name,
                     nomResto: item.restaurantName ?? "Restaurant",
                     // nomResto: item.description, // Assuming you have restaurantName in FoodeeItem
-                    imageResto: item.imageResto ?? "assets/images/foodee_service.png",
+                    imageResto: item.imageResto,
                     
                     prix: item.price,
                     imagePlat: item.image,

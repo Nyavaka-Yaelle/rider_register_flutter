@@ -14,7 +14,7 @@ class FoodCard extends StatelessWidget {
   final String nomPlat;
   final String nomResto;
   final String imagePlat;
-  final String imageResto;
+  final String? imageResto;
   final double? star;
   final double prix;
   final VoidCallback? onPressed;
@@ -24,7 +24,7 @@ class FoodCard extends StatelessWidget {
     required this.nomPlat,
     required this.nomResto,
     this.imagePlat = 'assets/images/menu_image.png',
-    this.imageResto = 'assets/images/pakopako_image.png',
+    this.imageResto,// = 'assets/images/pakopako_image.png',
     this.star = 0,
     required this.prix,
     this.onPressed,
@@ -116,12 +116,27 @@ class FoodCard extends StatelessWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(100.0),
-                        child: Image.asset(
-                          imageResto,
+                        child: imageResto!=null?
+                         CachedNetworkImage(
+                            imageUrl: imageResto!,
+                            height: 20,
+                            width: 20,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => SkeletonAvatar(
+                              style: SkeletonAvatarStyle(
+                                width: 20,
+                                height: 20.0,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Icon(Icons.error),
+                          ):
+                          Image.asset(
+                          "assets/images/foodee_service.png",
                           height: 20.0,
                           width: 20.0,
                           fit: BoxFit.cover,
-                        ),
+                        )
+                        ,
                       ),
                       SizedBox(width: 8),
                       Expanded(
