@@ -5,12 +5,15 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:rider_register/components/custom_button.dart';
+import 'package:rider_register/components/resto_on_your_card.dart';
 import 'package:rider_register/main.dart';
 import 'package:rider_register/models/cart_foodee_item.dart';
 import 'package:rider_register/models/menu_item.dart';
 import 'package:rider_register/models/restaurant.dart';
 import 'package:rider_register/screens/foodee_order_status.dart';
 import 'package:rider_register/screens/placedepart_foodee_screen.dart';
+import 'package:rider_register/theme/theme_helper.dart';
 import 'package:rider_register/widgets/sized_box_height.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -37,6 +40,7 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
   void _simulateBackButton() {
     Navigator.pop(context);
   }
+
   void addToCartFoodeeItem(FoodeeItem foodeeItem) {
     bool isInCartFoodeeItems = true;
     for (int i = 0;
@@ -76,13 +80,37 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
       context.read<DeliveryData>().setCartFoodieTotalLocal(value);
     }
   }
-
+ void removeAllToCartFoodeeItem(FoodeeItem foodeeItem) {
+    for (int i = 0;
+        i < context.read<DeliveryData>().cartFoodeeItems.length;
+        i++) {
+        if (context.read<DeliveryData>().cartFoodeeItems[i].size >= 1) {
+          setState(() {
+            context.read<DeliveryData>().cartFoodeeItems.removeAt(i);
+          });
+          double value = context.read<DeliveryData>().cartFoodieTotalLocal;
+          value = double.parse((value -= foodeeItem.price).toStringAsFixed(2));
+          context.read<DeliveryData>().setCartFoodieTotalLocal(value);
+        } 
+          double value = context.read<DeliveryData>().cartFoodieTotalLocal;
+          value = double.parse((value -= foodeeItem.price).toStringAsFixed(2));
+          context.read<DeliveryData>().setCartFoodieTotalLocal(value);
+        
+      
+    }
+    if (context.read<DeliveryData>().cartFoodeeItems.isEmpty) {
+      Navigator.pop(context, () {
+        setState(() {});
+      });
+    }
+  }
   void removeToCartFoodeeItem(FoodeeItem foodeeItem) {
     for (int i = 0;
         i < context.read<DeliveryData>().cartFoodeeItems.length;
         i++) {
       if (context.read<DeliveryData>().cartFoodeeItems[i].foodeeItem.id ==
           foodeeItem.id) {
+           
         if (context.read<DeliveryData>().cartFoodeeItems[i].size == 1) {
           setState(() {
             context.read<DeliveryData>().cartFoodeeItems.removeAt(i);
@@ -303,12 +331,31 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: scheme.surfaceContainerLowest,
       appBar: AppBar(
+        centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+            size: 24.0,
+            color: scheme.onSurfaceVariant,
+          ), // Flèche "Retour"
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           },
+        ),
+        // backgroundColor: appBarColor,
+        backgroundColor: scheme.surfaceContainerLowest,
+
+        elevation: 0,
+        title: Text(
+          'Votre panier',
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 22.0,
+            color: scheme.onSurface,
+          ),
         ),
       ),
       body: SafeArea(
@@ -319,30 +366,35 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    const SizedBoxHeight(height: "sm"),
+                    // const SizedBoxHeight(height: "sm"),
                     WidgetHeader(widget: widget),
-                    const SizedBoxHeight(height: "sm"),
+                    // const SizedBoxHeight(height: "sm"),
                     const WidgetDivider(),
-                    const SizedBoxHeight(height: "sm"),
-                    WidgetChooseRider(
-                      showOrderTypeModalBottomSheet:
-                          showOrderTypeModalBottomSheet,
-                      orderTypeChoose: _orderTypeChoose,
-                    ),
-                    const SizedBoxHeight(height: "sm"),
-                    const WidgetDivider(),
-                    const SizedBoxHeight(height: "sm"),
+                    const SizedBox(height: 8),
                     WidgetChooseDestination(),
-                    const SizedBoxHeight(height: "sm"),
-                    WidgetNoteDestination(),
+                    const SizedBox(height: 8),
+                    const WidgetDivider(),
+                    const SizedBox(height: 8),
+                    //changer de service
+                    // WidgetChooseRider(
+                    //   showOrderTypeModalBottomSheet:
+                    //       showOrderTypeModalBottomSheet,
+                    //   orderTypeChoose: _orderTypeChoose,
+                    // ),
+                    // const SizedBox(height:8),
+                    // const WidgetDivider(),
+                    // WidgetNoteDestination(),
                     const SizedBoxHeight(height: "sm"),
                     WidgetFoodItem(
                       addToCartFoodeeItem: addToCartFoodeeItem,
                       noteToCartFoodeeItem: noteToCartFoodeeItem,
                       removeToCartFoodeeItem: removeToCartFoodeeItem,
+                      removeAllToCartFoodeeItem: removeAllToCartFoodeeItem,
                     ),
                     const SizedBoxHeight(height: "sm"),
                     // DESCRIPTION
+                    //Résumé de paiement
+                    /*
                     Container(
                       width: MediaQuery.of(context).size.width * 0.9,
                       decoration: BoxDecoration(
@@ -412,7 +464,7 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
                           ),
                         ]),
                       ),
-                    ),
+                    ),*/
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.15,
                     ),
@@ -555,7 +607,115 @@ class _WidgetEMoneyState extends State<WidgetEMoney> {
     String? restaurantId;
     Timestamp? dateenregistrement;
     UserRepository userRepository = new UserRepository();
-    return Card(
+    return
+        //fab taloha
+        Positioned(
+            bottom: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: 88,
+              // padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                // color: Colors.white,
+                borderRadius: BorderRadius.circular(12.0),
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: Colors.grey.withOpacity(0.1),
+                //     blurRadius: 8.0,
+                //     spreadRadius: 2.0,
+                //   ),
+                // ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Total
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'TOTAL',
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        "${context.read<DeliveryData>().cartFoodieTotalLocal.toInt().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (match) => "${match[1]} ")} Ar",
+                        // '${value.toStringAsFixed(0)} Ar', // Affichage du montant avec 'FCFA'
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  CustomButton(
+                    label: "Commander",
+                    color: scheme.primary,
+                    onPressed: () {
+                      try {
+                        items = [];
+                        quantites = [];
+                        prix = [];
+                        notesitems = [];
+
+                        for (int i = 0;
+                            i <
+                                context
+                                    .read<DeliveryData>()
+                                    .cartFoodeeItems
+                                    .length;
+                            i++) {
+                          print(context
+                              .read<DeliveryData>()
+                              .cartFoodeeItems[i]
+                              .foodeeItem
+                              .name);
+                          items!.add(context
+                              .read<DeliveryData>()
+                              .cartFoodeeItems[i]
+                              .foodeeItem
+                              .name);
+                          quantites!.add(context
+                              .read<DeliveryData>()
+                              .cartFoodeeItems[i]
+                              .size);
+                          prix!.add(context
+                              .read<DeliveryData>()
+                              .cartFoodeeItems[i]
+                              .foodeeItem
+                              .price);
+                          notesitems!.add(context
+                              .read<DeliveryData>()
+                              .cartFoodeeItems[i]
+                              .note);
+                          print(context
+                              .read<DeliveryData>()
+                              .cartFoodeeItems[i]
+                              .note);
+                        }
+                        iduser = userRepository.getCurrentUser()!.uid;
+                        restaurantId =
+                            context.read<DeliveryData>().orderingRestaurant!.id;
+                        dateenregistrement = Timestamp.now();
+                        idrider = "null";
+                        sendOrder(items, quantites, prix, iduser, idrider,
+                            restaurantId, dateenregistrement, notesitems);
+                      } catch (e, st) {
+                        print('Caught error: $e\n$st');
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ));
+    /*Card(
       shadowColor: Colors.teal,
       elevation: MediaQuery.of(context).size.width * 0.01,
       shape: RoundedRectangleBorder(
@@ -571,7 +731,7 @@ class _WidgetEMoneyState extends State<WidgetEMoney> {
       ),
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.98,
-        height: MediaQuery.of(context).size.height * 0.1,
+        height: 96,//MediaQuery.of(context).size.height * 0.1,
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width * 0.04,
@@ -586,8 +746,9 @@ class _WidgetEMoneyState extends State<WidgetEMoney> {
                   Row(
                     children: [
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.05,
-                        height: MediaQuery.of(context).size.width * 0.05,
+                        // width: MediaQuery.of(context).size.width * 0.05,
+                        width: 24,
+                        height: 24,
                         decoration: const BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(
@@ -667,7 +828,7 @@ class _WidgetEMoneyState extends State<WidgetEMoney> {
           ),
         ),
       ),
-    );
+    );*/
   }
 }
 
@@ -675,10 +836,12 @@ class WidgetFoodItem extends StatelessWidget {
   Function addToCartFoodeeItem;
   Function noteToCartFoodeeItem;
   Function removeToCartFoodeeItem;
+  Function removeAllToCartFoodeeItem;
   WidgetFoodItem({
     super.key,
     required this.addToCartFoodeeItem,
     required this.removeToCartFoodeeItem,
+    required this.removeAllToCartFoodeeItem,
     required this.noteToCartFoodeeItem,
   });
 
@@ -695,7 +858,154 @@ class WidgetFoodItem extends StatelessWidget {
         CartFoodeeItem cartFoodeeItem =
             context.read<DeliveryData>().cartFoodeeItems[index];
         FoodeeItem foodeeItem = cartFoodeeItem.foodeeItem;
-        return Row(
+        return
+
+//new design card des foods dans panoer
+            Container(
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+          padding: EdgeInsets.all(0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            crossAxisAlignment:
+                CrossAxisAlignment.start, // Aligner tout en haut
+            children: [
+              // Image du plat
+              Container(
+                width: 84,
+                height: 84,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                        foodeeItem.image), // Image du plat
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(width: 12),
+              // Informations du plat (Nom et prix)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Aligner le texte à gauche
+                  children: [
+                    Text(
+                      foodeeItem.name,
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "${foodeeItem.price.toInt().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (match) => "${match[1]} ")} Ar",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: scheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Icône Time (en haut à droite)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                      margin: EdgeInsets.only(left: 56),
+                       child: 
+                       GestureDetector(
+                          onTap: ()=>removeAllToCartFoodeeItem(foodeeItem), 
+                          child:Icon(
+                            Icons.close_outlined,
+                            color: scheme.onSurfaceVariant,
+                            size: 20,
+                      ))),
+                  SizedBox(height: 4),
+                  // Input type number pour ajuster la quantité
+                  Padding(
+                    padding: EdgeInsets.only(top: 24, right: 12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          height: 18,
+                          width: 20,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            // border: Border.all(color: MaterialTheme.lightScheme().primary),
+                            color: scheme.primary,
+                          ),
+                          child: Center(
+                            // Aligner l'icône au centre
+                            child: GestureDetector(
+                              onTap: ()=>removeToCartFoodeeItem(
+                                  foodeeItem), // Action lorsque l'utilisateur appuie
+                              child: Icon(
+                                Icons.remove,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Valeur actuelle
+
+                        Container(
+                            width: 32,
+                            child: Center(
+                              child: GestureDetector(
+                                //onTap: () => setNumberCartFoodeeItem(foodeeItem),
+                                child: Text("${cartFoodeeItem.size}",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Roboto',
+                                      color: scheme.onSurface,
+                                    )),
+                              ),
+                            )),
+
+                        // Bouton "+" avec un borderRadius et une bordure verte
+                        Container(
+                          height: 20,
+                          width: 20,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            // border: Border.all(color: scheme.primary),
+                            color: scheme.primary,
+                          ),
+                          child: Center(
+                            // Aligner l'icône au centre
+                            child: GestureDetector(
+                              onTap: () => addToCartFoodeeItem(
+                                  foodeeItem), // Action lorsque l'utilisateur appuie
+                              child: Icon(
+                                Icons.add,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        );
+
+        //card food eo am panier
+        /*
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Column(
@@ -779,7 +1089,7 @@ class WidgetFoodItem extends StatelessWidget {
               ],
             ),
           ],
-        );
+        );*/
       },
       separatorBuilder: (BuildContext context, int index) => Column(
         children: const [
@@ -834,6 +1144,8 @@ class WidgetChooseDestination extends StatefulWidget {
 }
 
 class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
+  bool show = false;
+
   Future<void> showOriginAddresses(String originAddresses) async {
     return showDialog<void>(
       context: context,
@@ -863,10 +1175,129 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    TextEditingController _noteController = TextEditingController();
+    if (context.read<DeliveryData>().noteRidee != null) {
+      _noteController.text = context.read<DeliveryData>().noteRidee!;
+    }
+    return Container(
       width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.height * 0.06,
-      child: Row(
+      // height: MediaQuery.of(context).size.height * 0.06,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Première ligne: icône de localisation, adresse et icône d'édition
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.location_on,
+                  size: 24,
+                  color: scheme.error,
+                ),
+                const SizedBox(width: 8.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Adresse de livraison",
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        fontFamily: 'Roboto',
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                    Text(
+                      context.watch<DeliveryData>().departAddressFoodee ??
+                          "Votre position",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: 'Roboto',
+                        height: 1.33,
+                        color: scheme.onSurface,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            GestureDetector(
+                onTap: () => {
+                      //Future delayed 500 ms and navigate push to the page
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PlacedepartFoodeeScreen(),
+                          ),
+                        );
+                      }),
+                    },
+                child: Icon(
+                  Icons.edit_location_alt_outlined,
+                  size: 20,
+                  color: scheme.onSurfaceVariant,
+                )),
+          ],
+        ),
+        const SizedBox(height: 8.0), // Espacement entre les lignes
+
+        // Deuxième ligne: icône de détail et texte au centre
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min, // Permet de ne pas étirer la ligne
+            children: [
+              Icon(Icons.description_outlined,
+                  color: scheme.secondary, size: 16),
+              const SizedBox(width: 4.0),
+              GestureDetector(
+                onTap: () => {
+                  setState(
+                    () => show = !show,
+                  )
+                },
+                child: Text(
+                  !show ? 'Un détail à l\'adresse ?' : 'Enregistrer ce détail',
+                  style: TextStyle(
+                    fontSize: 11.0,
+                    fontFamily: 'Roboto',
+                    color: scheme.secondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        show
+            ? Container(
+                margin: EdgeInsets.only(top: 20),
+                width: MediaQuery.of(context).size.width * 0.9,
+                // height: 72,
+                child: TextField(
+                  keyboardType: TextInputType.multiline,
+                  // maxLines: 10,
+                  controller: _noteController,
+                  onChanged: (value) {
+                    context.read<DeliveryData>().setNoteRidee(value);
+                  },
+                  decoration: InputDecoration(
+                    // border: UnderlineInputBorder(
+                    //   borderSide: BorderSide(
+                    //     color: scheme.secondary, // Couleur de la bordure
+                    //     width: 1.0, // Épaisseur de la bordure
+                    //   ),
+                    // ),
+                    border: OutlineInputBorder(),
+                    labelText: "Exemple: en face du supermarché!",
+                    // helperText: "Exemple: en face du supermarché!",
+                  ),
+                ),
+              )
+            : SizedBox.shrink()
+      ]),
+      /*
+      Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
@@ -915,7 +1346,7 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
             },
           ),
         ],
-      ),
+      ),*/
     );
   }
 }
@@ -986,10 +1417,22 @@ class WidgetHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.height * 0.06,
-      child: Row(
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 8, 16, 16),
+
+        // color: Colors.red,
+        width: MediaQuery.of(context).size.width * 0.9,
+        // height: MediaQuery.of(context).size.height * 0.06,
+        child: RestoOnYourCard(
+            nomResto: context.read<DeliveryData>().orderingRestaurant!.name,
+            imageResto:
+                context.read<DeliveryData>().orderingRestaurant!.profilePicture,
+            description: context
+                .read<DeliveryData>()
+                .orderingRestaurant!
+                .restaurantFoodType!
+                .name)
+        /*Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -1014,8 +1457,8 @@ class WidgetHeader extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
+      ),*/
+        );
   }
 }
 
@@ -1029,9 +1472,9 @@ class WidgetDivider extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.9,
       height: 0.2,
-      child: const Divider(
+      child: Divider(
         thickness: 0.2,
-        color: Colors.grey,
+        color: scheme.outline,
       ),
     );
   }
