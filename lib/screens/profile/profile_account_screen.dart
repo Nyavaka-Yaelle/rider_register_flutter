@@ -11,7 +11,7 @@ import 'package:rider_register/widgets/line.dart';
 import 'package:rider_register/widgets/profile/circ_img_cam.dart';
 
 class ProfileAccountScreen extends StatefulWidget {
-    const ProfileAccountScreen({
+  const ProfileAccountScreen({
     super.key,
     required this.setIsShowBotNavBar,
   });
@@ -21,6 +21,7 @@ class ProfileAccountScreen extends StatefulWidget {
   @override
   State<ProfileAccountScreen> createState() => _ProfileAccountScreenState();
 }
+
 class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
   @override
   void initState() {
@@ -30,9 +31,10 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
       deliveryData.setUserFire(deliveryData.userFire);
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    final deliveryData = Provider.of<DeliveryData>(context);
+    final deliveryData = Provider.of<DeliveryData>(context, listen: true);
     UserRepository userRepository = UserRepository();
 
     List<MenuItem> menuItems = [
@@ -54,167 +56,166 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
           description: '..............',
           route: MPR.PWD),
     ];
- final scaffoldKey =  GlobalKey<ScaffoldState>();
+    final scaffoldKey = GlobalKey<ScaffoldState>();
+    print("${deliveryData.userFire!.lastName!}");
+    print("${deliveryData.userFire!.firstName!}");
 
-     return 
-    //  AnnotatedRegion<SystemUiOverlayStyle>(
-    //   value: SystemUiOverlayStyle.dark.copyWith(
-    //       statusBarColor: scheme.surfaceContainerLowest,// Barre de statut transparente
-    //     statusBarIconBrightness: Brightness.dark, // Icônes sombres pour la barre de statut
-    //     systemNavigationBarColor: scheme.surfaceContainerLowest, // Couleur de la barre de navigation
-    //     systemNavigationBarIconBrightness: Brightness.dark, // Icônes sombres pour la barre de navigation
-    //   ),
-    //   child: 
-      Scaffold(
-         key: scaffoldKey,
+    return
+        //  AnnotatedRegion<SystemUiOverlayStyle>(
+        //   value: SystemUiOverlayStyle.dark.copyWith(
+        //       statusBarColor: scheme.surfaceContainerLowest,// Barre de statut transparente
+        //     statusBarIconBrightness: Brightness.dark, // Icônes sombres pour la barre de statut
+        //     systemNavigationBarColor: scheme.surfaceContainerLowest, // Couleur de la barre de navigation
+        //     systemNavigationBarIconBrightness: Brightness.dark, // Icônes sombres pour la barre de navigation
+        //   ),
+        //   child:
+        Scaffold(
+      key: scaffoldKey,
+      backgroundColor: scheme.surfaceContainerLowest,
+      appBar: AppBar(
+        // shadowColor: Colors.transparent,
+
+        // scrolledUnderElevation: 0, // ← empêche l’elevation au scroll
+        automaticallyImplyLeading: false,
+
         backgroundColor: scheme.surfaceContainerLowest,
-        appBar: AppBar(
-          // shadowColor: Colors.transparent,
-
-          // scrolledUnderElevation: 0, // ← empêche l’elevation au scroll
-          automaticallyImplyLeading: false,
-
-          backgroundColor: scheme.surfaceContainerLowest,
-          foregroundColor: scheme.shadow,
-           elevation: 0, // Désactive l'ombre
-          title: const Text('Compte'),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              
-              widget.setIsShowBotNavBar(true);
-              Navigator.pop(context);
-            },
-          ),
+        foregroundColor: scheme.shadow,
+        elevation: 0, // Désactive l'ombre
+        title: const Text('Compte'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            widget.setIsShowBotNavBar(true);
+            Navigator.pop(context);
+          },
         ),
-        body: SafeArea(
-           child: SingleChildScrollView(
-        child: WillPopScope(
-            onWillPop: () async {
-              Navigator.pop(context);
-              deliveryData.setMyProfileIsEditing(false);
-              return false;
-            },
-           
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircImgCam(
-                    url: deliveryData.userFire?.profilePicture,
-                    navigateTo: () => Navigator.pushNamed(context, '/picture'),
-                  ),
-                  SizedBox(height: 36.h),
-                  NameWidget(
-                    nom:  deliveryData.userFire!.lastName
-                     ?? deliveryData.userFire!.displayName!.trim().split(' ').last
-                    ,
-                    prenom: deliveryData.userFire!.firstName ??deliveryData.userFire!.displayName!.trim().substring(0, deliveryData.userFire!.displayName!.trim().lastIndexOf(' ')),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 24.v, right: 14.v),
-                    child: Column(
-                      children: menuItems
-                          .map((item) => ListTileBase(item: item))
-                          .toList(),
-                    ),
-                  ),
-                  SizedBox(height: 17.h),
-                  Line(width: 320.v),
-                  // SizedBox(height: 16.h),
-                  // Padding(
-                  //   padding: EdgeInsets.only(left: 24.v),
-                  //   child: SizedBox(
-                  //     width: double.infinity,
-                  //     child: Column(
-                  //       crossAxisAlignment: CrossAxisAlignment.start,
-                  //       children: [
-                  //         Text(
-                  //           'Adresses',
-                  //           textAlign: TextAlign.left,
-                  //           style: TextStyle(
-                  //             color: scheme.onTertiaryContainer,
-                  //             fontSize: 16.fSize,
-                  //             fontFamily: 'Roboto',
-                  //             fontWeight: FontWeight.w400,
-                  //           ),
-                  //         ),
-                  //         SizedBox(height: 2.h),
-                  //         Text(
-                  //           'Ajouter des adresses ou des lieux pour faciliter \nvos déplacements et vos livraisons.',
-                  //           style: TextStyle(
-                  //             color: Color(0xFF456179),
-                  //             fontSize: 12.fSize,
-                  //             fontFamily: 'Roboto',
-                  //             fontWeight: FontWeight.w400,
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(height: 16.h),
-                  // SizedBox(
-                  //   width: 200.v,
-                  //   height: 40.h,
-                  //   child: Expanded(
-                  //     child: OutlinedButton.icon(
-                  //       onPressed: () =>
-                  //           Navigator.pushNamed(context, MPR.ADDRESS),
-                  //       icon: Icon(
-                  //         Icons.bookmark,
-                  //         color: scheme.primary,
-                  //         size: 24.adaptSize,
-                  //       ),
-                  //       label: Text(
-                  //         'Ajouter des adresses',
-                  //         style: TextStyle(
-                  //           color: scheme.primary,
-                  //           fontSize: 14.fSize,
-                  //           fontFamily: 'Roboto',
-                  //           fontWeight: FontWeight.w500,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(height: 16.h),
-                  // Line(width: 320.v),
-                  SizedBox(height: 12.h),
-                  TextButton.icon(
-                    onPressed: () {
-                      deliveryData.setMyProfileIsFetching(true);
-                      userRepository.signOut().then((value) {
-                        Future.delayed(const Duration(milliseconds: 500), () {
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (context) => AccueilScreen(),
-                            ),
-                            (route) => false,
-                          );
-                        });
-                      });
-                      deliveryData.setMyProfileIsFetching(false);
-                      deliveryData.setMyProfileIsEditing(false);
-                    },
-                    icon: const Icon(Icons.logout_outlined),
-                    label: Text(
-                      'Déconnexion',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14.fSize,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.10.fSize,
-                      ),
-                    ),
-                    style: TextButton.styleFrom(foregroundColor: scheme.error),
-                  ),
-                  SizedBox(height: 30.h),
-                ],
-              ),
-            )),
       ),
-    );//);
+      body: SafeArea(
+        child: SingleChildScrollView(
+            child: WillPopScope(
+          onWillPop: () async {
+            Navigator.pop(context);
+            deliveryData.setMyProfileIsEditing(false);
+            return false;
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircImgCam(
+                url: deliveryData.userFire?.profilePicture,
+                navigateTo: () => Navigator.pushNamed(context, '/picture'),
+              ),
+              SizedBox(height: 36.h),
+              NameWidget(
+                nom: deliveryData.userFire!.lastName 
+                ?? deliveryData.userFire!.displayName!.trim().split(' ').last,
+                prenom: deliveryData.userFire!.firstName ?? deliveryData.userFire!.displayName!.trim().substring(  0,  deliveryData.userFire!.displayName!.trim().lastIndexOf(' ')),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 24.v, right: 14.v),
+                child: Column(
+                  children: menuItems
+                      .map((item) => ListTileBase(item: item))
+                      .toList(),
+                ),
+              ),
+              SizedBox(height: 17.h),
+              Line(width: 320.v),
+              // SizedBox(height: 16.h),
+              // Padding(
+              //   padding: EdgeInsets.only(left: 24.v),
+              //   child: SizedBox(
+              //     width: double.infinity,
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           'Adresses',
+              //           textAlign: TextAlign.left,
+              //           style: TextStyle(
+              //             color: scheme.onTertiaryContainer,
+              //             fontSize: 16.fSize,
+              //             fontFamily: 'Roboto',
+              //             fontWeight: FontWeight.w400,
+              //           ),
+              //         ),
+              //         SizedBox(height: 2.h),
+              //         Text(
+              //           'Ajouter des adresses ou des lieux pour faciliter \nvos déplacements et vos livraisons.',
+              //           style: TextStyle(
+              //             color: Color(0xFF456179),
+              //             fontSize: 12.fSize,
+              //             fontFamily: 'Roboto',
+              //             fontWeight: FontWeight.w400,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(height: 16.h),
+              // SizedBox(
+              //   width: 200.v,
+              //   height: 40.h,
+              //   child: Expanded(
+              //     child: OutlinedButton.icon(
+              //       onPressed: () =>
+              //           Navigator.pushNamed(context, MPR.ADDRESS),
+              //       icon: Icon(
+              //         Icons.bookmark,
+              //         color: scheme.primary,
+              //         size: 24.adaptSize,
+              //       ),
+              //       label: Text(
+              //         'Ajouter des adresses',
+              //         style: TextStyle(
+              //           color: scheme.primary,
+              //           fontSize: 14.fSize,
+              //           fontFamily: 'Roboto',
+              //           fontWeight: FontWeight.w500,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(height: 16.h),
+              // Line(width: 320.v),
+              SizedBox(height: 12.h),
+              TextButton.icon(
+                onPressed: () {
+                  deliveryData.setMyProfileIsFetching(true);
+                  userRepository.signOut().then((value) {
+                    Future.delayed(const Duration(milliseconds: 500), () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => AccueilScreen(),
+                        ),
+                        (route) => false,
+                      );
+                    });
+                  });
+                  deliveryData.setMyProfileIsFetching(false);
+                  deliveryData.setMyProfileIsEditing(false);
+                },
+                icon: const Icon(Icons.logout_outlined),
+                label: Text(
+                  'Déconnexion',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14.fSize,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.10.fSize,
+                  ),
+                ),
+                style: TextButton.styleFrom(foregroundColor: scheme.error),
+              ),
+              SizedBox(height: 30.h),
+            ],
+          ),
+        )),
+      ),
+    ); //);
   }
 }
 
@@ -328,7 +329,7 @@ class SubtitleRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       // double itemW = (constraints.maxWidth.v - 24.v - 14.v) / 2;
-      double itemW = MediaQuery.of(context).size.width *0.25;
+      double itemW = MediaQuery.of(context).size.width * 0.25;
       return Row(
         children: [
           SizedBox(
@@ -371,8 +372,8 @@ class TitleRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       // double itemW = (constraints.maxWidth.v - 24.v - 14.v) / 2;
-      double itemW = MediaQuery.of(context).size.width *0.25;
-      
+      double itemW = MediaQuery.of(context).size.width * 0.25;
+
       return Row(
         children: [
           SizedBox(

@@ -6,16 +6,28 @@ import 'package:rider_register/repository/user_repository.dart';
 import 'package:rider_register/utility/printanah.dart';
 import 'package:rider_register/widgets/profile/circ_img_cam.dart';
 
-class ProfileHomeScreen extends StatelessWidget {
-   final VoidCallback onPressed; // Ajout du paramètre onPressed
+class ProfileHomeScreen extends StatefulWidget {
+ final VoidCallback onPressed;
 
   const ProfileHomeScreen({Key? key, required this.onPressed}) : super(key: key);
 
   @override
+  State<ProfileHomeScreen> createState() => _ProfileHomeScreenState();
+}
+class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      final deliveryData = Provider.of<DeliveryData>(context, listen: false);
+      deliveryData.setUserFire(deliveryData.userFire);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    DeliveryData deliveryData =
-        Provider.of<DeliveryData>(context, listen: true);
-    deliveryData.setUserFire(deliveryData.userFire);
+    DeliveryData deliveryData = Provider.of<DeliveryData>(context, listen: true);
+  //  deliveryData.setUserFire(deliveryData.userFire);
     printredinios(deliveryData.userFire?.profilePicture ?? "null");
     return Scaffold(
       backgroundColor: scheme.surfaceContainerLowest,
@@ -25,7 +37,7 @@ class ProfileHomeScreen extends StatelessWidget {
         foregroundColor: scheme.shadow,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 24.0, color: scheme.onSurfaceVariant,), // Flèche "Retour"
-          onPressed: onPressed
+          onPressed: widget.onPressed
         ),
         title: Text(' Profil'),
         centerTitle: true,
