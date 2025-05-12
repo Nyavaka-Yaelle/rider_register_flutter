@@ -58,13 +58,16 @@ class UserRepository {
         return UserFire.User(
           displayName: documentSnapshot.get('display_name'),
           // firstName: documentSnapshot.get('first_name'),
-           firstName: data != null && data.containsKey('first_name')
-            ? data['first_name']
-            : "Shikanoko",
+           firstName:  data != null && data.containsKey('first_name')
+            ? data['first_name']:
+             documentSnapshot.get('display_name').trim().substring(0, documentSnapshot.get('display_name').trim().lastIndexOf(' ')) ,
+            //  :'Shikanoko',
+            // :'huu',//"Shikanoko",
           // lastName: documentSnapshot.get('last_name'),
              lastName: data != null && data.containsKey('last_name')
-            ? data['last_name']
-            : "Nokonoko",
+            ? data['last_name']:
+             documentSnapshot.get('display_name').trim().split(' ').last ,//:"Nokonoko",
+            // : ,//"Nokonoko",
           phoneNumber: documentSnapshot.get('phone_number'),
           isRider: documentSnapshot.get('isrider'),
           email: documentSnapshot.get('email'),

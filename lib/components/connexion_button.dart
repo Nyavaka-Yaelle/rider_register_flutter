@@ -18,11 +18,12 @@ class ConnexionButton extends StatelessWidget {
     return Container(
       // color: MaterialTheme.lightScheme().surfaceContainerLow,
       width: MediaQuery.of(context).size.width, // Largeur du container
-      height: 235,
+      // height: MediaQuery.of(context).size.height*0.5, // Largeur du container
+      // height: 300,
       clipBehavior: Clip.none,
       decoration: BoxDecoration(
-        color: MaterialTheme.lightScheme().surfaceContainerLow,
-        borderRadius: const BorderRadius.only(
+        color: MaterialTheme.lightScheme().surfaceContainerLowest,
+      /*  borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20), // Rayon en haut à gauche
           topRight: Radius.circular(20),  // Pas de rayon en haut à droite
           bottomLeft: Radius.circular(0), // Rayon en bas à gauche
@@ -34,12 +35,13 @@ class ConnexionButton extends StatelessWidget {
             blurRadius: 2, // Rayon de flou
             offset: Offset(0, 0), // Décalage horizontal et vertical
           ),
-        ],
+        ],*/
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: [
             // Texte "Vous n'êtes pas encore connecté"
             Align(

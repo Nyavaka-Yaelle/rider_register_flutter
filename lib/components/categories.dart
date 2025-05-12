@@ -52,11 +52,14 @@ class _CategoriesState extends State<Categories> {
             Spacer(),
           ],
         ),
-        Padding(
+        Container(
           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 0),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal, // Permet le défilement horizontal
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min, 
               children: [
                 CustomItem(
                   label: "Tout",
@@ -65,7 +68,7 @@ class _CategoriesState extends State<Categories> {
                   icon: Icons.all_inclusive_outlined,
                   activeIcon: Icons.all_inclusive_rounded,
                 ),
-                CustomItem(
+                /*CustomItem(
                   label: "Pizza",
                   onPressed: () => _onTabSelected(1, "Pizza"),
                   active: isActive(1),
@@ -85,7 +88,7 @@ class _CategoriesState extends State<Categories> {
                   active: isActive(3),
                   icon: Icons.icecream_outlined,
                   activeIcon: Icons.icecream_rounded,
-                ),
+                ),*/
               ],
             ),
           ),

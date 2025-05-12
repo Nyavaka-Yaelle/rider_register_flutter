@@ -466,16 +466,21 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               slivers: <Widget>[
                 SliverToBoxAdapter(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       WidgetBanner(),
                       Divider(),
                       // WidgetHeader(),
                       // if (!context.read<DeliveryData>().isFetching)
                       //   WidgetDescription(),
-                      Categories(
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Categories(
                           isTitle: false,
                           onCategorySelected:
-                              getFilteredFoodeeItems), // Pass the callback
+                              getFilteredFoodeeItems
+                        ), // Pass the callback
+                      ),
 
                       const SizedBox(height: 8),
                     ],

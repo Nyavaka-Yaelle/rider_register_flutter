@@ -612,11 +612,8 @@ class _WidgetEMoneyState extends State<WidgetEMoney> {
         Positioned(
             bottom: 0,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: 88,
-              // padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                // color: Colors.white,
+               width: MediaQuery.of(context).size.width ,decoration: BoxDecoration(
+                color: scheme.surfaceContainerLowest,
                 borderRadius: BorderRadius.circular(12.0),
                 // boxShadow: [
                 //   BoxShadow(
@@ -626,6 +623,12 @@ class _WidgetEMoneyState extends State<WidgetEMoney> {
                 //   ),
                 // ],
               ),
+              padding: const EdgeInsets.fromLTRB(16.0,16.0,16,0),
+              child: Container(
+
+              width: MediaQuery.of(context).size.width*0.9 ,
+              height:96,
+              
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -714,7 +717,7 @@ class _WidgetEMoneyState extends State<WidgetEMoney> {
                   ),
                 ],
               ),
-            ));
+            )));
     /*Card(
       shadowColor: Colors.teal,
       elevation: MediaQuery.of(context).size.width * 0.01,
@@ -1244,11 +1247,17 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
 
         // Deuxième ligne: icône de détail et texte au centre
         Center(
-          child: Row(
+          // width: MediaQuery.of(context).size.width * 0.5+192+28,
+          // height: 24,
+          // child: Expanded(
+                child:
+                Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min, // Permet de ne pas étirer la ligne
             children: [
               Icon(Icons.description_outlined,
-                  color: scheme.secondary, size: 16),
+                  color: _noteController.text.trim().isNotEmpty ? scheme.primary : scheme.secondary, size: 16),
               const SizedBox(width: 4.0),
               GestureDetector(
                 onTap: () => {
@@ -1257,17 +1266,20 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
                   )
                 },
                 child: Text(
-                  !show ? 'Un détail à l\'adresse ?' : 'Enregistrer ce détail',
+                  !show ? _noteController.text.trim().isNotEmpty ? _noteController.text.trim().substring(0,_noteController.text.trim().length>=30?30:_noteController.text.trim().length)+(_noteController.text.trim().length>30?'...':''):'Un détail à l\'adresse ?' : 'Enregistrer ce détail',
+                  // textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 11.0,
                     fontFamily: 'Roboto',
-                    color: scheme.secondary,
+                    color: _noteController.text.trim().isNotEmpty ? scheme.primary : scheme.secondary,
                     fontWeight: FontWeight.w600,
                   ),
+                  // maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               )
             ],
-          ),
+          )//),
         ),
         show
             ? Container(

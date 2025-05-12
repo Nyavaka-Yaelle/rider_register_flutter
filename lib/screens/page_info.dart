@@ -62,9 +62,9 @@ class _PageInfoState extends State<PageInfo> {
         backgroundColor: appBarColor,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+      body: SafeArea(
+        // controller: _scrollController,
+        // padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -72,16 +72,24 @@ class _PageInfoState extends State<PageInfo> {
                     if(widget.idService==1) CareeInfo(),
                     if(widget.idService==2) FoodeeInfo(),
                     if(widget.idService==3) PackeeInfo(),
-            SizedBox(height: 20), // Optional: Add spacing if needed
+            SizedBox(height: 20),
+            Positioned(
+              bottom: 0,
+              child:  Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: ConnexionButton(),
+              ),
+            ) // Optional: Add spacing if needed
           ],
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: ConnexionButton(),
-        ),
-      ),
+      // bottomNavigationBar: SafeArea(
+      //   child: 
+      //   Padding(
+      //     padding: const EdgeInsets.all(0.0),
+      //     child: ConnexionButton(),
+      //   ),
+      // ),
     );
   }
 }

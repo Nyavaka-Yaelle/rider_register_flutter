@@ -10,17 +10,29 @@ import 'package:rider_register/utility/format.dart';
 import 'package:rider_register/widgets/line.dart';
 import 'package:rider_register/widgets/profile/circ_img_cam.dart';
 
-class ProfileAccountScreen extends StatelessWidget {
-  const ProfileAccountScreen({
+class ProfileAccountScreen extends StatefulWidget {
+    const ProfileAccountScreen({
     super.key,
     required this.setIsShowBotNavBar,
   });
 
   final Function(bool) setIsShowBotNavBar;
+
+  @override
+  State<ProfileAccountScreen> createState() => _ProfileAccountScreenState();
+}
+class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      final deliveryData = Provider.of<DeliveryData>(context, listen: false);
+      deliveryData.setUserFire(deliveryData.userFire);
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    final deliveryData = Provider.of<DeliveryData>(context, listen: true);
-    deliveryData.setUserFire(deliveryData.userFire);
+    final deliveryData = Provider.of<DeliveryData>(context);
     UserRepository userRepository = UserRepository();
 
     List<MenuItem> menuItems = [
@@ -70,19 +82,20 @@ class ProfileAccountScreen extends StatelessWidget {
             icon: Icon(Icons.arrow_back),
             onPressed: () {
               
-              setIsShowBotNavBar(true);
+              widget.setIsShowBotNavBar(true);
               Navigator.pop(context);
             },
           ),
         ),
         body: SafeArea(
+           child: SingleChildScrollView(
         child: WillPopScope(
             onWillPop: () async {
               Navigator.pop(context);
               deliveryData.setMyProfileIsEditing(false);
               return false;
             },
-            child: SingleChildScrollView(
+           
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -92,8 +105,10 @@ class ProfileAccountScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 36.h),
                   NameWidget(
-                    nom: deliveryData.userFire!.lastName ?? '',
-                    prenom: deliveryData.userFire!.firstName ?? '',
+                    nom:  deliveryData.userFire!.lastName
+                     ?? deliveryData.userFire!.displayName!.trim().split(' ').last
+                    ,
+                    prenom: deliveryData.userFire!.firstName ??deliveryData.userFire!.displayName!.trim().substring(0, deliveryData.userFire!.displayName!.trim().lastIndexOf(' ')),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 24.v, right: 14.v),
@@ -312,7 +327,8 @@ class SubtitleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      double itemW = (constraints.maxWidth.v - 24.v - 14.v) / 2;
+      // double itemW = (constraints.maxWidth.v - 24.v - 14.v) / 2;
+      double itemW = MediaQuery.of(context).size.width *0.25;
       return Row(
         children: [
           SizedBox(
@@ -327,6 +343,7 @@ class SubtitleRow extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(width: 16),
           SizedBox(
             width: itemW,
             child: Text(
@@ -353,7 +370,9 @@ class TitleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      double itemW = (constraints.maxWidth.v - 24.v - 14.v) / 2;
+      // double itemW = (constraints.maxWidth.v - 24.v - 14.v) / 2;
+      double itemW = MediaQuery.of(context).size.width *0.25;
+      
       return Row(
         children: [
           SizedBox(
@@ -368,6 +387,7 @@ class TitleRow extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(width: 16),
           SizedBox(
             width: itemW,
             child: Text(
