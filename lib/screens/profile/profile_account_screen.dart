@@ -61,6 +61,11 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
     print("${deliveryData.userFire!.firstName!}");
 
     return
+     AnnotatedRegion<SystemUiOverlayStyle>(
+  value: SystemUiOverlayStyle.dark.copyWith(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ),child:
         //  AnnotatedRegion<SystemUiOverlayStyle>(
         //   value: SystemUiOverlayStyle.dark.copyWith(
         //       statusBarColor: scheme.surfaceContainerLowest,// Barre de statut transparente
@@ -70,16 +75,18 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
         //   ),
         //   child:
         Scaffold(
-      key: scaffoldKey,
+      // key: scaffoldKey,
       backgroundColor: scheme.surfaceContainerLowest,
+    //  /*
+        // extendBodyBehindAppBar: true, // ← important si tu veux que le fond passe sous la status bar
       appBar: AppBar(
         // shadowColor: Colors.transparent,
 
         // scrolledUnderElevation: 0, // ← empêche l’elevation au scroll
-        automaticallyImplyLeading: false,
-
+        // automaticallyImplyLeading: false,
+        scrolledUnderElevation: 0,
         backgroundColor: scheme.surfaceContainerLowest,
-        foregroundColor: scheme.shadow,
+        // foregroundColor: scheme.shadow,
         elevation: 0, // Désactive l'ombre
         title: const Text('Compte'),
         leading: IconButton(
@@ -90,8 +97,11 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
           },
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
+      //*/
+      body: 
+      // SafeArea(
+      //   child:
+         SingleChildScrollView(
             child: WillPopScope(
           onWillPop: () async {
             Navigator.pop(context);
@@ -101,6 +111,8 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // SizedBox(height: 64),
+
               CircImgCam(
                 url: deliveryData.userFire?.profilePicture,
                 navigateTo: () => Navigator.pushNamed(context, '/picture'),
@@ -210,12 +222,12 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
                 ),
                 style: TextButton.styleFrom(foregroundColor: scheme.error),
               ),
-              SizedBox(height: 30.h),
+              SizedBox(height: 48),
             ],
           ),
         )),
-      ),
-    ); //);
+      // ),
+    )); //);
   }
 }
 

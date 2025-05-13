@@ -61,14 +61,14 @@ class _CategoriesState extends State<Categories> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min, 
               children: [
-                CustomItem(
+               /* CustomItem(
                   label: "Tout",
                   onPressed: () => _onTabSelected(0, "Tout"),
                   active: isActive(0),
                   icon: Icons.all_inclusive_outlined,
                   activeIcon: Icons.all_inclusive_rounded,
                 ),
-                /*CustomItem(
+                CustomItem(
                   label: "Pizza",
                   onPressed: () => _onTabSelected(1, "Pizza"),
                   active: isActive(1),
