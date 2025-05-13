@@ -32,9 +32,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
     return Scaffold(
       backgroundColor: scheme.surfaceContainerLowest,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        foregroundColor: scheme.shadow,
+          backgroundColor: scheme.surfaceContainerLowest,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 24.0, color: scheme.onSurfaceVariant,), // Flèche "Retour"
           onPressed: widget.onPressed
