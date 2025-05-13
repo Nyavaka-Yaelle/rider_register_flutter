@@ -80,6 +80,7 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
       context.read<DeliveryData>().setCartFoodieTotalLocal(value);
     }
   }
+
   void removeAllToCartFoodeeItem(FoodeeItem foodeeItem) {
     for (int i = 0;
         i < context.read<DeliveryData>().cartFoodeeItems.length;
@@ -104,7 +105,9 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
   }
 
   void removeToCartFoodeeItem(FoodeeItem foodeeItem) {
-    for (int i = 0;i < context.read<DeliveryData>().cartFoodeeItems.length;i++) {
+    for (int i = 0;
+        i < context.read<DeliveryData>().cartFoodeeItems.length;
+        i++) {
       if (context.read<DeliveryData>().cartFoodeeItems[i].foodeeItem.id ==
           foodeeItem.id) {
         if (context.read<DeliveryData>().cartFoodeeItems[i].size == 1) {
@@ -1168,6 +1171,15 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
     );
   }
 
+  String substring(String? s,int limit) {
+    return s!.trim().substring(
+            0,
+            s.trim().length >= limit
+                ? limit
+                : s.trim().length) +
+        (s.trim().length > limit ? '...' : '');
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController _noteController = TextEditingController();
@@ -1202,8 +1214,8 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
                       ),
                     ),
                     Text(
-                      context.watch<DeliveryData>().departAddressFoodee ??
-                          "Votre position",
+                      substring( context.watch<DeliveryData>().departAddressFoodee,28)
+                      ?? "Votre position",
                       style: TextStyle(
                         fontSize: 16.0,
                         fontFamily: 'Roboto',
@@ -1262,14 +1274,7 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
               child: Text(
                 !show
                     ? _noteController.text.trim().isNotEmpty
-                        ? _noteController.text.trim().substring(
-                                0,
-                                _noteController.text.trim().length >= 30
-                                    ? 30
-                                    : _noteController.text.trim().length) +
-                            (_noteController.text.trim().length > 30
-                                ? '...'
-                                : '')
+                        ? substring(_noteController.text.trim(),30)
                         : 'Un détail à l\'adresse ?'
                     : 'Enregistrer ce détail',
                 // textAlign: TextAlign.center,

@@ -11,6 +11,7 @@ import 'package:rider_register/repository/user_repository.dart';
 import 'package:rider_register/models/user.dart' as UserFire;
 import 'package:rider_register/screens/accueil_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rider_register/theme/theme_helper.dart';
 
 class MyProfileScreen extends StatelessWidget {
   final newPasswordController = TextEditingController();
@@ -322,7 +323,7 @@ class MyProfileScreen extends StatelessWidget {
         if (deliveryData.myProfileIsFetching)
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-            child: const Opacity(
+            child: Opacity(
               opacity: 0.1,
               child: ModalBarrier(dismissible: false, color: scheme.shadow),
             ),

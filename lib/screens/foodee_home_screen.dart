@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../components/search_bar.dart';
 import '../components/tab_items.dart';
 import '../components/categories.dart';
@@ -9,6 +10,7 @@ import '../components/resto_cards.dart';
 import '../components/head_foodee.dart';
 import '../components/address_on_your_card.dart';
 import '../theme/theme_helper.dart';
+import 'package:rider_register/main.dart';
 
 class FoodeeHomeScreen extends StatefulWidget {
   final int idService;
@@ -102,7 +104,8 @@ class _FoodeeHomeScreenState extends State<FoodeeHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              AddressOnYourCard(adresse: "3GMQ 8H6, Antananarivo"),
+              // AddressOnYourCard(adresse: "3GMQ 8H6, Antananarivo"),
+              AddressOnYourCard(adresse: context.watch<DeliveryData>().departAddressFoodee??"Madagascar"),
               SearchBar(onSearch: _onSearch), // Pass the callback method
               TabItems(
                 onTabChanged: _handleTabChange, // Pass the callback method

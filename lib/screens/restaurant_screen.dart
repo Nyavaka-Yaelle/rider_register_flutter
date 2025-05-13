@@ -555,7 +555,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "${context.read<DeliveryData>().cartFoodeeItems.length} menu${(context.read<DeliveryData>().cartFoodeeItems.length>1)?'s':''}", // Exemple : "2 menus"
+                      "${context.read<DeliveryData>().cartFoodeeItems.length} plat${(context.read<DeliveryData>().cartFoodeeItems.length>1)?'s':''}", // Exemple : "2 menus"
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: scheme.inverseOnSurface,
                           height: 1.1),
