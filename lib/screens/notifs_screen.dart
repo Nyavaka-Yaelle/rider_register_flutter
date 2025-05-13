@@ -71,6 +71,7 @@ class _NotifsScreenState extends State<NotifsScreen> {
             flexibleSpace: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 24),
               IconButton(
                 icon: Icon(Icons.arrow_back), // Icône de flèche gauche
                 onPressed: () {
@@ -98,25 +99,26 @@ class _NotifsScreenState extends State<NotifsScreen> {
         backgroundColor: scheme.surfaceContainerLowest,
         body: SafeArea(
 
-          child: SingleChildScrollView(
-            child: Column(
+          child: Column(
               children: [
-                // height: MediaQuery.of(context).size.height * 0.8,
-                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
                 isLoading
-                    ? Container(
-                        height: MediaQuery.of(context).size.height*0.8,
+                    ? Expanded(
                         child: Center(
                           child: CircularProgressIndicator()
                         )
                       ) // Show a loading indicator while fetching data
                     : notifs.length == 0
-                        ? Container(
-                          height: MediaQuery.of(context).size.height*0.5,
+                        ? Expanded(
                           child:
                           Center(child: Text("Aucune notification"))
                           )
-                        : ListView.builder(
+                        : 
+                         SingleChildScrollView(
+                          child: Column(
+                            children: [
+                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+
+                        ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: notifs.length,
@@ -131,10 +133,10 @@ class _NotifsScreenState extends State<NotifsScreen> {
                               );
                             },
                           ),
-              ],
-            ),
-          ),
-        ),
+                          ],
+                        ),
+                      ),
+              ])),
       ),
     );
   }

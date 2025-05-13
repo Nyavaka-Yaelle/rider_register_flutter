@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rider_register/repository/livraison_repository.dart';
 import 'package:rider_register/screens/home_finally_page/pages.dart';
@@ -78,14 +79,21 @@ class _AccueilleState extends State<Accueille> {
         pages(_currentIndex, setIsShowBotNavBar, _onItemTapped, _lastIndex);
     Widget currentPage = currentPages[_currentIndex];
 
-    return Scaffold(
-      appBar: AppBar(
-        // backgroundColor: scheme.primary,
-        backgroundColor: scheme.surfaceContainerLowest,
-        elevation: 0,
-        toolbarHeight: 0,
-      ),
-      resizeToAvoidBottomInset: true,
+    return 
+    AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent, // 👈 couleur de la status bar
+        statusBarIconBrightness: Brightness.dark, // 👈 icônes noires ou blanches
+        statusBarBrightness: Brightness.light, // 👈 pour iOS
+      ),child:
+    Scaffold(
+      // appBar: AppBar(
+      //   // backgroundColor: scheme.primary,
+      //   backgroundColor: scheme.surfaceContainerLowest,
+      //   elevation: 0,
+      //   toolbarHeight: 0,
+      // ),
+      // resizeToAvoidBottomInset: true,
       body: currentPage,
       bottomNavigationBar: isShowBotNavBar
           ? NavigationBarTheme(
@@ -150,7 +158,7 @@ class _AccueilleState extends State<Accueille> {
               ),
             )
           : null,
-    );
+    ));
   }
 }
 

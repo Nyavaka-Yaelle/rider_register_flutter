@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rider_register/core/app_export.dart';
 import 'package:rider_register/main.dart';
@@ -23,6 +22,7 @@ class ProfileAccountScreen extends StatefulWidget {
 }
 
 class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -31,7 +31,6 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
       deliveryData.setUserFire(deliveryData.userFire);
     });
   }
-
   @override
   Widget build(BuildContext context) {
     final deliveryData = Provider.of<DeliveryData>(context, listen: true);
@@ -56,38 +55,11 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
           description: '..............',
           route: MPR.PWD),
     ];
-    final scaffoldKey = GlobalKey<ScaffoldState>();
-    print("${deliveryData.userFire!.lastName!}");
-    print("${deliveryData.userFire!.firstName!}");
-
-    return
-     AnnotatedRegion<SystemUiOverlayStyle>(
-  value: SystemUiOverlayStyle.dark.copyWith(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-  ),child:
-        //  AnnotatedRegion<SystemUiOverlayStyle>(
-        //   value: SystemUiOverlayStyle.dark.copyWith(
-        //       statusBarColor: scheme.surfaceContainerLowest,// Barre de statut transparente
-        //     statusBarIconBrightness: Brightness.dark, // Icônes sombres pour la barre de statut
-        //     systemNavigationBarColor: scheme.surfaceContainerLowest, // Couleur de la barre de navigation
-        //     systemNavigationBarIconBrightness: Brightness.dark, // Icônes sombres pour la barre de navigation
-        //   ),
-        //   child:
-        Scaffold(
-      // key: scaffoldKey,
+   
+    return Scaffold(
       backgroundColor: scheme.surfaceContainerLowest,
-    //  /*
-        // extendBodyBehindAppBar: true, // ← important si tu veux que le fond passe sous la status bar
       appBar: AppBar(
-        // shadowColor: Colors.transparent,
-
-        // scrolledUnderElevation: 0, // ← empêche l’elevation au scroll
-        // automaticallyImplyLeading: false,
-        scrolledUnderElevation: 0,
         backgroundColor: scheme.surfaceContainerLowest,
-        // foregroundColor: scheme.shadow,
-        elevation: 0, // Désactive l'ombre
         title: const Text('Compte'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -102,7 +74,7 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
       // SafeArea(
       //   child:
          SingleChildScrollView(
-            child: WillPopScope(
+          child: WillPopScope(
           onWillPop: () async {
             Navigator.pop(context);
             deliveryData.setMyProfileIsEditing(false);
@@ -227,7 +199,7 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
           ),
         )),
       // ),
-    )); //);
+    ); //);
   }
 }
 

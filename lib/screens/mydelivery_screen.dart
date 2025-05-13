@@ -46,6 +46,7 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
       child: DefaultTabController(
         length: 3, // Number of tabs
         child: Scaffold(
+
           appBar: PreferredSize(preferredSize: Size.fromHeight(132), // Ajustez la hauteur de l'AppBar
             child:AppBar(
             backgroundColor: scheme.surface,
@@ -54,6 +55,8 @@ class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
               flexibleSpace: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 24),
+
                 IconButton(
                   icon: Icon(Icons.arrow_back), // Icône de flèche gauche
                   onPressed: () {

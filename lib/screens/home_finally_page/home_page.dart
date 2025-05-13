@@ -161,6 +161,7 @@ class _HomePageState extends State<HomePage> {
 
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        SizedBox(height: 24),
                         ServicesCard(),
                         Divider(),
                         Section(name: "Pour vous"),
