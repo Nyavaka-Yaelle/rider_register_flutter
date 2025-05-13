@@ -80,23 +80,21 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
       context.read<DeliveryData>().setCartFoodieTotalLocal(value);
     }
   }
- void removeAllToCartFoodeeItem(FoodeeItem foodeeItem) {
+  void removeAllToCartFoodeeItem(FoodeeItem foodeeItem) {
     for (int i = 0;
         i < context.read<DeliveryData>().cartFoodeeItems.length;
         i++) {
-        if (context.read<DeliveryData>().cartFoodeeItems[i].size >= 1) {
-          setState(() {
-            context.read<DeliveryData>().cartFoodeeItems.removeAt(i);
-          });
-          double value = context.read<DeliveryData>().cartFoodieTotalLocal;
-          value = double.parse((value -= foodeeItem.price).toStringAsFixed(2));
-          context.read<DeliveryData>().setCartFoodieTotalLocal(value);
-        } 
-          double value = context.read<DeliveryData>().cartFoodieTotalLocal;
-          value = double.parse((value -= foodeeItem.price).toStringAsFixed(2));
-          context.read<DeliveryData>().setCartFoodieTotalLocal(value);
-        
-      
+      if (context.read<DeliveryData>().cartFoodeeItems[i].size >= 1) {
+        setState(() {
+          context.read<DeliveryData>().cartFoodeeItems.removeAt(i);
+        });
+        double value = context.read<DeliveryData>().cartFoodieTotalLocal;
+        value = double.parse((value -= foodeeItem.price).toStringAsFixed(2));
+        context.read<DeliveryData>().setCartFoodieTotalLocal(value);
+      }
+      double value = context.read<DeliveryData>().cartFoodieTotalLocal;
+      value = double.parse((value -= foodeeItem.price).toStringAsFixed(2));
+      context.read<DeliveryData>().setCartFoodieTotalLocal(value);
     }
     if (context.read<DeliveryData>().cartFoodeeItems.isEmpty) {
       Navigator.pop(context, () {
@@ -104,13 +102,11 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
       });
     }
   }
+
   void removeToCartFoodeeItem(FoodeeItem foodeeItem) {
-    for (int i = 0;
-        i < context.read<DeliveryData>().cartFoodeeItems.length;
-        i++) {
+    for (int i = 0;i < context.read<DeliveryData>().cartFoodeeItems.length;i++) {
       if (context.read<DeliveryData>().cartFoodeeItems[i].foodeeItem.id ==
           foodeeItem.id) {
-           
         if (context.read<DeliveryData>().cartFoodeeItems[i].size == 1) {
           setState(() {
             context.read<DeliveryData>().cartFoodeeItems.removeAt(i);
@@ -476,7 +472,7 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
         ),
       ),
       floatingActionButton: WidgetEMoney(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
@@ -609,26 +605,23 @@ class _WidgetEMoneyState extends State<WidgetEMoney> {
     UserRepository userRepository = new UserRepository();
     return
         //fab taloha
-        Positioned(
-            bottom: 0,
+        Container(
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(12.0),
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.grey.withOpacity(0.1),
+              //     blurRadius: 8.0,
+              //     spreadRadius: 2.0,
+              //   ),
+              // ],
+            ),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16, 16),
             child: Container(
-               width: MediaQuery.of(context).size.width ,decoration: BoxDecoration(
-                color: scheme.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(12.0),
-                // boxShadow: [
-                //   BoxShadow(
-                //     color: Colors.grey.withOpacity(0.1),
-                //     blurRadius: 8.0,
-                //     spreadRadius: 2.0,
-                //   ),
-                // ],
-              ),
-              padding: const EdgeInsets.fromLTRB(16.0,16.0,16,0),
-              child: Container(
-
-              width: MediaQuery.of(context).size.width*0.9 ,
-              height:96,
-              
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: 96,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -717,7 +710,7 @@ class _WidgetEMoneyState extends State<WidgetEMoney> {
                   ),
                 ],
               ),
-            )));
+            )); //);
     /*Card(
       shadowColor: Colors.teal,
       elevation: MediaQuery.of(context).size.width * 0.01,
@@ -922,14 +915,13 @@ class WidgetFoodItem extends StatelessWidget {
                 children: [
                   Container(
                       margin: EdgeInsets.only(left: 56),
-                       child: 
-                       GestureDetector(
-                          onTap: ()=>removeAllToCartFoodeeItem(foodeeItem), 
-                          child:Icon(
+                      child: GestureDetector(
+                          onTap: () => removeAllToCartFoodeeItem(foodeeItem),
+                          child: Icon(
                             Icons.close_outlined,
                             color: scheme.onSurfaceVariant,
                             size: 20,
-                      ))),
+                          ))),
                   SizedBox(height: 4),
                   // Input type number pour ajuster la quantité
                   Padding(
@@ -948,7 +940,7 @@ class WidgetFoodItem extends StatelessWidget {
                           child: Center(
                             // Aligner l'icône au centre
                             child: GestureDetector(
-                              onTap: ()=>removeToCartFoodeeItem(
+                              onTap: () => removeToCartFoodeeItem(
                                   foodeeItem), // Action lorsque l'utilisateur appuie
                               child: Icon(
                                 Icons.remove,
@@ -1247,40 +1239,55 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
 
         // Deuxième ligne: icône de détail et texte au centre
         Center(
-          // width: MediaQuery.of(context).size.width * 0.5+192+28,
-          // height: 24,
-          // child: Expanded(
-                child:
-                Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min, // Permet de ne pas étirer la ligne
-            children: [
-              Icon(Icons.description_outlined,
-                  color: _noteController.text.trim().isNotEmpty ? scheme.primary : scheme.secondary, size: 16),
-              const SizedBox(width: 4.0),
-              GestureDetector(
-                onTap: () => {
-                  setState(
-                    () => show = !show,
-                  )
-                },
-                child: Text(
-                  !show ? _noteController.text.trim().isNotEmpty ? _noteController.text.trim().substring(0,_noteController.text.trim().length>=30?30:_noteController.text.trim().length)+(_noteController.text.trim().length>30?'...':''):'Un détail à l\'adresse ?' : 'Enregistrer ce détail',
-                  // textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 11.0,
-                    fontFamily: 'Roboto',
-                    color: _noteController.text.trim().isNotEmpty ? scheme.primary : scheme.secondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  // maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+            // width: MediaQuery.of(context).size.width * 0.5+192+28,
+            // height: 24,
+            // child: Expanded(
+            child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min, // Permet de ne pas étirer la ligne
+          children: [
+            Icon(Icons.description_outlined,
+                color: _noteController.text.trim().isNotEmpty
+                    ? scheme.primary
+                    : scheme.secondary,
+                size: 16),
+            const SizedBox(width: 4.0),
+            GestureDetector(
+              onTap: () => {
+                setState(
+                  () => show = !show,
+                )
+              },
+              child: Text(
+                !show
+                    ? _noteController.text.trim().isNotEmpty
+                        ? _noteController.text.trim().substring(
+                                0,
+                                _noteController.text.trim().length >= 30
+                                    ? 30
+                                    : _noteController.text.trim().length) +
+                            (_noteController.text.trim().length > 30
+                                ? '...'
+                                : '')
+                        : 'Un détail à l\'adresse ?'
+                    : 'Enregistrer ce détail',
+                // textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11.0,
+                  fontFamily: 'Roboto',
+                  color: _noteController.text.trim().isNotEmpty
+                      ? scheme.primary
+                      : scheme.secondary,
+                  fontWeight: FontWeight.w600,
                 ),
-              )
-            ],
-          )//),
-        ),
+                // maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+          ],
+        ) //),
+            ),
         show
             ? Container(
                 margin: EdgeInsets.only(top: 20),
