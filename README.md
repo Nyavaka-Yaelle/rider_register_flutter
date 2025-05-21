@@ -74,3 +74,5 @@ cd ..
 flutter pub get
 flutter build ios --no-tree-shake-icons --no-sound-null-safety
 flutter run --no-sound-null-safety --enable-software-rendering
+
+flutter pub run flutter_launcher_icons:main
