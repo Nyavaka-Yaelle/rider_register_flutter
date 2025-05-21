@@ -35,7 +35,6 @@ class ApiService {
                 orElse: () => items.firstWhere(
                       (item) => item['types'].contains('routes') ?? false,
                     ))));
-
     return marker != null ? marker['name'] : null;
   }
 

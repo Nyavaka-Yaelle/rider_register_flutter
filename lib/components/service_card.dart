@@ -7,6 +7,7 @@ import '../screens/destination2_screen.dart';
 import '../repository/user_repository.dart';
 import '../screens/foodee_home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rider_register/screens/placearrive_screen.dart';
 
 class ServiceCard extends StatelessWidget {
   final VoidCallback? onActionTap; // Callback pour l'action
@@ -31,13 +32,21 @@ class ServiceCard extends StatelessWidget {
 
     Widget destination;
     if (type == "foodee") {
-      destination = currentid != null ? FoodeeHomeScreen() : PageInfo(idService: 2);
+      destination =
+          currentid != null ? FoodeeHomeScreen() : PageInfo(idService: 2);
     } else if (type == "caree") {
-      destination = currentid != null ? Destination2Screen(type: type) : PageInfo(idService: 1);
+      destination = currentid != null
+          ? Destination2Screen(type: type)
+          : PageInfo(idService: 1);
     } else if (type == "packee") {
-      destination = currentid != null ? Destination2Screen(type: type) : PageInfo(idService: 3);
+      destination = currentid != null
+          ? Destination2Screen(type: type)
+          : PageInfo(idService: 3);
     } else if (type == "ridee") {
-      destination = currentid != null ? Destination2Screen(type: type) : PageInfo(idService: 0);
+      destination = currentid != null
+          // ? Destination2Screen(type: type)
+          ? PlacearriveScreen(isDepart:false, type: type)
+          : PageInfo(idService: 0);
     } else {
       return;
     }
@@ -45,7 +54,7 @@ class ServiceCard extends StatelessWidget {
     Navigator.push(
       context,
       PageRouteBuilder(
-                transitionDuration: Duration(milliseconds: 600), // Adjust the duration here
+        transitionDuration: Duration(milliseconds: 600), // Adjust the duration here
         pageBuilder: (context, animation, secondaryAnimation) => destination,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return SharedAxisTransition(
@@ -90,13 +99,12 @@ class ServiceCard extends StatelessWidget {
                 //     fit: BoxFit.contain,
                 //   ),
                 // ),
-                 child: Align(
+                child: Align(
                     alignment: Alignment.center,
                     child: SvgPicture.asset(
                       'assets/images/' + image + '.svg', // Remplacez .png par .svg
                       // height:  label == 'Caree' ? 26.0 : 30.0,
                       fit: BoxFit.contain,
-
                     )),
               ),
               SizedBox(height: 8),

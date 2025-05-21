@@ -89,7 +89,11 @@ class CustomTextFormField extends StatelessWidget {
             // }
           },
           autofocus: autofocus!,
-          style: textStyle ?? theme.textTheme.titleMedium,
+          style: textStyle ?? TextStyle(
+                                color: scheme.onSurface,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
           obscureText: obscureText!,
           textInputAction: textInputAction,
           keyboardType: textInputType,
@@ -100,21 +104,25 @@ class CustomTextFormField extends StatelessWidget {
       );
   InputDecoration get decoration => InputDecoration(
         hintText: hintText ?? "",
-        hintStyle: hintStyle ?? theme.textTheme.titleMedium,
+        hintStyle: hintStyle ??  TextStyle(
+                                color: scheme.onSurfaceVariant,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
         prefixIcon: prefix,
         prefixIconConstraints: prefixConstraints,
         suffixIcon: suffix,
         suffixIconConstraints: suffixConstraints,
         contentPadding:
-            contentPadding ?? EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-        fillColor: fillColor ?? appTheme.gray100,
+            contentPadding ?? EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        fillColor: fillColor ?? scheme.surfaceContainerLowest,
         filled: filled,
         isDense: true,
         border: borderDecoration ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(4.h),
               borderSide: BorderSide(
-                color: appTheme.gray60082,
+                color: scheme.outline,
                 width: 1,
               ),
             ),

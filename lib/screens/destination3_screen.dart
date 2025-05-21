@@ -6,10 +6,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_routes/google_maps_routes.dart';
 import 'package:provider/provider.dart';
 import 'package:rider_register/screens/destination3loading_screen.dart';
+import 'package:rider_register/screens/placearrive_screen.dart';
 import 'package:rider_register/services/api_service.dart' as api_service;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 import 'package:rider_register/widgets/bottom_sheet/custom_bottom_sheet.dart';
+import 'package:rider_register/widgets/custom_text_form_field.dart';
 import 'package:rider_register/widgets/ridee/your_position_card.dart';
 import 'package:rider_register/core/app_export.dart';
 import 'package:rider_register/widgets/custom_elevated_button.dart';
@@ -21,6 +23,7 @@ class Destination3Screen extends StatefulWidget {
   final LatLng depart;
   final LatLng arrivee;
   final String type;
+  bool isValider = false;
 
   Destination3Screen(
       {required this.depart, required this.arrivee, required this.type});
@@ -43,39 +46,66 @@ class _Destination3ScreenState extends State<Destination3Screen> {
   Set<Polyline> _polylines = {};
   List<LatLng> polylineCoordinates = [];
   bool isWaitASec = false;
+
   //cusotm bottom sheet
   void _showBottomSheet() {
     showCustomBottomSheet(
       context,
-      height: 250.v,
+      // height: 250.v,
       children: [
         SizedBox(height: 12.v),
-        YourPositionCard(
-          position: Provider.of<DeliveryData>(context, listen: false)
-                  .multipointAddress![
-              Provider.of<DeliveryData>(context, listen: false)
-                      .multipointAddress!
-                      .length -
-                  1]["address"],
-          positiondepart: Provider.of<DeliveryData>(context, listen: false)
-              .departAddressRidee!,
-        ),
-        SizedBox(height: 8.h),
-        SizedBox(height: 6.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [],
-        ),
-        CustomElevatedButton(
-          width: 327.v,
-          height: 48.v,
-          text: "Chercher un rider",
-          onPressed: () {
-            _handleButtonClick();
-          },
-          // buttonStyle: CustomButtonStyles.fillGrayE,
-          // buttonTextStyle: CustomTextStyles.bodyLargeGray90003,
-        ),
+        if (widget.isValider)
+          // YourPositionCard(
+          //   position: Provider.of<DeliveryData>(context, listen: false)
+          //           .multipointAddress![
+          //       Provider.of<DeliveryData>(context, listen: false)
+          //               .multipointAddress!
+          //               .length -
+          //           1]["address"],
+          //   positiondepart: Provider.of<DeliveryData>(context, listen: false)
+          //       .departAddressRidee!,
+          // ),
+          // SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [],
+          ),
+        // (!widget.isValider)
+        //     ?
+        StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+          return Padding(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 48),
+              child: CustomElevatedButton(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: 48.v,
+                text: !widget.isValider
+                    ? "Valider votre itinéraire"
+                    : "Chercher un rider",
+                onPressed: () {
+                  if (!widget.isValider) {
+                    setState(() {
+                      widget.isValider = true;
+                    });
+                    // _showBottomSheet();
+                  } else {
+                    _handleButtonClick();
+                  }
+                },
+              ));
+        })
+        // :Padding(
+        // padding: EdgeInsets.fromLTRB(16, 16, 16, 48),
+        // child: CustomElevatedButton(
+        //   width: MediaQuery.of(context).size.width * 0.8,
+        //   height: 48.v,
+        //   text: "Chercher un rider",
+        //   onPressed: () {
+        //     _handleButtonClick();
+        //   },
+        // buttonStyle: CustomButtonStyles.fillGrayE,
+        // buttonTextStyle: CustomTextStyles.bodyLargeGray90003,
+
+        // )),
       ],
     );
   }
@@ -231,233 +261,317 @@ class _Destination3ScreenState extends State<Destination3Screen> {
     LatLng center = LatLng(((test1.latitude + test2.latitude) / 2),
         ((test1.longitude + test2.longitude) / 2));
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Visualiser votre trajet',
-          // 'Valider la destination'
-        ),
-      ),
-      body: Column(children: [
-        Expanded(
-          flex: 1,
-          child: GoogleMap(
-            zoomControlsEnabled: false,
-            polylines: _polylines,
-            markers: _markers,
-            initialCameraPosition: CameraPosition(
-              zoom: 13.0,
-              target: center,
-            ),
-            onMapCreated: (GoogleMapController controller) async {
-              _controller.complete(controller);
-              for (var i = 0; i < points.length; i++) {
-                print("point $i" + points[i].toString() + " ");
-              }
-
-              //make route optimized
-              // await route.drawRoute(points, 'Test routes',
-              //     Color.fromRGBO(105, 72, 155, 1), googleApiKey,
-              //     travelMode: TravelModes.driving);
-              for (int i = 0; i < points.length - 1; i++) {
-                PolylinePoints polylinePoints = PolylinePoints();
-
-                PolylineResult result =
-                    await polylinePoints.getRouteBetweenCoordinates(
-                  googleApiKey,
-                  PointLatLng(points[i].latitude, points[i].longitude),
-                  PointLatLng(points[i + 1].latitude, points[i + 1].longitude),
-                );
-                if (result.points.isNotEmpty) {
-                  // loop through all PointLatLng points and convert them
-                  // to a list of LatLng, required by the Polyline
-                  print("not empty");
-                  result.points.forEach((PointLatLng point) {
-                    polylineCoordinates
-                        .add(LatLng(point.latitude, point.longitude));
-                  });
-                }
-              }
-              setState(() {
-                _polylines.add(Polyline(
-                  polylineId: PolylineId('route'),
-                  color: Colors.red,
-                  width: 5,
-                  points: polylineCoordinates,
-                ));
-              });
-              //marker icon and bitmap descriptor
-              Uint8List? markerIcon =
-                  await getBytesFromAsset('assets/logo/Point Arriver.png', 64);
-              BitmapDescriptor bitmapDescriptor =
-                  BitmapDescriptor.fromBytes(markerIcon!);
-              Uint8List? markerIcon2 =
-                  await getBytesFromAsset('assets/logo/point Prendre.png', 64);
-              BitmapDescriptor bitmapDescriptor2 =
-                  BitmapDescriptor.fromBytes(markerIcon2!);
-              //set marker for depart and arrivee
-              Marker markerDepart = Marker(
-                markerId: MarkerId('depart'),
-                position: test1,
-                icon: bitmapDescriptor2,
-                infoWindow: InfoWindow(title: 'Départ'),
-              );
-
-              //add marker to map
-
-              setState(() {
-                _markers!.add(markerDepart);
-                _markers!.addAll(markers);
-                totalDistance = distanceCalculator
-                    .calculateRouteDistance(points, decimals: 1);
-              });
+        appBar: AppBar(
+          title: GestureDetector(
+            onTap: () {
+              if (widget.isValider)
+                _showBottomSheet(); // Appelle la méthode pour afficher le BottomSheet
             },
+            child: Text(
+              'Votre itinéraire', // Titre cliquable
+            ),
           ),
+          backgroundColor: scheme.surfaceContainerLowest,
         ),
-        // an icon on the left , a text and another text on the right , and 3 Dots that display a choice of thing that change the two text and the icon
-        // Expanded(
-        //   flex: 0,
-        //   child:
-        //       Row(// Use a row to display the icon, text and button horizontally
-        //           children: [
-        //     SizedBox(width: 25),
-        //     Image(
-        //       image: AssetImage(choices[currentChoice]['image'] as String),
-        //       width: 64,
-        //       height: 64,
-        //     ),
-        //     SizedBox(width: 10),
-        //     Text(choices[currentChoice]['text1'] as String,
-        //         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-        //     Spacer(),
-        //     Text(choices[currentChoice]['text2'] as String),
-        //     IconButton(
-        //         icon: Icon(Icons.more_vert),
-        //         onPressed: () {
-        //           showDialog(
-        //               context: context,
-        //               builder: (context) {
-        //                 return AlertDialog(
-        //                     title: Text('Sélectionner une option'),
-        //                     content: Column(children: [
-        //                       // Loop through the choices and create a list tile for each one
-        //                       for (int i = 0; i < choices.length; i++)
-        //                         ListTile(
-        //                           leading: Image(
-        //                             image: AssetImage(
-        //                                 choices[i]['image'] as String),
-        //                             width: 64,
-        //                             height: 64,
-        //                           ),
-        //                           title: Text(choices[i]['text1'] as String),
-        //                           subtitle: Text(choices[i]['text2'] as String),
-        //                           onTap: () {
-        //                             // Update the current choice index and pop the dialog
-        //                             setState(() {
-        //                               currentChoice = i;
-        //                             });
-        //                             Navigator.pop(context);
-        //                           },
-        //                         ),
-        //                     ]));
-        //               });
-        //         }),
-        //   ]),
-        // ),
-        // Expanded(
-        //   flex: 0,
-        //   child: Container(
-        //     margin: EdgeInsets.all(10),
-        //     width: 350,
-        //     height: 100,
-        //     // padding: EdgeInsets.all(10),
-        //     decoration: BoxDecoration(
-        //       // Créer une bordure verte
-        //       border: Border.all(color: Colors.green, width: 2),
-        //       // Colorer l'arrière-plan en gris
-        //       color: Colors.grey.shade300,
-        //     ),
-        //     child: Column(
-        //       children: [
-        //         // Créer la première entrée en lecture seule
-        //         TextFormField(
-        //           readOnly: true,
-        //           controller: _textControllerDepartRidee,
-        //           decoration: InputDecoration(
-        //               hintText: 'Point de départ',
-        //               prefixIcon: Icon(Icons.location_on)),
-        //         ),
-        //         // Créer la deuxième entrée en lecture seule
-        //         TextFormField(
-        //           readOnly: true,
-        //           controller: _textControllerDeliveryRidee,
-        //           decoration: InputDecoration(
-        //               hintText: "Point d'arrivée",
-        //               prefixIcon: Icon(Icons.location_on)),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        // Expanded(
-        //   flex: 0,
-        //   child:
-        //       Row(// Use a row to display the icon, text and button horizontally
-        //           children: [
-        //     SizedBox(width: 25),
-        //     Image(
-        //       image: AssetImage(
-        //           moneychoices[currentmoneychoice]['image'] as String),
-        //       width: 64,
-        //       height: 64,
-        //     ),
-        //     SizedBox(width: 10),
-        //     Text(moneychoices[currentmoneychoice]['text1'] as String,
-        //         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-        //     Spacer(),
-        //     IconButton(
-        //         icon: Icon(Icons.more_vert),
-        //         onPressed: () {
-        //           showDialog(
-        //               context: context,
-        //               builder: (context) {
-        //                 return AlertDialog(
-        //                     title: Text('Sélectionner une option'),
-        //                     content: Column(children: [
-        //                       // Loop through the choices and create a list tile for each one
-        //                       for (int i = 0; i < moneychoices.length; i++)
-        //                         ListTile(
-        //                           leading: Image(
-        //                             image: AssetImage(
-        //                                 moneychoices[i]['image'] as String),
-        //                             width: 64,
-        //                             height: 64,
-        //                           ),
-        //                           title:
-        //                               Text(moneychoices[i]['text1'] as String),
-        //                           onTap: () {
-        //                             // Update the current choice index and pop the dialog
-        //                             setState(() {
-        //                               currentmoneychoice = i;
-        //                             });
-        //                             Navigator.pop(context);
-        //                           },
-        //                         ),
-        //                     ]));
-        //               });
-        //         }),
-        //   ]),
-        // ),
-        // Expanded(
-        //   flex: 0,
-        //   child: ElevatedButton(
-        //     onPressed: isWaitASec ? null : _handleButtonClick,
-        //     style: ButtonStyle(
-        //       minimumSize: MaterialStateProperty.all(Size(double.infinity, 50)),
-        //     ),
-        //     child: Text(isWaitASec ? 'En cours de traitement ...' : 'Valider'),
-        //   ),
-        // ),
-      ]),
-    );
+        body:
+            //Stack(children: [
+
+            Column(children: [
+          // if(!widget.isValider)
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.fromLTRB(32, 8, 32, 32),
+            color: scheme.surfaceContainerLowest, // BOO
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              // if (!widget.isValider)
+
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(
+                      Icons.my_location_outlined,
+                      color: scheme.primary,
+                    ),
+                    SizedBox(height: 4),
+                    Icon(
+                      Icons.more_vert_outlined,
+                      // size: 12,
+                      color: scheme.outlineVariant,
+                    ),
+                    SizedBox(height: 4),
+                    Icon(
+                      Icons.location_on_outlined,
+                      color: scheme.error,
+                    )
+                  ]),
+              SizedBox(width: 16),
+              Column(children: [
+                SizedBox(width: 16),
+                CustomTextFormField(
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 500));
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PlacearriveScreen(
+                                isDepart: true, type: widget.type)));
+                  },
+                  readOnly: true,
+                  controller: _textControllerDepartRidee,
+                  hintText: "Votre position de départ",
+                  textInputAction: TextInputAction.done,
+                  textStyle: TextStyle(
+                    color: scheme.primary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.8 - 36,
+                ),
+                SizedBox(height: 12),
+                CustomTextFormField(
+                  width: MediaQuery.of(context).size.width * 0.8 - 36,
+
+                  readOnly: true,
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 500));
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PlacearriveScreen(
+                                isDepart: false,
+                                type: widget.type,
+                              )),
+                    );
+                  },
+                  controller: _textControllerDeliveryRidee,
+                  hintText: "Votre destination",
+                  // width: MediaQuery.of(context).size.width*0.76,
+                )
+              ]),
+            ]),
+          ),
+          // Positioned.fill(
+          Expanded(
+            flex: 1,
+            child: GoogleMap(
+              zoomControlsEnabled: false,
+              polylines: _polylines,
+              markers: _markers,
+              initialCameraPosition: CameraPosition(
+                zoom: 13.0,
+                target: center,
+              ),
+              onMapCreated: (GoogleMapController controller) async {
+                _controller.complete(controller);
+                for (var i = 0; i < points.length; i++) {
+                  print("point $i" + points[i].toString() + " ");
+                }
+
+                //make route optimized
+                // await route.drawRoute(points, 'Test routes',
+                //     Color.fromRGBO(105, 72, 155, 1), googleApiKey,
+                //     travelMode: TravelModes.driving);
+                for (int i = 0; i < points.length - 1; i++) {
+                  PolylinePoints polylinePoints = PolylinePoints();
+
+                  PolylineResult result =
+                      await polylinePoints.getRouteBetweenCoordinates(
+                    googleApiKey,
+                    PointLatLng(points[i].latitude, points[i].longitude),
+                    PointLatLng(
+                        points[i + 1].latitude, points[i + 1].longitude),
+                  );
+                  if (result.points.isNotEmpty) {
+                    // loop through all PointLatLng points and convert them
+                    // to a list of LatLng, required by the Polyline
+                    print("not empty");
+                    result.points.forEach((PointLatLng point) {
+                      polylineCoordinates
+                          .add(LatLng(point.latitude, point.longitude));
+                    });
+                  }
+                }
+                setState(() {
+                  _polylines.add(Polyline(
+                    polylineId: PolylineId('route'),
+                    color: scheme.primary,
+                    width: 5,
+                    points: polylineCoordinates,
+                  ));
+                });
+                //marker icon and bitmap descriptor
+                Uint8List? markerIcon = await getBytesFromAsset(
+                    'assets/logo/Point Arriver.png', 64);
+                BitmapDescriptor bitmapDescriptor =
+                    BitmapDescriptor.fromBytes(markerIcon!);
+                Uint8List? markerIcon2 = await getBytesFromAsset(
+                    'assets/logo/point Prendre.png', 64);
+                BitmapDescriptor bitmapDescriptor2 =
+                    BitmapDescriptor.fromBytes(markerIcon2!);
+                //set marker for depart and arrivee
+                Marker markerDepart = Marker(
+                  markerId: MarkerId('depart'),
+                  position: test1,
+                  icon: bitmapDescriptor2,
+                  infoWindow: InfoWindow(title: 'Départ'),
+                );
+
+                //add marker to map
+
+                setState(() {
+                  _markers!.add(markerDepart);
+                  _markers!.addAll(markers);
+                  totalDistance = distanceCalculator
+                      .calculateRouteDistance(points, decimals: 1);
+                });
+              },
+            ),
+          ),
+          // an icon on the left , a text and another text on the right , and 3 Dots that display a choice of thing that change the two text and the icon
+          // Expanded(
+          //   flex: 0,
+          //   child:
+          //       Row(// Use a row to display the icon, text and button horizontally
+          //           children: [
+          //     SizedBox(width: 25),
+          //     Image(
+          //       image: AssetImage(choices[currentChoice]['image'] as String),
+          //       width: 64,
+          //       height: 64,
+          //     ),
+          //     SizedBox(width: 10),
+          //     Text(choices[currentChoice]['text1'] as String,
+          //         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+          //     Spacer(),
+          //     Text(choices[currentChoice]['text2'] as String),
+          //     IconButton(
+          //         icon: Icon(Icons.more_vert),
+          //         onPressed: () {
+          //           showDialog(
+          //               context: context,
+          //               builder: (context) {
+          //                 return AlertDialog(
+          //                     title: Text('Sélectionner une option'),
+          //                     content: Column(children: [
+          //                       // Loop through the choices and create a list tile for each one
+          //                       for (int i = 0; i < choices.length; i++)
+          //                         ListTile(
+          //                           leading: Image(
+          //                             image: AssetImage(
+          //                                 choices[i]['image'] as String),
+          //                             width: 64,
+          //                             height: 64,
+          //                           ),
+          //                           title: Text(choices[i]['text1'] as String),
+          //                           subtitle: Text(choices[i]['text2'] as String),
+          //                           onTap: () {
+          //                             // Update the current choice index and pop the dialog
+          //                             setState(() {
+          //                               currentChoice = i;
+          //                             });
+          //                             Navigator.pop(context);
+          //                           },
+          //                         ),
+          //                     ]));
+          //               });
+          //         }),
+          //   ]),
+          // ),
+          // Expanded(
+          //   flex: 0,
+          //   child: Container(
+          //     margin: EdgeInsets.all(10),
+          //     width: 350,
+          //     height: 100,
+          //     // padding: EdgeInsets.all(10),
+          //     decoration: BoxDecoration(
+          //       // Créer une bordure verte
+          //       border: Border.all(color: Colors.green, width: 2),
+          //       // Colorer l'arrière-plan en gris
+          //       color: Colors.grey.shade300,
+          //     ),
+          //     child: Column(
+          //       children: [
+          //         // Créer la première entrée en lecture seule
+          //         TextFormField(
+          //           readOnly: true,
+          //           controller: _textControllerDepartRidee,
+          //           decoration: InputDecoration(
+          //               hintText: 'Point de départ',
+          //               prefixIcon: Icon(Icons.location_on)),
+          //         ),
+          //         // Créer la deuxième entrée en lecture seule
+          //         TextFormField(
+          //           readOnly: true,
+          //           controller: _textControllerDeliveryRidee,
+          //           decoration: InputDecoration(
+          //               hintText: "Point d'arrivée",
+          //               prefixIcon: Icon(Icons.location_on)),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          // Expanded(
+          //   flex: 0,
+          //   child:
+          //       Row(// Use a row to display the icon, text and button horizontally
+          //           children: [
+          //     SizedBox(width: 25),
+          //     Image(
+          //       image: AssetImage(
+          //           moneychoices[currentmoneychoice]['image'] as String),
+          //       width: 64,
+          //       height: 64,
+          //     ),
+          //     SizedBox(width: 10),
+          //     Text(moneychoices[currentmoneychoice]['text1'] as String,
+          //         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+          //     Spacer(),
+          //     IconButton(
+          //         icon: Icon(Icons.more_vert),
+          //         onPressed: () {
+          //           showDialog(
+          //               context: context,
+          //               builder: (context) {
+          //                 return AlertDialog(
+          //                     title: Text('Sélectionner une option'),
+          //                     content: Column(children: [
+          //                       // Loop through the choices and create a list tile for each one
+          //                       for (int i = 0; i < moneychoices.length; i++)
+          //                         ListTile(
+          //                           leading: Image(
+          //                             image: AssetImage(
+          //                                 moneychoices[i]['image'] as String),
+          //                             width: 64,
+          //                             height: 64,
+          //                           ),
+          //                           title:
+          //                               Text(moneychoices[i]['text1'] as String),
+          //                           onTap: () {
+          //                             // Update the current choice index and pop the dialog
+          //                             setState(() {
+          //                               currentmoneychoice = i;
+          //                             });
+          //                             Navigator.pop(context);
+          //                           },
+          //                         ),
+          //                     ]));
+          //               });
+          //         }),
+          //   ]),
+          // ),
+          // Expanded(
+          //   flex: 0,
+          //   child: ElevatedButton(
+          //     onPressed: isWaitASec ? null : _handleButtonClick,
+          //     style: ButtonStyle(
+          //       minimumSize: MaterialStateProperty.all(Size(double.infinity, 50)),
+          //     ),
+          //     child: Text(isWaitASec ? 'En cours de traitement ...' : 'Valider'),
+          //   ),
+          // ),
+          // ]),
+        ]));
   }
 }

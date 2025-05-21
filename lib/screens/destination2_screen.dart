@@ -67,15 +67,15 @@ class _Destination2ScreenState extends State<Destination2Screen> {
             //   style: theme.textTheme.bodyLarge,
             // ),
             SizedBox(height: 14.v),
-            Text(
-              "Laisser nous vous aider à trouver le chemin le plus rapide",
-              // "Le chemin le plus rapide actuel",
+            /* Text(
+               "Laisser nous vous aider à trouver le chemin le plus rapide",
+                // "Le chemin le plus rapide actuel",
               style: theme.textTheme.bodyMedium,
-            ),
-            SizedBox(height: 20.v),
+             ),
+            SizedBox(height: 20.v),*/
             // SizedBox(height: 10.v),
             CustomElevatedButton(
-              text: "Valider",
+              text: "Valider votre itinéraire",
               height: 35.h,
               onPressed: () {
                 Navigator.push(
@@ -104,6 +104,23 @@ class _Destination2ScreenState extends State<Destination2Screen> {
       // _showBottomSheet();
     });
     super.initState();
+    redirectToMap();
+  }
+
+  void redirectToMap() async {
+    // Ajoutez un délai pour éviter les conflits
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    isDepart = false;
+    verify = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PlacearriveScreen(
+          isDepart: isDepart!,
+          type: widget.type,
+        ),
+      ),
+    );
   }
 
   @override
@@ -158,8 +175,9 @@ class _Destination2ScreenState extends State<Destination2Screen> {
           });
         }
       }
-      if (context.read<DeliveryData>().multipoint != null &&
-          context.read<DeliveryData>().multipointAddress != null) {
+      if ((context.read<DeliveryData>().multipoint != null &&
+              context.read<DeliveryData>().multipointAddress != null) ||
+          deliveryLocationRidee != null) {
         print("It's null");
         //get city name
         if (deliveryAddressRidee != null) {
@@ -172,7 +190,7 @@ class _Destination2ScreenState extends State<Destination2Screen> {
               ["address"];
         }
       }
-      print(" is depart ${_textControllerDeliveryRidee.text}");
+      print(" is ${isDepart! ? 'depart' : 'arrivee'} ${_textControllerDeliveryRidee.text}");
       print(deliveryAddressRidee);
 
       if (departLocationRidee != null && deliveryLocationRidee != null) {
@@ -184,325 +202,345 @@ class _Destination2ScreenState extends State<Destination2Screen> {
     print("Result from PlacearriveScreen: $verify");
 
     return Scaffold(
-      appBar: AppBar(
-        title: (widget.type == "ridee" || widget.type == "caree")
-            ? Text('Itinéraire')
-            : Text('Où voulez-vous livrer votre colis?'),
-      ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onVerticalDragEnd: (details) {
-          if (details.primaryVelocity! < 0 &&
-              context.read<DeliveryData>().departLocationRidee != null &&
-              context.read<DeliveryData>().multipointAddress != null) {
-            // User swiped up
-            _showBottomSheet(context);
-            print("swiped up");
-          }
-        },
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              //Text that say "Point de départ"
-              // SizedBox(height: 25.0),
-              // Padding(
-              //     padding: EdgeInsets.only(
-              //         right: MediaQuery.of(context).size.width * 0.45),
-              //     child: Text(
-              //       toshowatfirst,
-              //       style: TextStyle(
-              //         fontSize: 20,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     )),
-              // SizedBox(height: 25.0),
-
-              Container(
-                color: scheme.surface, // BOO
+        // appBar:
+        backgroundColor: scheme.surfaceContainerLowest,
+        body: Stack(children: [
+          //  Positioned.fill(
+          //     child: Image.asset(
+          //       'assets/images/Google-Map-Customizer 2.png', // Chemin de l'image
+          //       fit: BoxFit.cover, // Ajuste l'image pour couvrir tout l'écran
+          //     ),
+          //   ),
+          // Contenu au-dessus de l'image
+          Column(children: [
+            AppBar(
+              title: (widget.type == "ridee" || widget.type == "caree")
+                  ? Text('')
+                  : Text('Où voulez-vous livrer votre colis?'),
+              backgroundColor: scheme.surfaceContainerLowest,
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onVerticalDragEnd: (details) {
+                if (details.primaryVelocity! < 0 &&
+                    context.read<DeliveryData>().departLocationRidee != null &&
+                    context.read<DeliveryData>().multipointAddress != null) {
+                  // User swiped up
+                  _showBottomSheet(context);
+                  print("swiped up");
+                }
+              },
+              child: Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // SizedBox(height: 12.v),
-                    SizedBox(height: 20.h),
-                    // Icon(
-                    //   Icons.arrow_back,
-                    //   size: 25.h,
-                    // ),
-                    Row(
-                      children: [
-                        SizedBox(width: 32.v),
-                        Icon(
-                          Icons.my_location_outlined,
-                          size: 25.h,
-                          color: scheme.primary,
-                        ),
-                        SizedBox(width: 16.v),
-                        CustomTextFormField(
-                          readOnly: true,
-                          onTap: () async {
-                            print("test custom");
-                            // Change isDepart to its opposite using the setter
-                            isDepart = true;
-
-                            print("is Depart $isDepart");
-                            await Future.delayed(
-                                const Duration(milliseconds: 500));
-                            verify = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PlacearriveScreen(
-                                  isDepart: isDepart!,
-                                  type: widget.type,
-                                ),
-                              ),
-                            );
-                            if (verify == "ok") {
-                              _showBottomSheet(context);
-                            }
-                            // Use the result from the pushed route
-                          },
-                          controller: _textControllerDepartRidee,
-                          hintText: "Position de départ ",
-                          width: 250.v,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 12.v),
-                    Row(
-                      children: [
-                        SizedBox(width: 32.v),
-                        Icon(
-                          Icons.location_on_outlined,
-                          size: 25.h,
-                          color: scheme.error,
-                        ),
-                        SizedBox(width: 16.v),
-                        CustomTextFormField(
-                          onTap: () async {
-                            //change is depart to his opposite using the setter
-                            isDepart = false;
-
-                            print("is Depart $isDepart");
-                            await Future.delayed(
-                                const Duration(milliseconds: 500));
-                            verify = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PlacearriveScreen(
-                                        isDepart: isDepart!,
-                                        type: widget.type)));
-
-                            if (verify == "ok") {
-                              _showBottomSheet(context);
-                            }
-                          },
-                          readOnly: true,
-                          controller: _textControllerDeliveryRidee,
-                          hintText: "Position d'arrivé",
-                          textInputAction: TextInputAction.done,
-                          width: 250.v,
-                        ),
-                      ],
-                    ),
-                    // SizedBox(height: 7.v),
-                    SizedBox(height: 20.h),
-                    // Container(
-                    //   padding: EdgeInsets.all(8.h),
-                    //   margin: EdgeInsets.only(left: 73.v, bottom: 7.v),
-                    //   decoration: AppDecoration.fillBlueGray.copyWith(
-                    //     borderRadius: BorderRadiusStyle.circleBorder18,
-                    //   ),
-                    //   child: Row(
-                    //     mainAxisSize: MainAxisSize.min,
-                    //     children: [
-                    //       CustomImageView(
-                    //         imagePath: ImageConstant.imgRideeTestGreen,
-                    //         height: 17.v,
-                    //         width: 25.h,
-                    //         margin: EdgeInsets.only(bottom: 3.v),
+                    //Text that say "Point de départ"
+                    // SizedBox(height: 25.0),
+                    // Padding(
+                    //     padding: EdgeInsets.only(
+                    //         right: MediaQuery.of(context).size.width * 0.45),
+                    //     child: Text(
+                    //       toshowatfirst,
+                    //       style: TextStyle(
+                    //         fontSize: 20,
+                    //         fontWeight: FontWeight.bold,
                     //       ),
-                    //       Padding(
-                    //         padding: EdgeInsets.only(
-                    //           left: 8.h,
-                    //           bottom: 1.v,
+                    //     )),
+                    // SizedBox(height: 25.0),
+
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 32,
+                      ),
+                      color: scheme.surfaceContainerLowest, // BOO
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // SizedBox(height: 12.v),
+                          // SizedBox(height: 20.h),
+                          // Icon(
+                          //   Icons.arrow_back,
+                          //   size: 25.h,
+                          // ),
+                          Row(
+                            children: [
+                              // SizedBox(width: 32.v),
+                              Icon(
+                                Icons.my_location_outlined,
+                                size: 25.h,
+                                color: scheme.primary,
+                              ),
+                              SizedBox(width: 16),
+                              Expanded(
+                                  child: CustomTextFormField(
+                                readOnly: true,
+                                onTap: () async {
+                                  print("test custom");
+                                  // Change isDepart to its opposite using the setter
+                                  isDepart = true;
+
+                                  print("is Depart $isDepart");
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 500));
+                                  verify = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PlacearriveScreen(
+                                        isDepart: isDepart!,
+                                        type: widget.type,
+                                      ),
+                                    ),
+                                  );
+                                  if (verify == "ok") {
+                                    _showBottomSheet(context);
+                                  }
+                                  // Use the result from the pushed route
+                                },
+                                controller: _textControllerDepartRidee,
+                                hintText: "Position de départ ",
+                                // width: MediaQuery.of(context).size.width*0.76,
+                              )),
+                            ],
+                          ),
+                          SizedBox(height: 12.v),
+                          Row(
+                            children: [
+                              // SizedBox(width: 32.v),
+                              Icon(
+                                Icons.location_on_outlined,
+                                size: 25.h,
+                                color: scheme.error,
+                              ),
+                              SizedBox(width: 16),
+                              Expanded(
+                                  child: CustomTextFormField(
+                                onTap: () async {
+                                  //change is depart to his opposite using the setter
+                                  isDepart = false;
+
+                                  print("is Depart $isDepart");
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 500));
+                                  verify = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PlacearriveScreen(
+                                                  isDepart: isDepart!,
+                                                  type: widget.type)));
+
+                                  if (verify == "ok") {
+                                    _showBottomSheet(context);
+                                  }
+                                },
+                                readOnly: true,
+                                controller: _textControllerDeliveryRidee,
+                                hintText: "Position d'arrivé",
+                                textInputAction: TextInputAction.done,
+                                // width: MediaQuery.of(context).size.width*0.76,
+                              )),
+                            ],
+                          ),
+                          // SizedBox(height: 7.v),
+                          SizedBox(height: 20.h),
+                          // Container(
+                          //   padding: EdgeInsets.all(8.h),
+                          //   margin: EdgeInsets.only(left: 73.v, bottom: 7.v),
+                          //   decoration: AppDecoration.fillBlueGray.copyWith(
+                          //     borderRadius: BorderRadiusStyle.circleBorder18,
+                          //   ),
+                          //   child: Row(
+                          //     mainAxisSize: MainAxisSize.min,
+                          //     children: [
+                          //       CustomImageView(
+                          //         imagePath: ImageConstant.imgRideeTestGreen,
+                          //         height: 17.v,
+                          //         width: 25.h,
+                          //         margin: EdgeInsets.only(bottom: 3.v),
+                          //       ),
+                          //       Padding(
+                          //         padding: EdgeInsets.only(
+                          //           left: 8.h,
+                          //           bottom: 1.v,
+                          //         ),
+                          //         child: Text(
+                          //           "5 min",
+                          //           style: CustomTextStyles.titleSmallGray900,
+                          //         ),
+                          //       )
+                          //     ],
+                          //   ),
+                          // )
+                        ],
+                      ),
+                    ),
+
+                    // Créer un conteneur avec deux entrées en lecture seule
+                    // Container(
+                    //   width: 350,
+                    //   padding: EdgeInsets.all(10),
+                    //   decoration: BoxDecoration(
+                    //       // Créer une bordure verte
+                    //       border: Border.all(color: Colors.green, width: 2),
+                    //       // Colorer l'arrière-plan en gris
+                    //       color: Colors.grey.shade300),
+                    //   child: Column(
+                    //     children: [
+                    //       // Créer la première entrée en lecture seule
+                    //       TextFormField(
+                    //         onTap: () {
+                    //           //change is depart to his opposite using the setter
+                    //           isDepart = true;
+
+                    //           print("is Depart $isDepart");
+                    //           Future.delayed(const Duration(milliseconds: 500), () {
+                    //             Navigator.push(
+                    //                 context,
+                    //                 MaterialPageRoute(
+                    //                     builder: (context) => PlacearriveScreen(
+                    //                         isDepart: isDepart!, type: widget.type)));
+                    //           });
+                    //         },
+                    //         controller: _textControllerDepartRidee,
+                    //         readOnly: true,
+                    //         decoration: InputDecoration(
+                    //           hintText: 'Point de départ',
+                    //           prefixIcon: Transform.scale(
+                    //             scale: 0.5, // Change this value to shrink the icon
+                    //             child: ImageIcon(
+                    //               AssetImage('assets/logo/user.png'),
+                    //               color: Colors.green,
+                    //             ),
+                    //           ),
                     //         ),
-                    //         child: Text(
-                    //           "5 min",
-                    //           style: CustomTextStyles.titleSmallGray900,
-                    //         ),
-                    //       )
+                    //       ),
+
+                    //       // Créer la deuxième entrée en lecture seule
+                    //       TextFormField(
+                    //         onTap: () {
+                    //           //change is depart to his opposite using the setter
+                    //           isDepart = false;
+
+                    //           print("is Depart $isDepart");
+                    //           Future.delayed(const Duration(milliseconds: 500), () {
+                    //             Navigator.push(
+                    //                 context,
+                    //                 MaterialPageRoute(
+                    //                     builder: (context) => PlacearriveScreen(
+                    //                         isDepart: isDepart!, type: widget.type)));
+                    //           });
+                    //         },
+                    //         controller: _textControllerDeliveryRidee,
+                    //         readOnly: true,
+                    //         decoration: InputDecoration(
+                    //             hintText: "Point d'arrivée",
+                    //             prefixIcon: Transform.scale(
+                    //               scale: 0.5, // Change this value to shrink the icon
+                    //               child: ImageIcon(
+                    //                 AssetImage('assets/logo/Arriver.png'),
+                    //                 color: Colors.red,
+                    //               ),
+                    //             )),
+                    //       ),
                     //     ],
                     //   ),
+                    // ),
+                    // SizedBox(height: 25),
+                    // // Créer un bouton aligné à gauche qui dit "Pointer sur la carte"
+                    // Padding(
+                    //   padding: EdgeInsets.only(
+                    //       right: MediaQuery.of(context).size.width * 0.39),
+                    //   child: ElevatedButton.icon(
+                    //     onPressed: () {
+                    //       //change is depart to his opposite using the setter
+                    //       isDepart = !isDepart!;
+
+                    //       print("is Depart $isDepart");
+                    //       Future.delayed(const Duration(milliseconds: 500), () {
+                    //         Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) => PlacearriveScreen(
+                    //                     isDepart: isDepart!, type: widget.type)));
+                    //       });
+                    //     }, // Vous pouvez ajouter du code ici pour changer l'état du widget lorsque le bouton est appuyé
+                    //     icon: Icon(Icons.map),
+                    //     label: Text('Pointer sur la carte',
+                    //         style: TextStyle(fontSize: 16)),
+                    //   ),
+                    // ),
+
+                    SizedBox(height: 25),
+                    // Créer une liste de choses aléatoires avec une image arrondie et un texte à côté
+                    // ListView.builder(
+                    //   //spacing between items
+                    //   shrinkWrap:
+                    //       true, // Permettre au ListView de s'adapter à son contenu
+                    //   itemCount:
+                    //       3, // Utiliser trois éléments comme exemple (vous pouvez changer ce nombre)
+                    //   itemBuilder: (context, index) {
+                    //     // Construire chaque élément de la liste
+                    //     return ListTile(
+                    //       //spacing between items
+                    //       contentPadding:
+                    //           EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    //       leading: CircleAvatar(
+                    //         // Créer une image arrondie avec le widget CircleAvatar
+                    //         radius:
+                    //             32, // Définir le rayon de l'image à 32 (ce qui donne une taille de 64x64)
+                    //         backgroundImage: NetworkImage(
+                    //             'https://picsum.photos/200'), // Utiliser une image aléatoire depuis internet (vous pouvez changer l'url)
+                    //       ),
+                    //       title: Text(
+                    //           'Chose aléatoire $index'), // Créer un texte à côté de l'image
+                    //     );
+                    //   },
+                    // ),
+
+                    // Stack(
+                    //   children: [
+                    //     // Vos widgets ici
+                    //     Visibility(
+                    //       visible: departLocationRidee != null &&
+                    //           context.watch<DeliveryData>().multipointAddress != null,
+                    //       child: Align(
+                    //         alignment: Alignment.bottomRight,
+                    //         child: SizedBox(
+                    //           width: 100,
+                    //           child: FloatingActionButton(
+                    //             onPressed: () {
+                    //               // Future delay to wait for the state to be updated
+                    //               Future.delayed(const Duration(milliseconds: 500), () {
+                    //                 Navigator.push(
+                    //                     context,
+                    //                     MaterialPageRoute(
+                    //                         builder: (context) => Destination3Screen(
+                    //                             type: widget.type,
+                    //                             depart: departLocationRidee!,
+                    //                             arrivee: context
+                    //                                 .watch<DeliveryData>()
+                    //                                 .multipoint![context
+                    //                                     .watch<DeliveryData>()
+                    //                                     .multipoint!
+                    //                                     .length -
+                    //                                 1])));
+                    //               });
+                    //             },
+                    //             child: Icon(Icons.add),
+                    //             backgroundColor: Colors.blue,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
                     // )
                   ],
                 ),
               ),
-
-              // Créer un conteneur avec deux entrées en lecture seule
-              // Container(
-              //   width: 350,
-              //   padding: EdgeInsets.all(10),
-              //   decoration: BoxDecoration(
-              //       // Créer une bordure verte
-              //       border: Border.all(color: Colors.green, width: 2),
-              //       // Colorer l'arrière-plan en gris
-              //       color: Colors.grey.shade300),
-              //   child: Column(
-              //     children: [
-              //       // Créer la première entrée en lecture seule
-              //       TextFormField(
-              //         onTap: () {
-              //           //change is depart to his opposite using the setter
-              //           isDepart = true;
-
-              //           print("is Depart $isDepart");
-              //           Future.delayed(const Duration(milliseconds: 500), () {
-              //             Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                     builder: (context) => PlacearriveScreen(
-              //                         isDepart: isDepart!, type: widget.type)));
-              //           });
-              //         },
-              //         controller: _textControllerDepartRidee,
-              //         readOnly: true,
-              //         decoration: InputDecoration(
-              //           hintText: 'Point de départ',
-              //           prefixIcon: Transform.scale(
-              //             scale: 0.5, // Change this value to shrink the icon
-              //             child: ImageIcon(
-              //               AssetImage('assets/logo/user.png'),
-              //               color: Colors.green,
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-
-              //       // Créer la deuxième entrée en lecture seule
-              //       TextFormField(
-              //         onTap: () {
-              //           //change is depart to his opposite using the setter
-              //           isDepart = false;
-
-              //           print("is Depart $isDepart");
-              //           Future.delayed(const Duration(milliseconds: 500), () {
-              //             Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                     builder: (context) => PlacearriveScreen(
-              //                         isDepart: isDepart!, type: widget.type)));
-              //           });
-              //         },
-              //         controller: _textControllerDeliveryRidee,
-              //         readOnly: true,
-              //         decoration: InputDecoration(
-              //             hintText: "Point d'arrivée",
-              //             prefixIcon: Transform.scale(
-              //               scale: 0.5, // Change this value to shrink the icon
-              //               child: ImageIcon(
-              //                 AssetImage('assets/logo/Arriver.png'),
-              //                 color: Colors.red,
-              //               ),
-              //             )),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              // SizedBox(height: 25),
-              // // Créer un bouton aligné à gauche qui dit "Pointer sur la carte"
-              // Padding(
-              //   padding: EdgeInsets.only(
-              //       right: MediaQuery.of(context).size.width * 0.39),
-              //   child: ElevatedButton.icon(
-              //     onPressed: () {
-              //       //change is depart to his opposite using the setter
-              //       isDepart = !isDepart!;
-
-              //       print("is Depart $isDepart");
-              //       Future.delayed(const Duration(milliseconds: 500), () {
-              //         Navigator.push(
-              //             context,
-              //             MaterialPageRoute(
-              //                 builder: (context) => PlacearriveScreen(
-              //                     isDepart: isDepart!, type: widget.type)));
-              //       });
-              //     }, // Vous pouvez ajouter du code ici pour changer l'état du widget lorsque le bouton est appuyé
-              //     icon: Icon(Icons.map),
-              //     label: Text('Pointer sur la carte',
-              //         style: TextStyle(fontSize: 16)),
-              //   ),
-              // ),
-
-              SizedBox(height: 25),
-              // Créer une liste de choses aléatoires avec une image arrondie et un texte à côté
-              // ListView.builder(
-              //   //spacing between items
-              //   shrinkWrap:
-              //       true, // Permettre au ListView de s'adapter à son contenu
-              //   itemCount:
-              //       3, // Utiliser trois éléments comme exemple (vous pouvez changer ce nombre)
-              //   itemBuilder: (context, index) {
-              //     // Construire chaque élément de la liste
-              //     return ListTile(
-              //       //spacing between items
-              //       contentPadding:
-              //           EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              //       leading: CircleAvatar(
-              //         // Créer une image arrondie avec le widget CircleAvatar
-              //         radius:
-              //             32, // Définir le rayon de l'image à 32 (ce qui donne une taille de 64x64)
-              //         backgroundImage: NetworkImage(
-              //             'https://picsum.photos/200'), // Utiliser une image aléatoire depuis internet (vous pouvez changer l'url)
-              //       ),
-              //       title: Text(
-              //           'Chose aléatoire $index'), // Créer un texte à côté de l'image
-              //     );
-              //   },
-              // ),
-
-              // Stack(
-              //   children: [
-              //     // Vos widgets ici
-              //     Visibility(
-              //       visible: departLocationRidee != null &&
-              //           context.watch<DeliveryData>().multipointAddress != null,
-              //       child: Align(
-              //         alignment: Alignment.bottomRight,
-              //         child: SizedBox(
-              //           width: 100,
-              //           child: FloatingActionButton(
-              //             onPressed: () {
-              //               // Future delay to wait for the state to be updated
-              //               Future.delayed(const Duration(milliseconds: 500), () {
-              //                 Navigator.push(
-              //                     context,
-              //                     MaterialPageRoute(
-              //                         builder: (context) => Destination3Screen(
-              //                             type: widget.type,
-              //                             depart: departLocationRidee!,
-              //                             arrivee: context
-              //                                 .watch<DeliveryData>()
-              //                                 .multipoint![context
-              //                                     .watch<DeliveryData>()
-              //                                     .multipoint!
-              //                                     .length -
-              //                                 1])));
-              //               });
-              //             },
-              //             child: Icon(Icons.add),
-              //             backgroundColor: Colors.blue,
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // )
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          ])
+        ]));
   }
 }
