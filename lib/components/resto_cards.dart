@@ -129,7 +129,7 @@ class _RestoCardsState extends State<RestoCards> {
         height: MediaQuery.of(context).size.height / 2,
         child:Center(
         child: Text(
-          'Aucun élément trouvé',
+          'Aucun restaurant trouvé',
           style: TextStyle(
             fontSize: 14,
             fontFamily: 'Roboto',

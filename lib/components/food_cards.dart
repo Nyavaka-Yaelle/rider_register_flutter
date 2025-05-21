@@ -95,7 +95,7 @@ class _FoodCardsState extends State<FoodCards> {
         height: MediaQuery.of(context).size.height / 2,
         child:Center(
         child: Text(
-          'Aucun élément trouvé',
+          'Aucun plat trouvé',
           style: TextStyle(
             fontSize: 14,
             fontFamily: 'Roboto',

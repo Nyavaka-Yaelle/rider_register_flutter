@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rider_register/theme/theme_helper.dart';
 import '../theme.dart';
 
 class SearchBar extends StatefulWidget {
@@ -38,10 +39,19 @@ class _SearchBarState extends State<SearchBar> {
                   padding: EdgeInsets.only(bottom: 3),
                   child: TextField(
                     controller: _controller,
-
+                    style: TextStyle(
+                                color: scheme.onSurface,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
                     cursorColor: MaterialTheme.lightScheme().onSurfaceVariant, // Couleur de l'icône
                     decoration: InputDecoration(
                       hintText: 'Un plat en tête ?',
+                      hintStyle: TextStyle(
+                                color: scheme.onSurfaceVariant,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
                       border: InputBorder.none, // Aucun bord autour du champ de texte
                     ),
                     onChanged: widget.onSearch, // Call the callback when the query changes

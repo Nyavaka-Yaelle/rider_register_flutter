@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../theme.dart';
 class AddressOnYourCard extends StatelessWidget {
   final String adresse;
@@ -17,7 +18,7 @@ class AddressOnYourCard extends StatelessWidget {
     ColorManager customColor = ColorManager(context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal:12.0, vertical: 0),
+      padding: const EdgeInsets.only(left:12.0, right: 24),
       decoration: BoxDecoration(
         // color: Colors.white,
         borderRadius: BorderRadius.circular(12.0),
@@ -70,10 +71,11 @@ class AddressOnYourCard extends StatelessWidget {
                   ),
                 ],
               ),
-              Icon(
-                Icons.fastfood_rounded,
-                size: 32,
-                color: colorScheme.error,
+              SvgPicture.asset(
+                'assets/images/foodee_service.svg', // Chemin vers votre fichier SVG
+                height: 32, // Taille de l'icône
+                width: 32,
+                // color: colorScheme.error, // Appliquez la couleur si nécessaire
               ),
             ],
           ),
