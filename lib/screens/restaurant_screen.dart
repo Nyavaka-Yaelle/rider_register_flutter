@@ -21,7 +21,6 @@ import '../services/api_service.dart';
 import '../theme/theme_helper.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:skeletons/skeletons.dart';
-
 class RestaurantScreen extends StatefulWidget {
   final FoodeeItem? f;
   const RestaurantScreen({
@@ -561,7 +560,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                           height: 1.1),
                     ),
                     Text(
-                      "${context.read<DeliveryData>().cartFoodieTotalLocal.toInt().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (match) => "${match[1]} ")} Ar", // Exemple : "30 000 Ar"
+                      "${context.read<DeliveryData>().cartFoodieTotalLocal
+                      .toInt().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (match) => "${match[1]} ")} Ar", // Exemple : "30 000 Ar"
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: scheme.inverseOnSurface,
                           ),
