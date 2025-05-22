@@ -158,6 +158,9 @@ class _RestoCardsState extends State<RestoCards> {
                     description: restaurant.address,
                     star: restaurant.stars,
                     onTap: () {
+                      if(context.read<DeliveryData>().orderingRestaurant!=null)  {
+                        context.read<DeliveryData>().setCartFoodeeItems([]);
+                      }
                       context.read<DeliveryData>().setOrderingRestaurant(restaurant);
                       Navigator.push(
                         context,

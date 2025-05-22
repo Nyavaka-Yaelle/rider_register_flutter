@@ -135,6 +135,9 @@ class _FoodCardsState extends State<FoodCards> {
                           isFetching = false;
                         });
                         print(value!.name);
+                         if(context.read<DeliveryData>().orderingRestaurant!=null)  {
+                            context.read<DeliveryData>().setCartFoodeeItems([]);
+                          }
                         context.read<DeliveryData>().setOrderingRestaurant(value!);
                         Navigator.push(
                           context,

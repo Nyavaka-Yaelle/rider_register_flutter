@@ -543,6 +543,9 @@ class _HomePageState extends State<HomePage> {
         });
 
         print(value!.name);
+         if(context.read<DeliveryData>().orderingRestaurant!=null)  {
+            context.read<DeliveryData>().setCartFoodeeItems([]);
+          }
         context.read<DeliveryData>().setOrderingRestaurant(value!);
 
         Navigator.push(

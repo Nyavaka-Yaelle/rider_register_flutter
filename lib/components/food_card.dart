@@ -95,6 +95,10 @@ class FoodCard extends StatelessWidget {
                        getRestaurantByReference(foodeeItem.restaurantId).then(
                     (value) {
                       print(value!.name);
+   
+                      if(context.read<DeliveryData>().orderingRestaurant!=null)  {
+                        context.read<DeliveryData>().setCartFoodeeItems([]);
+                      } //??
                       context.read<DeliveryData>().setOrderingRestaurant(value!);
                       Navigator.push(
                         context,
