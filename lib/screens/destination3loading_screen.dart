@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rider_register/components/ridee_card.dart';
 import 'package:rider_register/models/commande.dart';
 import 'package:rider_register/models/user.dart';
 import 'package:rider_register/screens/destination3_screen.dart';
@@ -94,7 +95,8 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
       );
     });
   }
- void _showBottomSheet() {
+
+  void _showBottomSheet() {
     showCustomBottomSheet(
       context,
       children: [
@@ -113,6 +115,7 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
       ],
     );
   }
+
   Future<void> rechercher() async {
     setState(() {
       isLoading = true;
@@ -140,7 +143,7 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
         money =
             money + (widget.commande.prix![i] * widget.commande.quantites![i]);
       }
-            await positionRepository.updateposition(money);
+      await positionRepository.updateposition(money);
 
       riderpositions = await positionRepository.getriderNearTheDeliveryLocation(
           widget.depart.latitude.toString(),
@@ -149,7 +152,7 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
     }
     if (widget.type == "ridee") {
       money = -1.0;
-            await positionRepository.updateposition(money);
+      await positionRepository.updateposition(money);
 
       riderpositions = await positionRepository.getriderNearTheDeliveryLocation(
           widget.depart.latitude.toString(),
@@ -158,14 +161,14 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
     }
     if (widget.type == "caree") {
       money = -1.0;
-            await positionRepository.updateposition(money);
+      await positionRepository.updateposition(money);
 
       riderpositions = await positionRepository.getriderNearTheDeliveryLocation(
           widget.depart.latitude.toString(),
           widget.depart.longitude.toString(),
           money);
     }
-    
+
     print(money.toString() + " money ");
     // riderpositions = await positionRepository.getriderNearTheDeliveryLocation(
     //     widget.depart.latitude.toString(),
@@ -250,9 +253,8 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await rechercher();
-
     });
-          // _showBottomSheet();
+    // _showBottomSheet();
 
     super.initState();
 
@@ -301,23 +303,34 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
         ),
         Visibility(
           visible: isLoading,
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const CircularProgressIndicator(
-              strokeWidth: 2.0,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.04,
-            ),
-            Text("Recherche de rider en cours"),
-          ]),
+          child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.0,
+                    valueColor: AlwaysStoppedAnimation<Color>(scheme.primary),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.04,
+                ),
+                Text("Recherche de rider en cours"),
+              ])),
         ),
-        Visibility(
-          visible: !isLoading,
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text("Choisir votre rider"),
-          ]),
-        ),
+        if (rider.length > 0)
+          Visibility(
+            visible: !isLoading,
+            child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text("Choisir votre rider"),
+                ])),
+          ),
         Expanded(
           flex: 1,
           child: rider.length > 0
@@ -326,7 +339,19 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
                   itemBuilder: (context, index) {
                     // Get the current item from the list
                     final item = rider[index];
-                    return Padding(
+                    return 
+                    // Padding(
+                    //   padding: EdgeInsets.fromLTRB(16,0,16,4),
+                    //   child: RideeCard(
+                    //   leftImage:item['profilePicture'],
+                    //   title: item['vehicleLicencePlate'],
+                    //   subtitle: item['title'],
+                    //   // rightImage: 'assets/images/ridee_moto.png',
+                    //   prix: 20000,
+                    // ));
+                    // rideeCard eto
+                    // /* 
+                    Padding(
                       padding: EdgeInsets.symmetric(
                         vertical: MediaQuery.of(context).size.width * 0.03,
                       ),
@@ -387,11 +412,17 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
                             : Colors.transparent,
                       ),
                     );
+                    //*/
                   },
                 )
-              : Center(
-                  child: Text("Aucun rider disponible pour le moment",
-                      style: TextStyle(fontSize: 20, color: Colors.red))),
+              : isLoading
+                  ? Center(
+                      child: Text("Un instant...",
+                          style: TextStyle(
+                              fontSize: 14, color: scheme.onSurfaceVariant)))
+                  : Center(
+                      child: Text("Aucun rider disponible pour le moment",
+                          style: TextStyle(fontSize: 14, color: scheme.error))),
         ),
         Expanded(
           flex: 0,
@@ -403,26 +434,30 @@ class _Destination3loadingScreenState extends State<Destination3loadingScreen> {
                     ? null
                     : _handleButtonClick,
             style: ElevatedButton.styleFrom(
-  minimumSize: Size(double.infinity, 75), // Adjusted width to occupy full width
-    shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.zero, // This makes the button corners not rounded
-  ),
-  ),
+              minimumSize: Size(
+                  double.infinity, 75), // Adjusted width to occupy full width
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius
+                    .zero, // This makes the button corners not rounded
+              ),
+            ),
             child:
                 Text(isWaitASec ? 'En cours de traitement ...' : 'Confirmer'),
           ),
         ),
       ]),
-         floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 75.0),
-            child: FloatingActionButton(
-              child: Icon(Icons.refresh),
-              onPressed: () async {
-                print("refresh");
-                await rechercher();
-              },
-            ),
-          ), 
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 75.0),
+        child: FloatingActionButton(
+          backgroundColor: scheme.secondaryContainer,
+          foregroundColor: scheme.onSecondaryContainer,
+          child: Icon(Icons.refresh),
+          onPressed: () async {
+            print("refresh");
+            await rechercher();
+          },
+        ),
+      ),
     );
   }
 }
