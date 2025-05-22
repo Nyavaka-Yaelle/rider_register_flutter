@@ -359,7 +359,10 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
           ),
         ),
       ),
-      body: SafeArea(
+      body: Stack(
+      children: [
+        // Contenu principal
+        SafeArea(
         child: RefreshIndicator(
           onRefresh: () => init(),
           child: CustomScrollView(
@@ -392,7 +395,8 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
                       removeToCartFoodeeItem: removeToCartFoodeeItem,
                       removeAllToCartFoodeeItem: removeAllToCartFoodeeItem,
                     ),
-                    const SizedBoxHeight(height: "sm"),
+                    // const SizedBoxHeight(height: "sm"),
+                    
                     // DESCRIPTION
                     //Résumé de paiement
                     /*
@@ -467,7 +471,7 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
                       ),
                     ),*/
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.15,
+                      height: MediaQuery.of(context).size.height * 0.2,
                     ),
                   ],
                 ),
@@ -475,9 +479,14 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
             ],
           ),
         ),
+      ),Positioned(
+        bottom: 0,
+        child: WidgetEMoney()
       ),
-      floatingActionButton: WidgetEMoney(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      
+      ]),
+      // floatingActionButton: WidgetEMoney(),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
