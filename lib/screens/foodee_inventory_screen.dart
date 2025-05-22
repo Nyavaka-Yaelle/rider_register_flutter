@@ -87,17 +87,17 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
     for (int i = 0;
         i < context.read<DeliveryData>().cartFoodeeItems.length;
         i++) {
-      if (context.read<DeliveryData>().cartFoodeeItems[i].size >= 1) {
+      if (context.read<DeliveryData>().cartFoodeeItems[i].foodeeItem.id ==
+          foodeeItem.id) {
         setState(() {
+          double value = context.read<DeliveryData>().cartFoodieTotalLocal;
+          value = double.parse((value -= (foodeeItem.price*
+          context.read<DeliveryData>().cartFoodeeItems[i].size
+          )).toStringAsFixed(2));
+          context.read<DeliveryData>().setCartFoodieTotalLocal(value);
           context.read<DeliveryData>().cartFoodeeItems.removeAt(i);
         });
-        double value = context.read<DeliveryData>().cartFoodieTotalLocal;
-        value = double.parse((value -= foodeeItem.price).toStringAsFixed(2));
-        context.read<DeliveryData>().setCartFoodieTotalLocal(value);
       }
-      double value = context.read<DeliveryData>().cartFoodieTotalLocal;
-      value = double.parse((value -= foodeeItem.price).toStringAsFixed(2));
-      context.read<DeliveryData>().setCartFoodieTotalLocal(value);
     }
     if (context.read<DeliveryData>().cartFoodeeItems.isEmpty) {
       Navigator.pop(context, () {
@@ -323,6 +323,7 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
       _restaurant = context.read<DeliveryData>().orderingRestaurant;
     });
   }
+
   @override
   void initState() {
     super.initState();
@@ -359,47 +360,46 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
           ),
         ),
       ),
-      body: Stack(
-      children: [
+      body: Stack(children: [
         // Contenu principal
         SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () => init(),
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    // const SizedBoxHeight(height: "sm"),
-                    WidgetHeader(widget: widget),
-                    // const SizedBoxHeight(height: "sm"),
-                    const WidgetDivider(),
-                    const SizedBox(height: 8),
-                    WidgetChooseDestination(),
-                    const SizedBox(height: 8),
-                    const WidgetDivider(),
-                    const SizedBox(height: 8),
-                    //changer de service
-                    // WidgetChooseRider(
-                    //   showOrderTypeModalBottomSheet:
-                    //       showOrderTypeModalBottomSheet,
-                    //   orderTypeChoose: _orderTypeChoose,
-                    // ),
-                    // const SizedBox(height:8),
-                    // const WidgetDivider(),
-                    // WidgetNoteDestination(),
-                    const SizedBoxHeight(height: "sm"),
-                    WidgetFoodItem(
-                      addToCartFoodeeItem: addToCartFoodeeItem,
-                      noteToCartFoodeeItem: noteToCartFoodeeItem,
-                      removeToCartFoodeeItem: removeToCartFoodeeItem,
-                      removeAllToCartFoodeeItem: removeAllToCartFoodeeItem,
-                    ),
-                    // const SizedBoxHeight(height: "sm"),
-                    
-                    // DESCRIPTION
-                    //Résumé de paiement
-                    /*
+          child: RefreshIndicator(
+            onRefresh: () => init(),
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      // const SizedBoxHeight(height: "sm"),
+                      WidgetHeader(widget: widget),
+                      // const SizedBoxHeight(height: "sm"),
+                      const WidgetDivider(),
+                      const SizedBox(height: 8),
+                      WidgetChooseDestination(),
+                      const SizedBox(height: 8),
+                      const WidgetDivider(),
+                      const SizedBox(height: 8),
+                      //changer de service
+                      // WidgetChooseRider(
+                      //   showOrderTypeModalBottomSheet:
+                      //       showOrderTypeModalBottomSheet,
+                      //   orderTypeChoose: _orderTypeChoose,
+                      // ),
+                      // const SizedBox(height:8),
+                      // const WidgetDivider(),
+                      // WidgetNoteDestination(),
+                      const SizedBoxHeight(height: "sm"),
+                      WidgetFoodItem(
+                        addToCartFoodeeItem: addToCartFoodeeItem,
+                        noteToCartFoodeeItem: noteToCartFoodeeItem,
+                        removeToCartFoodeeItem: removeToCartFoodeeItem,
+                        removeAllToCartFoodeeItem: removeAllToCartFoodeeItem,
+                      ),
+                      // const SizedBoxHeight(height: "sm"),
+
+                      // DESCRIPTION
+                      //Résumé de paiement
+                      /*
                     Container(
                       width: MediaQuery.of(context).size.width * 0.9,
                       decoration: BoxDecoration(
@@ -470,20 +470,17 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
                         ]),
                       ),
                     ),*/
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.2,
-                    ),
-                  ],
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),Positioned(
-        bottom: 0,
-        child: WidgetEMoney()
-      ),
-      
+        Positioned(bottom: 0, child: WidgetEMoney()),
       ]),
       // floatingActionButton: WidgetEMoney(),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -1143,7 +1140,6 @@ class WidgetNoteDestination extends StatelessWidget {
 }
 
 class WidgetChooseDestination extends StatefulWidget {
-
   const WidgetChooseDestination({
     super.key,
   });
@@ -1159,15 +1155,17 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
   @override
   void initState() {
     super.initState();
-     _noteController = TextEditingController(
+    _noteController = TextEditingController(
       text: context.read<DeliveryData>().noteRidee,
     );
   }
+
   @override
   void dispose() {
     _noteController.dispose();
     super.dispose();
   }
+
   Future<void> showOriginAddresses(String originAddresses) async {
     return showDialog<void>(
       context: context,
@@ -1195,12 +1193,10 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
     );
   }
 
-  String substring(String? s,int limit) {
-    return s!.trim().substring(
-            0,
-            s.trim().length >= limit
-                ? limit
-                : s.trim().length) +
+  String substring(String? s, int limit) {
+    return s!
+            .trim()
+            .substring(0, s.trim().length >= limit ? limit : s.trim().length) +
         (s.trim().length > limit ? '...' : '');
   }
 
@@ -1238,8 +1234,10 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
                       ),
                     ),
                     Text(
-                      substring( context.watch<DeliveryData>().departAddressFoodee,28)
-                      ?? "Votre position",
+                      substring(
+                              context.watch<DeliveryData>().departAddressFoodee,
+                              28) ??
+                          "Votre position",
                       style: TextStyle(
                         fontSize: 16.0,
                         fontFamily: 'Roboto',
@@ -1298,7 +1296,7 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
               child: Text(
                 !show
                     ? _noteController.text.trim().isNotEmpty
-                        ? substring(_noteController.text.trim(),30)
+                        ? substring(_noteController.text.trim(), 30)
                         : 'Un détail à l\'adresse ?'
                     : 'Enregistrer ce détail',
                 // textAlign: TextAlign.center,
