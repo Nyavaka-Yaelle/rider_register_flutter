@@ -37,6 +37,7 @@ class FoodeeInventoryScreen extends StatefulWidget {
 class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
   Restaurant? _restaurant;
   String _orderTypeChoose = "delivery";
+
   //loop through the cartFoodeeItems and add the items to the firestore
   void _simulateBackButton() {
     Navigator.pop(context);
@@ -322,7 +323,7 @@ class _FoodeeInventoryScreenState extends State<FoodeeInventoryScreen> {
       _restaurant = context.read<DeliveryData>().orderingRestaurant;
     });
   }
-
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
@@ -1133,6 +1134,7 @@ class WidgetNoteDestination extends StatelessWidget {
 }
 
 class WidgetChooseDestination extends StatefulWidget {
+
   const WidgetChooseDestination({
     super.key,
   });
@@ -1143,8 +1145,20 @@ class WidgetChooseDestination extends StatefulWidget {
 }
 
 class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
+  late TextEditingController _noteController;
   bool show = false;
-
+  @override
+  void initState() {
+    super.initState();
+     _noteController = TextEditingController(
+      text: context.read<DeliveryData>().noteRidee,
+    );
+  }
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
   Future<void> showOriginAddresses(String originAddresses) async {
     return showDialog<void>(
       context: context,
@@ -1183,10 +1197,10 @@ class _WidgetChooseDestinationState extends State<WidgetChooseDestination> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _noteController = TextEditingController();
-    if (context.read<DeliveryData>().noteRidee != null) {
-      _noteController.text = context.read<DeliveryData>().noteRidee!;
-    }
+    // TextEditingController _noteController = TextEditingController();
+    // if (context.read<DeliveryData>().noteRidee != null) {
+    //   _noteController.text = context.read<DeliveryData>().noteRidee!;
+    // }
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
       // height: MediaQuery.of(context).size.height * 0.06,
